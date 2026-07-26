@@ -48,7 +48,7 @@ For agent-specific implementation details, see `AGENTS.md` at the root of the re
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/open-knowledge-studio.git
+   git clone https://github.com/codeandbrain/open-knowledge-studio.git
    cd open-knowledge-studio
    ```
 
