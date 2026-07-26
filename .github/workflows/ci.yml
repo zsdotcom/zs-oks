@@ -25,7 +25,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup-node
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
       - name: Type check
         run: npm run typecheck
       - name: Run tests
@@ -46,9 +50,12 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup-node
+      - uses: actions/setup-node@v7
         with:
-          install-playwright: 'true'
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install chromium
       - name: Run E2E tests
         run: npm run test:e2e
         env:
@@ -68,7 +75,11 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup-node
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
       - name: Build with analysis
         run: npm run analyze
       - name: Upload bundle stats
