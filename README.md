@@ -1,133 +1,165 @@
-# Open Knowledge Studio
->World-class, free, no-code-friendly knowledge studio for field epidemiologists, researchers, and development teams.
+# Open Knowledge Studio v1.0
 
-An ultra-sleek, premium, offline-first workspace implementing Google Open Knowledge Format (OKF) architectures combined with Model Context Protocol (MCP) standards and advanced Agent-to-Agent (A2A) collaborative workflows.
+**Open Knowledge Studio** is a zero-dependency, browser-native, multi-agent AI platform designed for offline-first research, writing, and data analysis. It operates entirely within your browser using IndexedDB for persistent memory and Transformers.js for zero-cost vector embeddings.
 
-## What does it have 
-- **Storage:**	IndexedDB (GB-scale)
-- **Search:**	Client-side fuzzy full-text search
-- **Voice Input:**	Web Speech API dictation
-- **Offline:**	Full PWA with Service Worker
-- **Document Versions:** Auto-save every 30s + manual snapshots
-- **Templates:**	Dynamic template gallery with inject
-- **LLM Providers:**	Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama
-- **Gemini Model:**	3.5-flash (stable)
-- **Theme:**	Dark + Light mode
-- **File Types:**	Drag-and-drop, 9+ formats
-- **Export:**	Markdown, HTML, JSON, bulk export/import
----
+## 📖 Documentation Guide
 
-## Dependency Footprint
+All documentation is located in the `/docs` folder, serialized for easy navigation by both humans and AI agents:
 
-Exactly **two** runtime npm packages: `react` and `react-dom`. Everything else is first-party code.
+| File | Description |
+| :--- | :--- |
+| `docs/000-project-overview.md` | High-level project vision and goals |
+| `docs/010-blueprint.md` | Core features, target audience, and success metrics |
+| `docs/020-architecture.md` | System architecture, harness pattern, and A2A protocol |
+| `docs/030-design.md` | UI/UX specifications, color-coding, and theming |
+| `docs/040-development.md` | Contribution guidelines, coding standards, and git workflow |
+| `docs/050-setup.md` | Step-by-step environment setup and build instructions |
+| `docs/060-agents-configuration.md` | Detailed agent roles, system prompts, and permissions |
+| `docs/070-memory-architecture.md` | 6-tier memory system, IndexedDB schema, and vector search |
+| `docs/080-test-suite.md` | Comprehensive testing strategy, benchmarks, and CI/CD |
+| `docs/090-gap-analysis.md` | Technical debt, missing features, and enhancement roadmap |
+| `docs/100-dependency-removal-notes.md` | Strategy for removing third-party dependencies |
+| `docs/110-repository-architecture-tree.md` | Detailed breakdown of the `/src` directory |
 
-| What | Implementation |
-|------|---------------|
-| Markdown rendering | `utils/markdown.ts` — CommonMark subset parser |
-| Syntax highlighting | `utils/highlight.ts` — JS/TS/Python/Go/Bash/SQL/JSON/YAML/HTML/CSS |
-| Lucide icons | `components/icons/lucide-shim.tsx` — 40+ inline SVG icons |
-| Charts | `components/charts/SimpleCharts.tsx` — pure SVG bar/line/area charts |
-| Search | `services/searchService.ts` — token-based fuzzy search |
-| Auth | `services/googleAuthService.ts` — Google Identity Services + Drive REST |
-| LLM | `services/geminiService.ts` — multi-provider REST router |
-| Storage | `db/indexedDB.ts` — IndexedDB with migration from localStorage |
-
-**npm install pulls ~70 packages** (React + Vite/TypeScript build tooling), not the 300+ that shipped before.
+For agent-specific implementation details, see `AGENTS.md` at the root of the repository.
 
 ---
 
-## Key Feature Matrix
+## 🌟 Key Features
 
-### 1. Advanced Live Document Workspace
-- **Split-Pane Editor**: Raw Markdown left, live render right
-- **KaTeX Math**: Inline `$` and display `$$` LaTeX rendering
-- **Mermaid Diagrams**: Flowcharts, sequences, mindmaps from codeblocks
-- **Table of Contents**: Auto-generated from headers with smooth scroll
-- **Version History**: Auto-save every 30s + manual snapshots with restore
-- **Multi-Format Export**: Markdown, HTML, JSON, plaintext
-- **Drag-and-Drop**: Drop files directly into knowledge base
-
-### 2. Multi-Provider AI Chat
-- **6 LLM Providers**: Gemini 3.5 Flash, OpenAI, Anthropic, DeepSeek, Groq, Ollama
-- **Voice Input**: Web Speech API — no API key needed
-- **Context Grounding**: Toggle files as active context for AI
-- **Thinking Mode**: Gemini extended thinking with configurable budget
-- **Web Search**: Google search grounding (Gemini only)
-- **Exportable Chats**: Download conversations as Markdown
-
-### 3. A2A Collaborative Debates
-- **3 Pre-configured Agents**: Design, Security, QA
-- **Debate Synthesis**: Consensus recommendations from multiple perspectives
-- **Telemetry Dashboard**: Latency, tokens, success rates in SVG charts
-
-### 4. Google Workspace Integration
-- **Sign In**: Google Identity Services (no Firebase)
-- **Drive Sync**: Automatic backup to your own Drive appDataFolder
-- **Sheets Export**: Convert workspace files to Google Sheets
-- **Docs Export**: Convert Markdown to Google Docs
-- **Gmail**: Send reports directly (scope required)
-
-### 5. Full-Text Search
-- **Zero Backend**: Client-side token scoring
-- **Fuzzy Matching**: Prefix and substring matching
-- **Snippet Highlighting**: Context-aware result snippets
-- **Keyboard Shortcut**: Ctrl/Cmd+K
-
-### 6. PWA & Offline
-- **Service Worker**: Cache-first for app shell, network-first for APIs
-- **Offline Indicator**: Visual online/offline status
-- **IndexedDB**: Persistent storage beyond browser restart
+- **Zero Dependency Architecture:** Runs entirely in the browser. Only 2 runtime packages (`react`, `react-dom`).
+- **6-Tier Memory System:** Hierarchical memory (Session, Episodic, Semantic, Procedural, Working, Long-Term) powered by IndexedDB.
+- **Browser-Native AI:** Uses Transformers.js (WebGPU/WebAssembly) for semantic embeddings and Orama JS for 5-10ms vector search.
+- **Multi-Agent Workflow:** 6 specialized agents (Coordinator, Researcher, Writer, Data Analyst, Reviewer, Librarian) communicating via the A2A protocol.
+- **True Offline-First:** Service Worker (PWA) ensures the application works without an internet connection.
+- **Workspace Isolation:** Each project has an isolated 9-directory structure to prevent data corruption across agents.
+- **Color-Coded Real-Time Rendering:** Mermaid.js integration with live BroadcastChannel-based preview.
 
 ---
 
-## Tech Stack
+## 🚀 Quick Start
 
-| Component | Version | Notes |
-|-----------|---------|-------|
-| React | 19.2.7 | Latest stable |
-| Vite | 8.1.3 | Rust-based Rolldown bundler |
-| TypeScript | 6.0.3 | Strict mode |
-| Plugin React | 6.0.3 | Required for Vite 8 |
-| KaTeX | 0.17.0 | Pinned CDN |
-| Mermaid | 11.16.0 | Pinned CDN |
-| Gemini | 3.5-flash | Stable model (2.0 deprecated) |
+### Prerequisites
 
----
+- Node.js v22+
+- npm v10+
 
-## Quickstart
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/open-knowledge-studio.git
+   cd open-knowledge-studio
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser to `http://localhost:5173`.
+
+### Production Build
 
 ```bash
-# Clone and open
-cd open-knowledge-studio
-
-# Copy env template
-cp .env.example .env
-# Edit .env: add GEMINI_API_KEY and optionally VITE_GOOGLE_OAUTH_CLIENT_ID
-
-# Install
-npm install
-
-# Start dev server (port 3000)
-npm run dev
+npm run build
+npm run preview
 ```
 
-Open `http://localhost:3000` in your browser.
+---
+
+## 🏗️ Repository Structure
+
+```text
+open-knowledge-studio/
+├── README.md                          # This file
+├── AGENTS.md                          # Comprehensive agent definitions and tasks
+├── LICENSE.md                         # MIT License
+├── .env.example                       # Environment variable template
+├── .gitignore                         # Git ignore rules
+├── index.html                         # Application entry point
+├── package.json                       # Project metadata and scripts
+├── tsconfig.json                      # TypeScript configuration
+├── vite.config.ts                     # Vite build configuration
+├── vitest.config.ts                   # Vitest testing configuration
+├── docs/                              # Serialized documentation (000-110)
+│   ├── 000-project-overview.md
+│   ├── 010-blueprint.md
+│   ├── ...
+│   └── agents/                        # Individual agent documentation
+│       ├── coordinator.md
+│       └── ...
+├── public/                            # Static assets
+│   ├── favicon.svg
+│   ├── manifest.json
+│   └── sw.js                          # Service Worker for offline support
+└── src/                               # Source code
+    ├── index.css                      # Global styles (Dark/Light themes)
+    ├── index.tsx                      # React entry point
+    ├── types.ts                       # TypeScript interfaces and types
+    ├── components/                    # UI Components
+    │   ├── App.tsx
+    │   ├── ChatInterface.tsx
+    │   ├── DocumentEditor.tsx
+    │   ├── GoogleWorkspacePanel.tsx
+    │   ├── KnowledgeBaseManager.tsx
+    │   ├── MetricsDashboard.tsx
+    │   ├── SearchPanel.tsx
+    │   ├── SettingsPanel.tsx
+    │   ├── ThemeSwitcher.tsx
+    │   ├── WorkspaceManager.tsx
+    │   ├── charts/SimpleCharts.tsx
+    │   └── icons/lucide-shim.tsx
+    ├── db/                            # Database services
+    │   └── indexedDB.ts
+    ├── services/                      # Core application services
+    │   ├── geminiService.ts
+    │   ├── googleAuthService.ts
+    │   ├── memoryApi.ts
+    │   └── searchService.ts
+    ├── test/                          # Test suite
+    │   ├── setup.ts
+    │   ├── memory.unit.test.ts
+    │   ├── memory.integration.test.ts
+    │   └── memory.benchmark.test.ts
+    └── utils/                         # Utility functions
+        ├── highlight.ts
+        └── markdown.ts
+```
 
 ---
 
-## Target Users
+## 🧪 Testing
 
-### The Field Researcher (Amina)
-Intermittent internet, offline-first report generation, mathematical modeling, WHO template injection.
+We use Vitest for unit, integration, and performance testing.
 
-### The Systems Developer (Rafi)
-A2A debates for system specs, telemetry benchmarking, MCP protocol testing.
+```bash
+# Run all tests
+npm test
 
-### The Health Program Manager (Ariful)
-Program dashboards, epidemiology templates, collaborative review workflows.
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run performance benchmarks
+npm run test:bench
+```
 
 ---
 
-## License
+## 🤝 Contributing
 
-SPDX-License-Identifier: Apache-2.0
+Please read `docs/040-development.md` for our contribution guidelines, coding standards, and git workflow.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See `LICENSE.md` for details.

@@ -9,6 +9,11 @@ const DB_NAME = 'open-knowledge-studio';
 const DB_VERSION = 1;
 
 export interface DBSchema {
+  episodic: { id: string; projectId: string; agentId: string; text: string; summary?: string | null; createdAt: string };
+  semantic: { id: string; projectId: string; agentId: string; topic: string; text: string; embedding: number[]; createdAt: string };
+  procedural: { id: string; projectId: string; skillId: string; instructions: string; triggers: string[]; createdAt: string };
+  working: { id: string; projectId: string; agentId: string; sessionId: string; key: string; value: any; createdAt: string };
+  long_term: { id: string; projectId: string; category: string; text: string; references: string[]; createdAt: string };
   files: { id: string; name: string; type: string; content: string; size: string; url?: string; parentFolderId?: string | null; isActive: boolean; createdAt: string; metadata?: Record<string, any> };
   folders: { id: string; name: string; parentFolderId?: string | null };
   providers: { id: string; config: string };
@@ -39,7 +44,7 @@ function openDatabase(): Promise<IDBDatabase> {
 
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
-      const stores: StoreName[] = ['files', 'folders', 'providers', 'urlGroups', 'prompts', 'a2aAgents', 'metrics', 'sandbox', 'sessions', 'versions', 'kanban', 'templates', 'tags', 'appState'];
+      const stores: StoreName[] = ['episodic', 'semantic', 'procedural', 'working', 'long_term', 'files', 'folders', 'providers', 'urlGroups', 'prompts', 'a2aAgents', 'metrics', 'sandbox', 'sessions', 'versions', 'kanban', 'templates', 'tags', 'appState'];
       stores.forEach((storeName) => {
         if (!db.objectStoreNames.contains(storeName)) {
           const store = db.createObjectStore(storeName, { keyPath: 'id' });
@@ -55,6 +60,15 @@ function openDatabase(): Promise<IDBDatabase> {
           if (storeName === 'versions') {
             store.createIndex('documentId', 'documentId', { unique: false });
             store.createIndex('createdAt', 'createdAt', { unique: false });
+          }
+          if (storeName === 'episodic') {
+            store.createIndex('projectId_agentId', ['projectId', 'agentId'], { unique: false });
+          }
+          if (storeName === 'semantic') {
+            store.createIndex('projectId_agentId', ['projectId', 'agentId'], { unique: false });
+          }
+          if (storeName === 'long_term') {
+            store.createIndex('projectId_category', ['projectId', 'category'], { unique: false });
           }
         }
       });
@@ -103,6 +117,30 @@ export async function dbPut<T>(storeName: StoreName, data: T): Promise<void> {
   return new Promise((resolve, reject) => {
     const req = store.put(data);
     req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
+export async function dbInit(): Promise<void> {
+  await openDatabase();
+}
+
+export async function dbClose(): Promise<void> {
+  if (dbInstance) {
+    dbInstance.close();
+    dbInstance = null;
+    dbOpenPromise = null;
+  }
+}
+
+export async function dbGetByIndex<T>(storeName: StoreName, indexName: string, query: string | string[]): Promise<T[]> {
+  const db = await openDatabase();
+  const tx = db.transaction(storeName, 'readonly');
+  const store = tx.objectStore(storeName);
+  const index = store.index(indexName);
+  return new Promise((resolve, reject) => {
+    const req = index.getAll(IDBKeyRange.only(query));
+    req.onsuccess = () => resolve(req.result as T[]);
     req.onerror = () => reject(req.error);
   });
 }
