@@ -18,23 +18,20 @@ This document describes the CI/CD pipeline using GitHub Actions for automated te
 | Git repository | ✅ | Already configured at `https://github.com/codeandbrain/open-knowledge-studio` |
 | GitHub token (for deployments) | Optional | Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → Select `repo` scope → Copy token |
 
-### Step-by-step: Create the workflow file
+### Workflow files (already included in repository)
 
-1. Open your repository on GitHub
-2. Click the **Actions** tab
-3. Click **New workflow**
-4. Click **set up a workflow yourself**
-5. This creates `.github/workflows/main.yml`
+Two workflow files are already present in the repository:
 
-Alternatively, create the file locally:
+| File | Purpose |
+| :--- | :--- |
+| `.github/workflows/ci.yml` | CI: type checking, unit tests, E2E tests, bundle analysis |
+| `.github/workflows/deploy.yml` | Deploy to GitHub Pages |
 
-```bash
-mkdir -p .github/workflows
-```
+These workflows use `node-version-file: .nvmrc` (which specifies `26`), pinning to **Node.js 26.x** and **npm 11.x**.
 
 ### 2.1 Main CI Workflow
 
-Create `.github/workflows/ci.yml`:
+`.github/workflows/ci.yml`:
 
 ```yaml
 name: CI
@@ -51,12 +48,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: 'npm'
 
       - name: Install dependencies
@@ -84,12 +81,12 @@ jobs:
     needs: typecheck-and-test
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: 'npm'
 
       - name: Install dependencies
@@ -117,12 +114,12 @@ jobs:
     needs: typecheck-and-test
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: 'npm'
 
       - name: Install dependencies
@@ -141,7 +138,7 @@ jobs:
 
 ### 2.2 Deploy to GitHub Pages (Optional)
 
-Create `.github/workflows/deploy.yml`:
+`.github/workflows/deploy.yml`:
 
 ```yaml
 name: Deploy to GitHub Pages
@@ -167,12 +164,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: 'npm'
 
       - name: Install dependencies
@@ -182,7 +179,7 @@ jobs:
         run: npm run build
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

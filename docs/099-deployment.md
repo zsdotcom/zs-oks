@@ -15,7 +15,7 @@ This document covers deployment options for Open Knowledge Studio: Docker contai
 ### Dockerfile
 
 ```dockerfile
-FROM node:22-alpine AS builder
+FROM node:26-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci

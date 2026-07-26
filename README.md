@@ -44,8 +44,8 @@
 
 ### Prerequisites
 
-- Node.js v22+ (tested with v26)
-- npm v10+ (tested with v11)
+- Node.js v26.x (tested with v26.5.0)
+- npm v11.x (tested with v11.17.0)
 
 ### Installation
 

@@ -8,8 +8,8 @@ This document provides step-by-step instructions for setting up the **Open Knowl
 
 | Requirement | Version | Description |
 | :--- | :--- | :--- |
-| **Node.js** | v22.0.0+ (tested v26) | JavaScript runtime |
-| **npm** | v10.0.0+ (tested v11) | Package manager |
+| **Node.js** | v26.0.0+ (tested v26.5.0) | JavaScript runtime |
+| **npm** | v11.0.0+ (tested v11.17.0) | Package manager |
 | **Git** | v2.0.0+ | Version control |
 
 ---
