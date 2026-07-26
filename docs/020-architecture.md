@@ -1,72 +1,63 @@
 # 020 — System Architecture
 
-**Open Knowledge Studio v1.0** is built on a **Harness Pattern** where specialized agents operate within isolated workspaces and communicate through the **Agent-to-Agent (A2A) Protocol**. This document details the system architecture, memory schema, and integration strategies.
+**Open Knowledge Studio v2.0** architecture with 6-agent A2A system, Transformers.js vector embeddings, and Orama JS semantic search.
 
 ---
 
-## 1. The Harness Pattern
+## 1. Component Architecture
 
-The application is structured as a "Harness" that wraps and orchestrates multiple autonomous AI agents. 
-
-- **The Coordinator:** Acts as the central hub, receiving user input, decomposing complex tasks, and delegating them to specialized agents.
-- **Isolation:** Each agent operates within its own isolated memory space (IndexedDB partition) to prevent data corruption and ensure secure execution.
-- **Communication:** Agents communicate via a standardized `BroadcastChannel` API, allowing cross-tab and cross-agent real-time updates without a backend server.
-
----
-
-## 2. 6-Tier Memory Architecture
-
-The platform utilizes a hierarchical memory system stored entirely in **IndexedDB** and enhanced with **Transformers.js** for vector embeddings.
-
-| Memory Tier | Purpose | Auto-Purge Logic |
-| :--- | :--- | :--- |
-| **1. Session** | Short-lived variables, active context | Truncated on page refresh |
-| **2. Episodic** | Conversation history, summaries | Configurable retention (e.g., 90 days) |
-| **3. Semantic** | Vector embeddings for "search by meaning" | Managed by Librarian agent |
-| **4. Procedural** | Operational rules and skills | Never auto-purged |
-| **5. Working** | Temporary scratchpads for calculations | Flushed on session end |
-| **6. Long-Term** | Persistent knowledge base | Manual purge only |
-
-### 2.1 Vector Search & Embeddings
-- **Embedding Generation:** Uses the `all-MiniLM-L6-v2` model via **Transformers.js** (WebGPU/WebAssembly) to generate 384-dimensional vectors.
-- **Search Engine:** Utilizes **Orama JS** for lightning-fast (5-10ms) client-side semantic search and hybrid queries (full-text + vector similarity).
-
----
-
-## 3. Agent-to-Agent (A2A) Protocol
-
-The A2A protocol defines how agents communicate and share data.
-
-### 3.1 Message Format
-```typescript
-interface A2AMessage {
-  from: string;      // Sender Agent ID
-  to: string;        // Receiver Agent ID
-  type: string;      // Message Type (e.g., 'task', 'result', 'error')
-  payload: any;      // Task data or result
-  timestamp: number; // Execution time
-}
+```
+App.tsx
+├── ChatInterface.tsx              ← useChat (IndexedDB)
+├── WorkspaceDocumentEditor.tsx    ← useFiles
+├── KnowledgeBaseManager.tsx       ← useFiles
+├── A2AMetricsDashboard.tsx        ← A2A metrics
+├── SettingsPanel.tsx              ← A2A agent management
+├── Other components...
+└── services/
+    ├── geminiService.ts            ← LLM router (6 providers)
+    ├── memoryApi.ts               ← 6-tier memory + embeddings + Orama
+    ├── embeddingWorker.ts         ← Web Worker (Transformers.js CDN)
+    ├── oramaService.ts            ← Orama JS (CDN) vector search
+    └── searchService.ts           ← Token-based fuzzy search
 ```
 
-### 3.2 Telemetry & Metrics
-The Coordinator tracks agent execution time, token usage, and error rates, visualizing this data in the `MetricsDashboard` component.
+## 2. Vector Embedding Pipeline
 
----
+```
+User saves semantic memory
+  → memoryApi.storeSemantic()
+  → computeEmbedding() → Web Worker
+  → embeddingWorker.ts
+    → Dynamic CDN import of @huggingface/transformers
+    → pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2')
+    → Returns 384-dim Float32Array
+  → Stored in IndexedDB + Orama index
+```
 
-## 4. Provider & LLM Routing
+## 3. Search Pipeline
 
-The platform supports multiple LLM providers via a unified API interface.
+```
+searchSemantic(query, topK)
+  → Try Orama hybrid search (vector + keyword)
+  → If CDN unavailable, fallback to keyword matching
+  → Returns ranked DBSchema['semantic'][] entries
+```
 
-- **Default Providers:** Google Gemini (2.5 Pro) for complex reasoning; Groq (Llama 3.3 70B) for fast, large-context tasks.
-- **Smart Router:** Automatically selects the best provider based on query complexity, cost, and rate limits.
-- **Fallback Chain:** If a primary provider fails, the system automatically falls back to the next available provider in the chain.
+## 4. 6-Agent A2A System
 
----
+6 agents (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian) defined in `DEFAULT_A2A_AGENTS`. Each agent:
+- Has a unique color, avatar, role, and system prompt
+- Responds independently to user prompts in debate panel
+- Configurable on/off toggle
+- Persisted in IndexedDB `a2aAgents` store
 
-## 5. Workspace Isolation
+## 5. IndexedDB Schema
 
-To support multi-agent collaboration without data corruption, the architecture enforces strict **workspace isolation**.
+19 object stores including `episodic`, `semantic`, `procedural`, `working`, `long_term` (memory tiers) plus application data stores. Generic CRUD via `dbGet`, `dbPut`, `dbDelete`, `dbGetAll`, `dbClear`, `dbGetByIndex`.
 
-- **Composite Key Strategy:** Instead of separate databases, we use composite primary keys: `{ projectId }:{ agentId }:{ recordId }`.
-- **Merge & Compare:** When a sub-agent completes a task, the Coordinator initiates a `diff3` comparison between the sub-agent's snapshot and the main project's current state.
-- **Merge/Discard:** Validated changes are written to the main project store; rejected changes are aborted without side effects.
+## 6. Zero Runtime Dependencies
+
+All heavy ML/search libraries are dynamically imported from CDN at runtime:
+- `@huggingface/transformers` from jsdelivr CDN (in Web Worker)
+- `@orama/orama` from jsdelivr CDN (lazy, on first semantic search)

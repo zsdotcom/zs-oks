@@ -1,77 +1,28 @@
-# Tools Registry
+# A2A Agent Tools
 
-## Core Tools (Available to All Agents)
+The 6 A2A debate agents use the Chat Interface as their primary tool. Each agent receives the user's prompt and its system prompt, then generates a response via the configured LLM provider.
 
-| Tool ID | Type | Description | Permission Level |
-|---------|------|-------------|-----------------|
-| `read-file` | Local | Read files from workspace via File System Access API | Safe |
-| `write-file` | Local | Save files to workspace | Elevated |
-| `calculate` | Local | Mathematical computation engine (built-in JS) | Safe |
-| `speak` | Local | Text-to-speech synthesis via Web Speech API | Safe |
-| `dictate` | Local | Speech-to-text dictation via Web Speech API | Safe |
-| `send-message` | Local | A2A inter-agent communication via BroadcastChannel | Safe |
-| `status-track` | Local | Update and broadcast task progress status | Safe |
-| `read-memory` | Local | Query any memory tier from IndexedDB | Safe |
-| `write-memory` | Local | Store data to any memory tier | Elevated |
+## Current Capabilities
 
-## Research Tools (Researcher + Librarian)
+- Each agent responds independently to the same user prompt
+- Agents are color-coded and identified by avatar in the debate panel
+- Responses are recorded in chat history and tracked in A2AMetricsDashboard
+- Agents can be toggled on/off individually
 
-| Tool ID | Type | Description | Source |
-|---------|------|-------------|--------|
-| `search-wikipedia` | API | Fetch Wikipedia articles and summaries | Wikipedia REST API (free) |
-| `search-arxiv` | API | Search academic papers on arXiv | arXiv API (free) |
-| `search-openalex` | API | Search scholarly works via OpenAlex | OpenAlex API (free) |
-| `search-pubmed` | API | Search biomedical literature via NCBI E-utilities | NCBI E-utilities (free) |
-| `search-cdc` | API | Query CDC public health datasets | CDC WONDER API (free) |
-| `search-who` | API | Query WHO Global Health Observatory | WHO GHO API (free) |
-| `search-web` | API | Search the web via free API | DuckDuckGo HTML API |
-| `rss-fetch` | API | Parse and monitor RSS feeds | Built-in fetch + DOMParser |
+## Infrastructure Tools (available but not agent-integrated)
 
-## Visualization Tools (Data Analyst)
+| Tool | Service | Purpose |
+| :--- | :--- | :--- |
+| `computeEmbedding` | `memoryApi.ts` | Generate 384-dim vectors via Transformers.js Web Worker |
+| `searchSemantic` | `memoryApi.ts` | Hybrid vector+keyword search (Orama + IndexedDB fallback) |
+| `storeSemantic` | `memoryApi.ts` | Store with auto-embedding generation |
+| `queryLLM` | `geminiService.ts` | Multi-provider LLM query |
+| `search` | `searchService.ts` | Token-based fuzzy file search |
+| BroadcastChannel | Memory API | Cross-tab memory synchronization |
 
-| Tool ID | Type | Description | Source |
-|---------|------|-------------|--------|
-| `draw-chart` | Local | Generate SVG/Canvas charts and epi curves | Canvas/SVG native |
-| `draw-diagram` | Local | Render Mermaid diagrams in real-time | Mermaid.js (CDN) |
-| `render-latex` | Local | Typeset mathematical formulas | KaTeX (CDN) |
-| `export-pdf` | Local | Export documents as PDF | jsPDF (CDN) |
+## Future Agent Tools
 
-## Memory Tools (Librarian)
-
-| Tool ID | Type | Description | Source |
-|---------|------|-------------|--------|
-| `remember` | Local | Store a memory with key, value, and type | IndexedDB |
-| `recall` | Local | Search memories using fuzzy/semantic matching | IndexedDB + searchService |
-| `forget` | Local | Remove a specific memory entry | IndexedDB |
-| `embed` | Local | Generate vector embeddings for text | Transformers.js (WASM) |
-| `semantic-search` | Local | Vector similarity search across memory | IndexedDB + searchService |
-| `vectorize` | Local | Batch-generate embeddings for documents | Transformers.js (WASM) |
-
-## Spawn & Orchestration Tools (Coordinator)
-
-| Tool ID | Type | Description | Permission Level |
-|---------|------|-------------|-----------------|
-| `spawn-agent` | Local | Create a sub-agent instance with isolated workspace | Safe |
-| `kill-agent` | Local | Terminate a sub-agent and clean up its workspace | Admin |
-| `list-agents` | Local | List all active agents and their status | Safe |
-
-## Permission Levels
-
-| Level | Scope | Example |
-|-------|-------|---------|
-| **Safe** | Read-only, no external network | `calculate`, `draw-chart`, `read-file` |
-| **Standard** | Read external APIs, no write | `search-wikipedia`, `search-arxiv` |
-| **Elevated** | Write to project workspace | `write-file`, `export-pdf` |
-| **Admin** | Modify system settings, install skills | Requires explicit user confirmation |
-
-## Connector Tools (Plugin System)
-
-| Connector ID | Service | Protocol | Authentication |
-|-------------|---------|----------|---------------|
-| `google-drive` | Google Drive | REST API v3 | OAuth 2.0 |
-| `google-docs` | Google Docs | REST API | OAuth 2.0 |
-| `google-sheets` | Google Sheets | REST API | OAuth 2.0 |
-| `github` | GitHub | REST API | Personal Access Token |
-| `rss` | RSS Feeds | Built-in fetch | None |
-
-Connectors are implemented in `src/services/googleAuthService.ts` for Google services.
+The `memoryApi.ts` module provides the infrastructure for agents to directly access memory tiers, but this is not yet wired to the in-app A2A agents. Potential future tools:
+- `readMemory` — Query episodic/semantic memory for context
+- `writeMemory` — Store findings to working/long-term memory
+- `searchKnowledgeBase` — Full-text search across uploaded files

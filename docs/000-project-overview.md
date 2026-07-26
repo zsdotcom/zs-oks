@@ -1,36 +1,43 @@
 # 000 — Project Overview
 
-**Open Knowledge Studio v1.0** is a zero-dependency, browser-native, multi-agent AI platform designed for offline-first research, writing, and data analysis. It operates entirely within your browser using IndexedDB for persistent memory and Transformers.js for zero-cost vector embeddings.
+**Open Knowledge Studio v2.0** is a zero-dependency, browser-native, 6-agent AI platform for offline-first research, writing, and data analysis. It operates entirely within your browser using IndexedDB for persistent memory, Transformers.js for vector embeddings, and Orama JS for semantic search — all loaded dynamically from CDN with no npm runtime dependencies.
 
 ## 1. Vision & Mission
 
-Our vision is to democratize access to advanced AI-powered research and knowledge management tools. We believe that users should not have to rely on expensive, proprietary, cloud-hosted services to manage their personal or professional knowledge bases. 
+Democratize access to powerful AI tooling for research and knowledge management without requiring users to rely on expensive cloud services.
 
 **Open Knowledge Studio** achieves this by:
 - Running entirely in the browser (zero backend costs).
-- Leveraging free, open-source LLM APIs (Gemini, Groq, etc.).
-- Implementing a robust, 6-tier memory architecture using IndexedDB and Transformers.js.
-- Providing a user-friendly, color-coded, real-time rendering interface.
+- Leveraging free LLM APIs (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama).
+- 6-agent A2A workflow system (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian).
+- 384-dim vector embeddings via Transformers.js (all-MiniLM-L6-v2) in a Web Worker.
+- Hybrid vector + keyword semantic search via Orama JS (CDN-loaded).
+- Robust 6-tier memory architecture using IndexedDB.
 
-## 2. Target Audience
+## 2. Core Features
 
-The platform is designed for:
-- **Researchers & Academics:** Who need to synthesize large volumes of literature and generate structured summaries with citations.
-- **Public Health Professionals:** Who need to process epidemiological data, generate epi curves, and write reports.
-- **Developers & Technical Writers:** Who need a powerful, offline-first documentation and knowledge management system.
-- **Privacy-Conscious Users:** Who require their data to remain strictly on their local device.
+- **6-Agent A2A Workflow:** Coordinator orchestrates Researcher, Data Analyst, Writer, Reviewer, and Librarian agents in a real-time debate panel.
+- **Vector Embeddings:** Transformers.js running in a Web Worker generates 384-dimensional embeddings for all semantic memory entries.
+- **Vector Search:** Orama JS provides hybrid (vector + keyword) search across the semantic memory store, with fallback to keyword matching.
+- **6-Tier Memory:** Session (in-memory), Episodic, Semantic (vector-indexed), Procedural, Working, Long-Term.
+- **Multi-Provider LLM Router:** Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama via a unified API.
+- **Chat, Editor, Kanban, Search, Google Workspace, MCP Server** — all in a single-page app.
 
-## 3. Core Principles
+## 3. Agent Color-Coding
 
-1. **Zero Dependency:** The application must run without any backend server, database, or paid subscription.
-2. **Offline-First:** The application must be fully functional without an internet connection (via Service Workers and local AI models).
-3. **Multi-Agent Architecture:** Complex tasks are decomposed and handled by specialized, isolated agents (Coordinator, Researcher, Writer, etc.).
-4. **Robust Memory:** A 6-tier memory system ensures that knowledge is retained, organized, and retrievable across sessions.
-5. **Open Source:** The codebase is fully open-source and freely available for modification and distribution.
+| Agent | Color | Avatar |
+| :--- | :--- | :--- |
+| Coordinator | `#8B5CF6` (Purple) | 🎯 |
+| Researcher | `#06B6D4` (Cyan) | 🔬 |
+| Data Analyst | `#F59E0B` (Amber) | 📊 |
+| Writer | `#10B981` (Emerald) | ✍️ |
+| Reviewer | `#EF4444` (Red) | 🔍 |
+| Librarian | `#8B5CF6` (Purple) | 📚 |
 
-## 4. Success Metrics
+## 4. Zero Dependency Architecture
 
-- **Performance:** Semantic search queries must execute in <10ms.
-- **Storage:** The system must support GB-scale storage via IndexedDB.
-- **Offline Capability:** 100% of core features must be accessible offline.
-- **Adoption:** The repository should serve as a reference implementation for browser-native AI applications.
+Runtime npm deps: **only `react` + `react-dom`**. All heavy lifting:
+- **Transformers.js** loaded dynamically from CDN (`cdn.jsdelivr.net/npm/@huggingface/transformers`)
+- **Orama JS** loaded dynamically from CDN (`cdn.jsdelivr.net/npm/@orama/orama`)
+- Vector computation runs in a **Web Worker** (background thread)
+- All icons, charts, markdown parsing, and highlighting are custom inline implementations

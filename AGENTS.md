@@ -46,6 +46,9 @@ The application utilizes IndexedDB (`open-knowledge-studio` DB, v1) for persiste
 | @types/react / @types/react-dom | 19.2.17 / 19.2.3 |
 | KaTeX (CDN) | 0.18.1 |
 | Mermaid (CDN) | 11.16.0 |
+| tailwindcss + @tailwindcss/vite | ^4.x (Vite plugin, not CDN) |
+| Transformers.js (CDN, Worker) | 3.4.0 (all-MiniLM-L6-v2, 384-dim) |
+| Orama JS (CDN) | 3.0.0 (hybrid vector+keyword search) |
 
 ## Quick start
 
@@ -64,7 +67,7 @@ npm run preview      # serve dist/ locally
 | `npm run dev` | Vite dev server, port **3000**, bound `0.0.0.0` |
 | `npm run typecheck` | `tsc --noEmit` — run before `build` |
 | `npm run build` | `tsc --noEmit && vite build` |
-| `npm run test` | Vitest — **no tests exist** (0 test files in repo) |
+| `npm run test` | Vitest — 2 test files, 21 tests (covering memory API) |
 | `npm run test:watch` | Vitest watch mode |
 | `npm run test:coverage` | Vitest with V8 coverage |
 | `npm run test:bench` | Vitest bench (no benchmarks exist) |
@@ -82,10 +85,10 @@ public/
   manifest.json     # PWA manifest
   favicon.svg       # App icon
 
-index.html          # Entry point — loads Tailwind/KaTeX/Mermaid from CDN
+index.html          # Entry point — loads KaTeX/Mermaid from CDN; Tailwind via Vite plugin
 src/
   index.tsx           # React entry (ReactDOM.createRoot)
-  App.tsx             # Monolithic component — ALL state in one file
+  App.tsx             # Main app component — state partially extracted to hooks
   types.ts            # ALL shared types/interfaces in one file
   index.css           # Dark/light theme CSS variables, prose styles
   db/
@@ -102,23 +105,33 @@ src/
     GoogleWorkspacePanel.tsx            # Drive/Docs/Sheets/Gmail integration
     SearchPanel.tsx                     # Full-text search
     ThemeSwitcher.tsx                   # Dark/light toggle
+    ErrorBoundary.tsx                   # Crash recovery wrapper
+    KanbanBoardView.tsx                 # Task board with drag-drop columns
+    ChatSessionSidebar.tsx              # Chat session list & management
+    GmailCompose.tsx                    # Email compose & send via Gmail API
+    MCPServerPanel.tsx                  # MCP server/tool configuration
+    SettingsPanel.tsx                   # AI provider, sandbox, data management modal
+    WorkspaceManager.tsx                # Workspace isolation & project management
     charts/SimpleCharts.tsx             # Pure SVG BarChart, LineChart, StatCard
     icons/lucide-shim.tsx               # Inline SVG Lucide icons (30+ icons)
   utils/
     markdown.ts         # Custom CommonMark parser (headings, tables, code fences, lists, KaTeX)
     highlight.ts        # Custom regex syntax highlighter (JS/TS/Python/Go/Bash/SQL/HTML/CSS/YAML/JSON)
+  hooks/
+    useChat.ts          # Chat session management & IndexedDB persistence
+    useFiles.ts         # File/folder/version CRUD via IndexedDB
+    usePersistence.ts   # Dark mode, online status, save/load utilities
 ```
 
 ## ⚠️ Key gotchas
 
 - **Path alias `@/`** maps to `src/` in both `vite.config.ts` and `tsconfig.json`. Import from `@/types`, `@/components/...`, etc.
-- **Zero new runtime deps** policy. All icons, charts, markdown parsing, and syntax highlighting are custom inline implementations. No `lucide-react`, no charting library, no Markdown library, no syntax highlighter.
+- **Only 2 npm runtime deps**: `react` and `react-dom`. Transformers.js and Orama JS are dynamically loaded from jsdelivr CDN in Web Workers / lazy imports.
 - **API keys** are loaded from `import.meta.env.VITE_*` env vars (via Vite's built-in `VITE_` prefix convention) and also configurable at runtime through the Settings panel (stored in IndexedDB). The `.env.example` file documents all supported variables.
 - **Google OAuth** (`src/services/googleAuthService.ts`) loads GIS script from CDN dynamically. Set `VITE_GOOGLE_OAUTH_CLIENT_ID` in `.env`.
-- **The `docs/` directory** contains aspirational architecture docs that may be stale — trust the source code over them.
-- **Coverage thresholds** in vitest config: statements 80%, branches 75%, functions 85%, lines 80% — but no tests exist to satisfy them yet.
-- **No `memoryApi.ts`** exists despite docs referencing it. Memory operations go directly to `src/db/indexedDB.ts`.
-- **No test files** exist at all — `src/test/` directory is absent, and `vitest.config.ts` references a non-existent `src/test/setup.ts`.
+- **The `docs/` directory** has been updated to reflect the current codebase state. If you find a discrepancy, trust the source code.
+- **Coverage thresholds** in vitest config: statements 80%, branches 75%, functions 85%, lines 80%.
+- **`memoryApi.ts`** (`src/services/memoryApi.ts`) wraps `src/db/indexedDB.ts` with a 6-tier memory API (Session, Episodic, Semantic, Procedural, Working, Long-Term). The `computeEmbedding()` function is currently a stub that returns `[]` — real vector embeddings via Transformers.js or similar are not yet implemented.
 
 ## Build & deploy
 
@@ -132,11 +145,11 @@ Build order matters: `typecheck` must pass before `vite build`.
 ## Testing quirks
 
 - Test environment: `happy-dom` with `fake-indexeddb` setup
-- Setup file expected at `src/test/setup.ts` — does not exist
+- Setup file at `src/test/setup.ts` — mocks BroadcastChannel, Worker, crypto.randomUUID
 - Coverage excludes `src/test/**`, test files, and `src/index.tsx`
 - Benchmarks write to `benchmark-results.json` (gitignored)
-- No test files exist in the repository
+- 3 test files exist in `src/test/`: `memory.unit.test.ts` (15 unit tests), `memory.integration.test.ts` (6 integration tests), `memory.benchmark.ts` (4 benchmarks)
 
 ## In-app agent system (product feature)
 
-The product ships an in-app multi-agent system (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian). These are **not OpenCode agents** — they are characters defined in the app's UI (A2A debate panel, chat roles) and styled via `src/types.ts` (`A2AAgent`, `ChatMessage` types). The root-level docs describe this product feature; the source code implements a simpler version. See `docs/060-agents-configuration.md` and `src/App.tsx:81-85` for the actual in-app agent definitions.
+The product ships an in-app A2A debate panel with 3 agents (Design & UX Expert, Cybersecurity Architect, Performance & QA Analyst). These are **not OpenCode agents** — they are characters defined in the app's UI (`A2AAgent` type, `ChatMessage` types). See `src/App.tsx:84-88` for the actual in-app agent definitions and `docs/060-agents-configuration.md` for configuration details.

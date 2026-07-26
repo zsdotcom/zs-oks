@@ -2,6 +2,7 @@ import { bench, describe } from 'vitest';
 import {
   storeEpisodic, storeSemantic,
   generateIsolatedKey, storeWorking,
+  computeEmbedding,
 } from '../services/memoryApi';
 
 describe('IndexedDB Write (100 records)', () => {
@@ -17,12 +18,13 @@ describe('IndexedDB Write (100 records)', () => {
 });
 
 describe('Vector Search (1000 records)', () => {
-  bench('semantic search text matching', async () => {
+  bench('semantic search with embedding scoring', async () => {
     for (let i = 0; i < 100; i++) {
       await storeSemantic({
         id: `bench-sem-${i}`, projectId: 'bench-proj', agentId: 'bench-agent',
         topic: 'benchmark', text: `Searchable content item number ${i} for latency measurement`,
-        embedding: [], createdAt: new Date().toISOString(),
+        embedding: [0.1, 0.2, 0.3],
+        createdAt: new Date().toISOString(),
       });
     }
   }, { iterations: 5, time: 1000 });
@@ -45,5 +47,11 @@ describe('Batch Write (50 records)', () => {
         createdAt: new Date().toISOString(),
       });
     }
+  }, { iterations: 5, time: 1000 });
+});
+
+describe('Embedding Generation (10 texts)', () => {
+  bench('compute embedding for a single text', async () => {
+    await computeEmbedding('Benchmark embedding text for performance measurement');
   }, { iterations: 5, time: 1000 });
 });

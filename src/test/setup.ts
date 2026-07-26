@@ -24,18 +24,26 @@ class MockBroadcastChannel {
 }
 
 class MockWorker {
-  private handler: ((event: MessageEvent) => void) | null = null;
+  private messageHandler: ((event: MessageEvent) => void) | null = null;
+  public onerror: ((event: Event | string) => void) | null = null;
 
-  postMessage(_data: unknown): void {
-    this.handler?.(new MessageEvent('message', { data: { embedding: new Float32Array(384) } }));
+  postMessage(data: unknown): void {
+    const msg = data as { type: string; texts: string[]; id: number };
+    const embeddings = msg.texts.map(() =>
+      Array.from({ length: 384 }, () => Math.random() * 2 - 1)
+    );
+    const response = new MessageEvent('message', {
+      data: { id: msg.id, embeddings },
+    });
+    this.messageHandler?.(response);
   }
 
-  addEventListener(_type: string, handler: (event: MessageEvent) => void): void {
-    this.handler = handler;
+  addEventListener(type: string, handler: (event: MessageEvent) => void): void {
+    if (type === 'message') this.messageHandler = handler;
   }
 
-  removeEventListener(_type: string, _handler: (event: MessageEvent) => void): void {
-    this.handler = null;
+  removeEventListener(type: string, _handler: (event: MessageEvent) => void): void {
+    if (type === 'message') this.messageHandler = null;
   }
 
   terminate(): void {}

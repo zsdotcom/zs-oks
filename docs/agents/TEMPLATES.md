@@ -1,83 +1,35 @@
-# Document Templates
+# A2A Agent Templates
 
-Templates are defined in `src/App.tsx:69-74` under `INITIAL_TEMPLATES`. They are accessible from the Templates view and the document editor's template panel.
+## Default System Prompts
 
-## Template Categories
-
-| Category | Description |
-|----------|-------------|
-| `epidemiology` | Field epidemiology reports with SIR modeling |
-| `mermaid` | System architecture and sequence diagrams |
-| `math` | Mathematical formulas and statistical references |
-| `research` | Academic paper structure |
-| `clinical` | Clinical case reports |
-| `project` | Project documentation |
-| `mcp` | Model Context Protocol configurations |
-| `custom` | User-defined templates |
-
-## Built-In Templates
-
-### WHO Epidemiology Report
-```markdown
-# WHO FIELD REPORT
-
-## Overview
-## Incident Matrix
-## SIR Model
-## Action Items
+### Coordinator
+```
+You are the Coordinator Agent of Open Knowledge Studio. Your role is to receive user requests and analyze their complexity. If the task is simple, handle it directly. If the task is complex, decompose it into sub-tasks and delegate to the appropriate specialized agents. Monitor progress and validate outputs before presenting to the user.
 ```
 
-### System Architecture Diagram
-```markdown
-```mermaid
-sequenceDiagram
-  Client->>Server: Request
-  Server->>DB: Query
-  DB-->>Server: Data
-  Server-->>Client: Response
+### Researcher
 ```
+You are the Research Agent of Open Knowledge Studio. Your role is to identify research queries, synthesize findings from available information, and generate structured summaries with proper citations. Tag all findings with confidence levels.
 ```
 
-### Mathematical Reference
-```markdown
-## Normal Distribution
-$$f(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
-
-## Standard Error
-$$SE = \frac{\sigma}{\sqrt{n}}$$
+### Data Analyst
+```
+You are the Data Analyst Agent of Open Knowledge Studio. Your role is to process datasets, perform statistical analysis, generate visualizations, and compute metrics. Always sanitize inputs, handle missing data gracefully, and provide confidence intervals.
 ```
 
-### Research Paper Draft
-```markdown
-# Research Paper
-
-## Abstract
-## 1. Introduction
-## 2. Methodology
-## 3. Results
-## 4. Discussion
-## 5. Conclusion
-## References
+### Writer
+```
+You are the Writer Agent of Open Knowledge Studio. Your role is to draft documents from structured data, apply templates, format outputs, and maintain consistent formatting. Ensure all claims are backed by evidence.
 ```
 
-## Creating Templates
-
-Templates can be added through the Settings panel or by creating documents from existing ones. The document editor (`src/components/WorkspaceDocumentEditor.tsx`) supports:
-
-- **Markdown** with KaTeX math and Mermaid diagrams
-- **Version history** with auto-save every 30 seconds
-- **Export** to `.md` and `.html` formats
-- **Table of contents** auto-generated from headings
-
-## Template Data Model
-
-```typescript
-interface DocumentTemplate {
-  id: string;                // Unique identifier
-  name: string;              // Display name
-  description: string;       // Short description
-  category: TemplateCategory;// Category enum
-  content: string;           // Markdown template content
-  icon?: string;             // Optional icon
-}
+### Reviewer
 ```
+You are the Reviewer Agent of Open Knowledge Studio. Your role is to perform quality checks, audit citations, validate compliance, and identify contradictory claims. Be specific and constructive in feedback.
+```
+
+### Librarian
+```
+You are the Librarian Agent of Open Knowledge Studio. Your role is to maintain memory, organize knowledge, manage references, and ensure information is properly indexed and retrievable.
+```
+
+Custom agents can be created in the Settings Panel with user-defined system prompts.

@@ -303,6 +303,43 @@ export const Mail = make('mail', [
   <path key="2" d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />,
 ]);
 
+export const Target = make('target', [
+  <circle key="1" cx="12" cy="12" r="10" />,
+  <circle key="2" cx="12" cy="12" r="6" />,
+  <circle key="3" cx="12" cy="12" r="2" />,
+]);
+
+export const Book = make('book', [
+  <path key="1" d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />,
+]);
+
+export const BarChart3 = make('bar-chart-3', [
+  <path key="1" d="M3 3v18h18" />,
+  <path key="2" d="M18 17V9" />,
+  <path key="3" d="M13 17V5" />,
+  <path key="4" d="M8 17v-3" />,
+]);
+
+export const FileEdit = make('file-edit', [
+  <path key="1" d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />,
+  <polyline key="2" points="14 2 14 8 20 8" />,
+  <path key="3" d="m11 15 5-5" />,
+  <path key="4" d="m15 19 3-3" />,
+]);
+
+export const SearchCheck = make('search-check', [
+  <circle key="1" cx="11" cy="11" r="8" />,
+  <path key="2" d="m16 16 5 5" />,
+  <path key="3" d="m8 11 2 2 4-4" />,
+]);
+
+export const Library = make('library', [
+  <path key="1" d="m16 6 4 14" />,
+  <path key="2" d="M12 6v14" />,
+  <path key="3" d="M8 8v12" />,
+  <path key="4" d="M4 4v16" />,
+]);
+
 export const CheckSquare = make('check-square', [
   <polyline key="1" points="9 11 12 14 22 4" />,
   <path key="2" d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />,

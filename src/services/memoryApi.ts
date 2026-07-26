@@ -43,10 +43,23 @@ export async function purgeEpisodic(beforeDate: string): Promise<void> {
 
 /* ─── Tier 3: Semantic Memory ─── */
 export async function storeSemantic(entry: DBSchema['semantic']): Promise<void> {
+  if (entry.embedding.length === 0) {
+    entry.embedding = await computeEmbedding(entry.text);
+  }
   await dbPut('semantic', entry);
+  try {
+    const { oramaInsertEntry } = await import('./oramaService');
+    await oramaInsertEntry(entry as any);
+  } catch {}
 }
 
 export async function searchSemantic(query: string, topK = 5): Promise<DBSchema['semantic'][]> {
+  try {
+    const { oramaSearchEntries } = await import('./oramaService');
+    const results = await oramaSearchEntries(query, topK);
+    if (results.length > 0) return results as DBSchema['semantic'][];
+  } catch {}
+
   const all = await dbGetAll<DBSchema['semantic']>('semantic');
   const queryLower = query.toLowerCase();
   const queryTerms = queryLower.split(/\s+/);
@@ -54,8 +67,9 @@ export async function searchSemantic(query: string, topK = 5): Promise<DBSchema[
     .map((entry) => {
       const textLower = entry.text.toLowerCase();
       const matchCount = queryTerms.filter((t) => textLower.includes(t)).length;
-      return { entry, score: matchCount > 0 ? matchCount * 10 + entry.text.length : 0 };
+      return { entry, score: matchCount };
     })
+    .filter((r) => r.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, topK)
     .map((r) => r.entry);
@@ -63,6 +77,10 @@ export async function searchSemantic(query: string, topK = 5): Promise<DBSchema[
 
 export async function deleteSemantic(id: string): Promise<void> {
   await dbDelete('semantic', id);
+  try {
+    const { oramaRemoveEntry } = await import('./oramaService');
+    await oramaRemoveEntry(id);
+  } catch {}
 }
 
 export async function rebuildSemanticIndex(): Promise<void> {
@@ -111,8 +129,9 @@ export async function storeLongTerm(entry: DBSchema['long_term']): Promise<void>
   await dbPut('long_term', entry);
 }
 
-export async function getLongTermByCategory(category: string): Promise<DBSchema['long_term'][]> {
-  return dbGetByIndex<DBSchema['long_term']>('long_term', 'projectId_category', category);
+export async function getLongTermByCategory(category: string, projectId?: string): Promise<DBSchema['long_term'][]> {
+  const all = await dbGetAll<DBSchema['long_term']>('long_term');
+  return all.filter((e) => e.category === category && (!projectId || e.projectId === projectId));
 }
 
 export async function purgeAllLongTerm(): Promise<void> {
@@ -149,6 +168,55 @@ export async function summarizeEpisodicToSemantic(projectId: string): Promise<vo
       createdAt: new Date().toISOString(),
     });
   }
+}
+
+/* ─── Embedding Computation (Transformers.js Web Worker) ─── */
+let embeddingWorkerInstance: Worker | null = null;
+let workerId = 0;
+const pendingEmbeddings = new Map<number, { resolve: (v: number[][]) => void; reject: (e: any) => void }>();
+
+async function getEmbeddingWorker(): Promise<Worker> {
+  if (embeddingWorkerInstance) return embeddingWorkerInstance;
+  embeddingWorkerInstance = new Worker(new URL('./embeddingWorker.ts', import.meta.url), { type: 'module' });
+  embeddingWorkerInstance.addEventListener('message', (e) => {
+    const { id, embeddings } = e.data;
+    const pending = pendingEmbeddings.get(id);
+    if (pending) {
+      pending.resolve(embeddings);
+      pendingEmbeddings.delete(id);
+    }
+  });
+  embeddingWorkerInstance.onerror = (e) => {
+    pendingEmbeddings.forEach((pending, id) => {
+      pending.reject(e);
+      pendingEmbeddings.delete(id);
+    });
+  };
+  return embeddingWorkerInstance;
+}
+
+export async function computeEmbedding(text: string): Promise<number[]> {
+  const results = await computeEmbeddingsParallel([text]);
+  return results[0];
+}
+
+export async function computeEmbeddingsParallel(texts: string[]): Promise<number[][]> {
+  const id = ++workerId;
+  return new Promise(async (resolve) => {
+    try {
+      const worker = await getEmbeddingWorker();
+      pendingEmbeddings.set(id, { resolve, reject: () => resolve(texts.map(() => [])) });
+      worker.postMessage({ type: 'embed', texts, id });
+      setTimeout(() => {
+        if (pendingEmbeddings.has(id)) {
+          pendingEmbeddings.delete(id);
+          resolve(texts.map(() => []));
+        }
+      }, 30000);
+    } catch {
+      resolve(texts.map(() => []));
+    }
+  });
 }
 
 /* ─── Workspace Isolation ─── */

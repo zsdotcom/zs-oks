@@ -74,6 +74,8 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
       }
       // Also render Mermaid
       if (previewRef.current && (window as any).mermaid) {
+        const isDark = document.documentElement.classList.contains('dark');
+        try { (window as any).mermaid.initialize?.({ theme: isDark ? 'dark' : 'default', startOnLoad: false }); } catch {}
         (window as any).mermaid.run({ nodes: previewRef.current.querySelectorAll('.language-mermaid') });
       }
     }, 100);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   ChatMessage, MessageSender, KBFile, KBFolder, URLGroup,
   ProviderConfig, SavedPrompt, A2AAgent, A2AMetric, SandboxSettings,
@@ -31,6 +31,7 @@ import {
   Edit, BookOpen, X, Search, MessageSquare, Settings, Folder, FileText,
   Moon, Sun, Cloud, Wifi, WifiOff, Layout, Menu, Clock, Users, Zap,
   Globe, Layers, Template, Kanban, Plus, Trash, Mail,
+  Target, Book, BarChart3, FileEdit, SearchCheck, Library,
 } from './components/icons/lucide-shim';
 
 const INITIAL_FOLDERS: KBFolder[] = [
@@ -82,15 +83,21 @@ const INITIAL_URL_GROUPS: URLGroup[] = [
 ];
 
 const DEFAULT_A2A_AGENTS: A2AAgent[] = [
-  { id: 'ux-agent', name: 'Design & UX Expert', role: 'Specialist in user interfaces and visual layout', avatar: '🎨', systemPrompt: 'You are an elite Design and User Experience Engineer. Focus heavily on layout, negative space, visual rhythm, micro-interactions, responsive sizing, and high-fidelity interface design.', color: '#3B82F6', isActive: true },
-  { id: 'sec-agent', name: 'Cybersecurity Architect', role: 'Specialist in OAuth, API gateways, and encryption', avatar: '🛡️', systemPrompt: 'You are an elite Cybersecurity Architect. Critique design proposals from a threat perspective, advising on credentials security, token storage, least-privilege API access, and transport encryption.', color: '#EF4444', isActive: true },
-  { id: 'qa-agent', name: 'Performance & QA Analyst', role: 'Specialist in testing, benchmarking, and edge cases', avatar: '⚙️', systemPrompt: 'You are an elite QA and Performance Automation Engineer. Focus on performance bottlenecks, latency benchmarking, memory leaks, invalid state handling, and end-to-end reliability.', color: '#10B981', isActive: true },
+  { id: 'coord', name: 'Coordinator', role: 'Orchestrates workflows and delegates tasks', avatar: '🎯', systemPrompt: `You are the Coordinator Agent of Open Knowledge Studio. Your role is to receive user requests and analyze their complexity. If the task is simple, handle it directly. If the task is complex, decompose it into sub-tasks and delegate to the appropriate specialized agents. Monitor progress and validate outputs before presenting to the user.`, color: '#8B5CF6', isActive: true },
+  { id: 'research', name: 'Researcher', role: 'Searches and synthesizes information', avatar: '🔬', systemPrompt: `You are the Research Agent of Open Knowledge Studio. Your role is to identify research queries, synthesize findings from available information, and generate structured summaries with proper citations. Tag all findings with confidence levels.`, color: '#06B6D4', isActive: true },
+  { id: 'data', name: 'Data Analyst', role: 'Processes data and generates statistics', avatar: '📊', systemPrompt: `You are the Data Analyst Agent of Open Knowledge Studio. Your role is to process datasets, perform statistical analysis, generate visualizations, and compute metrics. Always sanitize inputs, handle missing data gracefully, and provide confidence intervals.`, color: '#F59E0B', isActive: true },
+  { id: 'writer', name: 'Writer', role: 'Drafts documents and formats outputs', avatar: '✍️', systemPrompt: `You are the Writer Agent of Open Knowledge Studio. Your role is to draft documents from structured data, apply templates, format outputs, and maintain consistent formatting. Ensure all claims are backed by evidence.`, color: '#10B981', isActive: true },
+  { id: 'review', name: 'Reviewer', role: 'Quality checks and peer review', avatar: '🔍', systemPrompt: `You are the Reviewer Agent of Open Knowledge Studio. Your role is to perform quality checks, audit citations, validate compliance, and identify contradictory claims. Be specific and constructive in feedback.`, color: '#EF4444', isActive: true },
+  { id: 'librarian', name: 'Librarian', role: 'Maintains memory and manages knowledge', avatar: '📚', systemPrompt: `You are the Librarian Agent of Open Knowledge Studio. Your role is to maintain memory, organize knowledge, manage references, and ensure information is properly indexed and retrievable.`, color: '#8B5CF6', isActive: true },
 ];
 
 const INITIAL_SAVED_PROMPTS: SavedPrompt[] = [
-  { id: 'p1', title: 'Design & UX Expert', description: 'Specialist in interfaces and visual layout', content: 'You are an elite Design and User Experience Engineer. Focus heavily on layout, negative space, visual rhythm, micro-interactions, responsive sizing, and high-fidelity interface design.', category: 'Design & UX', createdAt: new Date().toISOString() },
-  { id: 'p2', title: 'Cybersecurity Architect', description: 'Specialist in OAuth, API gateways, encryption', content: 'You are an elite Cybersecurity Architect. Critique design proposals from a threat perspective.', category: 'Security', createdAt: new Date().toISOString() },
-  { id: 'p3', title: 'Performance & QA Analyst', description: 'Specialist in testing and benchmarking', content: 'You are an elite QA Engineer. Focus on performance bottlenecks, latency, memory leaks, and reliability.', category: 'QA & Testing', createdAt: new Date().toISOString() },
+  { id: 'p1', title: 'Coordinator Agent', description: 'Orchestrates workflows and delegates tasks', content: 'You are the Coordinator Agent of Open Knowledge Studio. Your role is to receive user requests and analyze their complexity. If the task is simple, handle it directly. If the task is complex, decompose it into sub-tasks and delegate to the appropriate specialized agents. Monitor progress and validate outputs before presenting to the user.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
+  { id: 'p2', title: 'Researcher Agent', description: 'Searches and synthesizes information', content: 'You are the Research Agent of Open Knowledge Studio. Your role is to identify research queries, synthesize findings from available information, and generate structured summaries with proper citations. Tag all findings with confidence levels.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
+  { id: 'p3', title: 'Data Analyst Agent', description: 'Processes data and generates statistics', content: 'You are the Data Analyst Agent of Open Knowledge Studio. Your role is to process datasets, perform statistical analysis, generate visualizations, and compute metrics. Always sanitize inputs, handle missing data gracefully, and provide confidence intervals.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
+  { id: 'p4', title: 'Writer Agent', description: 'Drafts documents and formats outputs', content: 'You are the Writer Agent of Open Knowledge Studio. Your role is to draft documents from structured data, apply templates, format outputs, and maintain consistent formatting. Ensure all claims are backed by evidence.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
+  { id: 'p5', title: 'Reviewer Agent', description: 'Quality checks and peer review', content: 'You are the Reviewer Agent of Open Knowledge Studio. Your role is to perform quality checks, audit citations, validate compliance, and identify contradictory claims. Be specific and constructive in feedback.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
+  { id: 'p6', title: 'Librarian Agent', description: 'Maintains memory and manages knowledge', content: 'You are the Librarian Agent of Open Knowledge Studio. Your role is to maintain memory, organize knowledge, manage references, and ensure information is properly indexed and retrievable.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
 ];
 
 const App: React.FC = () => {
@@ -163,11 +170,13 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    a2aAgents.forEach((a) => dbPut('a2aAgents', a).catch(() => {}));
+    const t = setTimeout(() => { a2aAgents.forEach((a) => dbPut('a2aAgents', a).catch(() => {})); }, 100);
+    return () => clearTimeout(t);
   }, [a2aAgents]);
 
   useEffect(() => {
-    kanbanBoards.forEach((b) => dbPut('kanban', { id: `kb-${b.id}`, boards: JSON.stringify(b) }).catch(() => {}));
+    const t = setTimeout(() => { kanbanBoards.forEach((b) => dbPut('kanban', { id: `kb-${b.id}`, boards: JSON.stringify(b) }).catch(() => {})); }, 100);
+    return () => clearTimeout(t);
   }, [kanbanBoards]);
 
   useEffect(() => {
@@ -339,7 +348,7 @@ const App: React.FC = () => {
       <div className="h-screen flex flex-col bg-[#0f0f1a] text-gray-200 overflow-hidden">
         <header className="h-11 flex items-center justify-between px-3 bg-[#1a1a2e] border-b border-[#2a2a3e] shrink-0 no-print">
           <div className="flex items-center gap-3">
-            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1 rounded hover:bg-[#2a2a3e]">
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1 rounded hover:bg-[#2a2a3e]" aria-label="Toggle sidebar">
               <Menu size={16} className="text-gray-400" />
             </button>
             <div className="flex items-center gap-2">
@@ -353,6 +362,8 @@ const App: React.FC = () => {
                   key={view}
                   onClick={() => setActiveView(view)}
                   className={`flex items-center gap-1 px-2 py-1 rounded text-xs whitespace-nowrap transition-colors ${activeView === view ? 'bg-indigo-600/20 text-indigo-400' : 'text-gray-500 hover:text-gray-300'}`}
+                  aria-label={`Switch to ${label} view`}
+                  aria-current={activeView === view ? 'page' : undefined}
                 >
                   {icon}
                   <span className="hidden md:inline">{label}</span>
