@@ -81,34 +81,34 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#1a1a2e]" role="dialog" aria-label="ICD-11 code lookup">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-[#2a2a3e] shrink-0">
+    <div className="flex flex-col h-full bg-[var(--bg-secondary)]" role="dialog" aria-label="ICD-11 code lookup">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--border)] shrink-0">
         <h2 className="text-xs font-semibold flex items-center gap-1.5">
-          <span className="text-indigo-400">
+          <span className="text-[var(--accent)]">
             <Search size={12} />
           </span>
           ICD-11 Code Lookup
         </h2>
         {onClose && (
-          <button onClick={onClose} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400">
+          <button onClick={onClose} className="p-1 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)]">
             <X size={12} />
           </button>
         )}
       </div>
 
-      <div className="p-2 border-b border-[#2a2a3e] shrink-0">
+      <div className="p-2 border-b border-[var(--border)] shrink-0">
         <div className="relative">
-          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
+          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Search by code, title, chapter..."
-            className="w-full pl-7 pr-7 py-1.5 text-xs bg-[#0f0f1a] border border-[#2a2a3e] rounded text-gray-200 placeholder-gray-500 focus:outline-none focus:border-indigo-500/50"
+            className="w-full pl-7 pr-7 py-1.5 text-xs bg-[var(--bg-primary)] border border-[var(--border)] rounded text-[var(--text-primary)] placeholder-gray-500 focus:outline-none focus:border-[var(--accent)]/50"
           />
           {query && (
-            <button onClick={clear} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300">
+            <button onClick={clear} className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)]">
               <X size={12} />
             </button>
           )}
@@ -116,33 +116,33 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
         <div className="flex items-center gap-2 mt-2">
           <button
             onClick={() => { setShowAll(!showAll); setResults([]); }}
-            className={`text-[10px] px-2 py-1 rounded transition-colors ${showAll ? 'bg-indigo-600/20 text-indigo-400' : 'text-gray-500 hover:text-gray-300'}`}
+            className={`text-[10px] px-2 py-1 rounded transition-colors ${showAll ? 'bg-[var(--accent-subtle)] text-[var(--accent)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
           >
             {showAll ? 'Hide all codes' : 'Show all codes'}
           </button>
           {results.length > 0 && (
-            <span className="text-[10px] text-gray-500">{results.length} result{results.length !== 1 ? 's' : ''}</span>
+            <span className="text-[10px] text-[var(--text-muted)]">{results.length} result{results.length !== 1 ? 's' : ''}</span>
           )}
         </div>
       </div>
 
       {selectedEntry && (
-        <div className="p-2 border-b border-[#2a2a3e] shrink-0">
+        <div className="p-2 border-b border-[var(--border)] shrink-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-mono text-indigo-400 font-medium text-[10px]">{selectedEntry.code}</span>
-            <span className="text-xs text-gray-200 font-medium truncate">{selectedEntry.title}</span>
+            <span className="font-mono text-[var(--accent)] font-medium text-[10px]">{selectedEntry.code}</span>
+            <span className="text-xs text-[var(--text-primary)] font-medium truncate">{selectedEntry.title}</span>
           </div>
           <div className="flex items-center gap-2 mt-1">
             <button
               onClick={handleFHIRExport}
-              className="flex items-center gap-1 text-[10px] px-2 py-1 rounded bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600/30 transition-colors"
+              className="flex items-center gap-1 text-[10px] px-2 py-1 rounded bg-[var(--accent-subtle)] text-[var(--accent)] hover:bg-[var(--accent)]/30 transition-colors"
             >
               <Copy size={10} />
               {fhirCopied ? 'Copied!' : 'FHIR Export'}
             </button>
             <button
               onClick={clearSelection}
-              className="text-[10px] px-2 py-1 rounded text-gray-500 hover:text-gray-300 hover:bg-[#2a2a3e] transition-colors"
+              className="text-[10px] px-2 py-1 rounded text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors"
             >
               Clear
             </button>
@@ -157,28 +157,28 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
               const chapterCodes = allCodes.filter((c) => c.chapter === chapter);
               const isExpanded = expandedChapters.has(chapter);
               return (
-                <div key={chapter} className="rounded border border-[#2a2a3e] overflow-hidden">
+                <div key={chapter} className="rounded border border-[var(--border)] overflow-hidden">
                   <button
                     onClick={() => toggleChapter(chapter)}
-                    className="w-full flex items-center gap-1.5 px-2 py-1.5 text-xs text-gray-300 hover:bg-[#2a2a3e] transition-colors"
+                    className="w-full flex items-center gap-1.5 px-2 py-1.5 text-xs text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors"
                   >
                     {isExpanded ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
                     <span className="font-medium truncate">{chapter}</span>
-                    <span className="ml-auto text-[10px] text-gray-500">{chapterCodes.length}</span>
+                    <span className="ml-auto text-[10px] text-[var(--text-muted)]">{chapterCodes.length}</span>
                   </button>
                   {isExpanded && (
-                    <div className="border-t border-[#2a2a3e]">
+                    <div className="border-t border-[var(--border)]">
                       {chapterCodes.map((entry) => (
                         <button
                           key={entry.code}
                           onClick={() => handleSelect(entry)}
-                          className="w-full text-left px-3 py-1.5 text-[10px] hover:bg-[#2a2a3e] transition-colors border-b border-[#2a2a3e]/50 last:border-b-0"
+                          className="w-full text-left px-3 py-1.5 text-[10px] hover:bg-[var(--bg-hover)] transition-colors border-b border-[var(--border)]/50 last:border-b-0"
                         >
                           <div className="flex items-center gap-2">
-                            <span className="font-mono text-indigo-400 font-medium">{entry.code}</span>
-                            <span className="text-gray-200">{entry.title}</span>
+                            <span className="font-mono text-[var(--accent)] font-medium">{entry.code}</span>
+                            <span className="text-[var(--text-primary)]">{entry.title}</span>
                           </div>
-                          <p className="text-gray-500 mt-0.5 truncate">{entry.description}</p>
+                          <p className="text-[var(--text-muted)] mt-0.5 truncate">{entry.description}</p>
                         </button>
                       ))}
                     </div>
@@ -190,35 +190,35 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
         )}
 
         {results.length > 0 && !showAll && (
-          <div className="divide-y divide-[#2a2a3e]/50">
+          <div className="divide-y divide-[var(--border)]/50">
             {results.map((entry) => (
               <button
                 key={entry.code}
                 onClick={() => handleSelect(entry)}
-                className="w-full text-left px-3 py-2 text-xs hover:bg-[#2a2a3e] transition-colors"
+                className="w-full text-left px-3 py-2 text-xs hover:bg-[var(--bg-hover)] transition-colors"
               >
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="font-mono text-indigo-400 font-medium text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10">{entry.code}</span>
-                  <span className="text-gray-200 font-medium">{entry.title}</span>
+                  <span className="font-mono text-[var(--accent)] font-medium text-[10px] px-1.5 py-0.5 rounded bg-[var(--accent-subtler)]">{entry.code}</span>
+                  <span className="text-[var(--text-primary)] font-medium">{entry.title}</span>
                 </div>
-                <p className="text-[10px] text-gray-500 truncate">{entry.chapter}</p>
-                <p className="text-[10px] text-gray-500 mt-0.5 line-clamp-2">{entry.description}</p>
+                <p className="text-[10px] text-[var(--text-muted)] truncate">{entry.chapter}</p>
+                <p className="text-[10px] text-[var(--text-muted)] mt-0.5 line-clamp-2">{entry.description}</p>
               </button>
             ))}
           </div>
         )}
 
         {!showAll && results.length === 0 && query && (
-          <div className="flex flex-col items-center justify-center h-full text-gray-500 text-xs">
+          <div className="flex flex-col items-center justify-center h-full text-[var(--text-muted)] text-xs">
             <Search size={24} className="mb-2 opacity-30" />
             <p>No codes found for "{query}"</p>
           </div>
         )}
 
         {!showAll && results.length === 0 && !query && (
-          <div className="flex flex-col items-center justify-center h-full text-gray-500 text-xs px-4 text-center">
+          <div className="flex flex-col items-center justify-center h-full text-[var(--text-muted)] text-xs px-4 text-center">
             <p className="mb-1">Search ICD-11 codes by entering a code, disease name, or chapter.</p>
-            <p className="text-[10px] text-gray-600">Or click "Show all codes" to browse by chapter.</p>
+            <p className="text-[10px] text-[var(--text-muted)]">Or click "Show all codes" to browse by chapter.</p>
           </div>
         )}
       </div>

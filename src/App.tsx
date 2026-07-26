@@ -259,8 +259,8 @@ const App: React.FC = () => {
     dbGetAll<MCPServer>('sandbox').then((loaded) => {
       if (loaded.length > 0) setMcpServers(loaded);
     }).catch(() => {});
-    dbGetKey('ui-theme').then((v) => { if (v) setSelectedTheme(v); }).catch(() => {});
-    dbGetKey('ui-accent').then((v) => { if (v) setAccentColor(v); }).catch(() => {});
+    dbGetKey('ui-theme').then((v) => { if (v) { setSelectedTheme(v); try { localStorage.setItem('oks_ui-theme', v); } catch {} } else { try { const l = localStorage.getItem('oks_ui-theme'); if (l) setSelectedTheme(l); } catch {} } }).catch(() => {});
+    dbGetKey('ui-accent').then((v) => { if (v) { setAccentColor(v); try { localStorage.setItem('oks_ui-accent', v); } catch {} } else { try { const l = localStorage.getItem('oks_ui-accent'); if (l) setAccentColor(l); } catch {} } }).catch(() => {});
     setWebhooks(getAllWebhooks());
     loadSkillRegistry().then(() => {
       const reg = getSkillRegistry();
@@ -310,22 +310,29 @@ const App: React.FC = () => {
   }, [currentUser, files, folders, providerConfig, savedPrompts]);
 
   useEffect(() => {
-    document.documentElement.classList.remove('dark', 'theme-light', 'theme-sepia', 'theme-forest', 'theme-ocean');
-    if (selectedTheme === 'light') {
-      document.documentElement.style.colorScheme = 'light';
-      document.documentElement.classList.add('theme-light');
-    } else {
-      document.documentElement.style.colorScheme = 'dark';
-      document.documentElement.classList.add('dark');
-      if (selectedTheme !== 'dark') document.documentElement.classList.add(`theme-${selectedTheme}`);
+    const root = document.documentElement;
+    root.classList.remove('theme-light', 'theme-sepia', 'theme-forest', 'theme-ocean', 'theme-midnight', 'theme-solarized');
+    if (selectedTheme !== 'dark') {
+      root.classList.add(`theme-${selectedTheme}`);
     }
+    root.style.setProperty('--accent', accentColor);
+    root.style.setProperty('--accent-light', adjustColor(accentColor, 40));
+    root.style.setProperty('--accent-dark', adjustColor(accentColor, -40));
+    root.style.setProperty('--accent-subtle', `${accentColor}1a`);
+    root.style.setProperty('--accent-subtler', `${accentColor}0a`);
     dbSetKey('ui-theme', selectedTheme).catch(() => {});
-  }, [selectedTheme]);
-
-  useEffect(() => {
-    document.documentElement.style.setProperty('--accent', accentColor);
     dbSetKey('ui-accent', accentColor).catch(() => {});
-  }, [accentColor]);
+    try { localStorage.setItem('oks_ui-theme', selectedTheme); } catch {}
+    try { localStorage.setItem('oks_ui-accent', accentColor); } catch {}
+  }, [selectedTheme, accentColor]);
+
+  function adjustColor(hex: string, amount: number): string {
+    const num = parseInt(hex.replace('#', ''), 16);
+    const r = Math.min(255, Math.max(0, ((num >> 16) & 0xFF) + amount));
+    const g = Math.min(255, Math.max(0, ((num >> 8) & 0xFF) + amount));
+    const b = Math.min(255, Math.max(0, (num & 0xFF) + amount));
+    return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+  }
 
   const handleSaveFileWrapper = useCallback((updatedFile: KBFile) => {
     handleSaveFile(updatedFile);
@@ -595,23 +602,23 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="h-screen flex flex-col bg-[#0f0f1a] text-gray-200 overflow-hidden">
-        <header className="h-11 flex items-center justify-between px-3 bg-[#1a1a2e] border-b border-[#2a2a3e] shrink-0 no-print">
+      <div className="h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-hidden">
+        <header className="h-11 flex items-center justify-between px-3 bg-[var(--bg-secondary)] border-b border-[var(--border)] shrink-0 no-print">
           <div className="flex items-center gap-3">
-            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1 rounded hover:bg-[#2a2a3e]" aria-label="Toggle sidebar">
-              <Menu size={16} className="text-gray-400" />
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1 rounded hover:bg-[var(--bg-hover)]" aria-label="Toggle sidebar">
+              <Menu size={16} className="text-[var(--text-secondary)]" />
             </button>
             <div className="flex items-center gap-2">
-              <Brain size={18} className="text-indigo-400" />
+              <Brain size={18} className="text-[var(--accent)]" />
               <span className="text-sm font-semibold hidden sm:inline">Open Knowledge Studio</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400">v2.0</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--accent-subtle)] text-[var(--accent)]">v2.0</span>
             </div>
             <nav className="flex items-center gap-0.5 ml-4 overflow-x-auto" aria-label="Main navigation">
               {navItems.map(({ view, icon, label }) => (
                 <button
                   key={view}
                   onClick={() => setActiveView(view)}
-                  className={`flex items-center gap-1 px-2 py-1 rounded text-xs whitespace-nowrap transition-colors ${activeView === view ? 'bg-indigo-600/20 text-indigo-400' : 'text-gray-500 hover:text-gray-300'}`}
+                  className={`flex items-center gap-1 px-2 py-1 rounded text-xs whitespace-nowrap transition-colors ${activeView === view ? 'bg-[var(--accent-subtle)] text-[var(--accent)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                   aria-label={`Switch to ${label} view`}
                   aria-current={activeView === view ? 'page' : undefined}
                 >
@@ -626,41 +633,41 @@ const App: React.FC = () => {
               {isOnline ? <Wifi size={12} className="text-green-400" /> : <WifiOff size={12} className="text-red-400" />}
               <span className={`hidden sm:inline ${isOnline ? 'text-green-400' : 'text-red-400'}`}>{isOnline ? 'Online' : 'Offline'}</span>
             </div>
-            {currentUser && <Cloud size={14} className="text-indigo-400" />}
+            {currentUser && <Cloud size={14} className="text-[var(--accent)]" />}
             {isInstallable && (
-              <button onClick={promptInstall} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Install App">
-                <Download size={14} className="text-gray-400" />
+              <button onClick={promptInstall} className="p-1.5 rounded hover:bg-[var(--bg-hover)]" title="Install App">
+                <Download size={14} className="text-[var(--text-secondary)]" />
               </button>
             )}
-            <button onClick={() => { setShowGooglePanel(!showGooglePanel); setShowGmailCompose(false); }} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Google Workspace" aria-label="Toggle Google Workspace panel">
-              <Globe size={14} className="text-gray-400" />
+            <button onClick={() => { setShowGooglePanel(!showGooglePanel); setShowGmailCompose(false); }} className="p-1.5 rounded hover:bg-[var(--bg-hover)]" title="Google Workspace" aria-label="Toggle Google Workspace panel">
+              <Globe size={14} className="text-[var(--text-secondary)]" />
             </button>
-            <button onClick={() => { setShowGmailCompose(!showGmailCompose); setShowGooglePanel(false); }} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Compose Email" disabled={!currentUser} aria-label="Compose email">
-              <Mail size={14} className="text-gray-400" />
+            <button onClick={() => { setShowGmailCompose(!showGmailCompose); setShowGooglePanel(false); }} className="p-1.5 rounded hover:bg-[var(--bg-hover)]" title="Compose Email" disabled={!currentUser} aria-label="Compose email">
+              <Mail size={14} className="text-[var(--text-secondary)]" />
             </button>
-            <button onClick={() => { setShowICD11(!showICD11); setShowEpiMap(false); }} className={`p-1.5 rounded hover:bg-[#2a2a3e] ${showICD11 ? 'bg-indigo-600/20' : ''}`} title="ICD-11 Code Lookup" aria-label="Toggle ICD-11 code lookup">
-              <Book size={14} className="text-gray-400" />
+            <button onClick={() => { setShowICD11(!showICD11); setShowEpiMap(false); }} className={`p-1.5 rounded hover:bg-[var(--bg-hover)] ${showICD11 ? 'bg-[var(--accent-subtle)]' : ''}`} title="ICD-11 Code Lookup" aria-label="Toggle ICD-11 code lookup">
+              <Book size={14} className="text-[var(--text-secondary)]" />
             </button>
-            <button onClick={() => { setShowEpiMap(!showEpiMap); setShowICD11(false); }} className={`p-1.5 rounded hover:bg-[#2a2a3e] ${showEpiMap ? 'bg-indigo-600/20' : ''}`} title="Epidemiology Map" aria-label="Toggle epidemiology map">
-              <MapPin size={14} className="text-gray-400" />
+            <button onClick={() => { setShowEpiMap(!showEpiMap); setShowICD11(false); }} className={`p-1.5 rounded hover:bg-[var(--bg-hover)] ${showEpiMap ? 'bg-[var(--accent-subtle)]' : ''}`} title="Epidemiology Map" aria-label="Toggle epidemiology map">
+              <MapPin size={14} className="text-[var(--text-secondary)]" />
             </button>
             <ThemeSwitcher theme={selectedTheme} onThemeChange={setSelectedTheme} accentColor={accentColor} onAccentColorChange={setAccentColor} />
-            <button onClick={() => setShowSettings(!showSettings)} className="p-1.5 rounded hover:bg-[#2a2a3e]" aria-label="Open settings">
-              <Settings size={14} className="text-gray-400" />
+            <button onClick={() => setShowSettings(!showSettings)} className="p-1.5 rounded hover:bg-[var(--bg-hover)]" aria-label="Open settings">
+              <Settings size={14} className="text-[var(--text-secondary)]" />
             </button>
             {currentUser ? (
-              <button onClick={logoutUser} className="flex items-center gap-1 text-xs text-gray-400 hover:text-red-400" title={currentUser.email || ''}>
+              <button onClick={logoutUser} className="flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-red-400" title={currentUser.email || ''}>
                 {currentUser.photoURL && <img src={currentUser.photoURL} alt="" className="w-5 h-5 rounded-full" />}
               </button>
             ) : (
-              <button onClick={signInWithGoogle} className="text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700" aria-label="Sign in with Google">Sign in</button>
+              <button onClick={signInWithGoogle} className="text-xs bg-[var(--accent)] text-white px-2 py-1 rounded hover:bg-[var(--accent-dark)]" aria-label="Sign in with Google">Sign in</button>
             )}
           </div>
         </header>
 
         <div className="flex-1 flex overflow-hidden">
           {isSidebarOpen && (
-            <aside className="w-72 border-r border-[#2a2a3e] bg-[#1a1a2e]/50 flex flex-col shrink-0 overflow-hidden hidden md:flex" aria-label="Workspace sidebar">
+            <aside className="w-72 border-r border-[var(--border)] bg-[var(--bg-secondary)]/50 flex flex-col shrink-0 overflow-hidden hidden md:flex" aria-label="Workspace sidebar">
               <div className="flex-1 overflow-y-auto">
                 <WorkspaceManager
                   files={files}
@@ -686,7 +693,7 @@ const App: React.FC = () => {
                   onRemoveAgent={() => {}}
                   projects={workspaceProjects}
                 />
-                <div className="border-t border-[#2a2a3e] my-2" />
+                <div className="border-t border-[var(--border)] my-2" />
                 <KnowledgeBaseManager
                   files={files}
                   folders={folders}
@@ -713,12 +720,12 @@ const App: React.FC = () => {
                   />
                 )}
                 <div className="flex-1 flex flex-col min-w-0" aria-live="polite">
-                  <div className="flex items-center gap-2 px-3 py-1 border-b border-[#2a2a3e] shrink-0">
-                    <button onClick={() => setShowChatSessions(!showChatSessions)} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400" title="Chat sessions" aria-label="Toggle chat sessions">
+                  <div className="flex items-center gap-2 px-3 py-1 border-b border-[var(--border)] shrink-0">
+                    <button onClick={() => setShowChatSessions(!showChatSessions)} className="p-1 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)]" title="Chat sessions" aria-label="Toggle chat sessions">
                       <MessageSquare size={12} />
                     </button>
-                    <span className="text-[10px] text-gray-500">{sessions.length} sessions</span>
-                    <button onClick={createSession} className="ml-auto p-1 rounded hover:bg-[#2a2a3e] text-gray-400" title="New chat" aria-label="New chat"><Plus size={12} /></button>
+                    <span className="text-[10px] text-[var(--text-muted)]">{sessions.length} sessions</span>
+                    <button onClick={createSession} className="ml-auto p-1 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)]" title="New chat" aria-label="New chat"><Plus size={12} /></button>
                   </div>
                   <ChatInterface
                     messages={messages}
@@ -738,7 +745,7 @@ const App: React.FC = () => {
             )}
 
             {activeView === 'editor' && (
-              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-gray-500 text-xs">Loading...</div>}>
+              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-[var(--text-muted)] text-xs">Loading...</div>}>
                 <WorkspaceDocumentEditor
                   file={activeFile}
                   onSave={handleSaveFileWrapper}
@@ -754,7 +761,7 @@ const App: React.FC = () => {
             )}
 
             {activeView === 'observability' && (
-              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-gray-500 text-xs">Loading...</div>}>
+              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-[var(--text-muted)] text-xs">Loading...</div>}>
                 <A2AMetricsDashboard metrics={a2aMetrics} agents={a2aAgents.map((a) => ({ id: a.id, name: a.name, color: a.color, avatar: a.avatar }))} />
               </React.Suspense>
             )}
@@ -771,7 +778,7 @@ const App: React.FC = () => {
             )}
 
             {activeView === 'mcp' && (
-              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-gray-500 text-xs">Loading...</div>}>
+              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-[var(--text-muted)] text-xs">Loading...</div>}>
                 <MCPServerPanel
                   servers={mcpServers}
                   onAddServer={handleMCPAddServer}
@@ -783,47 +790,47 @@ const App: React.FC = () => {
 
             {activeView === 'skills' && (
               <div className="p-4 overflow-y-auto">
-                <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><BookOpen size={16} className="text-indigo-400" /> Skills Registry</h2>
+                <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><BookOpen size={16} className="text-[var(--accent)]" /> Skills Registry</h2>
                 <div className="space-y-2">
                   {skills.map((skill) => (
-                    <div key={skill.id} className="p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e]">
+                    <div key={skill.id} className="p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)]">
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-medium">{skill.name.replace(/-/g, ' ')}</span>
                           <StatusBadge status={skill.priority === 'high' ? 'error' : skill.priority === 'medium' ? 'warning' : 'info'} label={skill.priority} />
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400">{skill.category}</span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-[var(--accent-subtler)] text-[var(--accent)]">{skill.category}</span>
                         </div>
                         <button onClick={() => handleDeleteSkill(skill.id)} className="p-1 rounded hover:bg-red-500/20 text-red-400"><Trash size={12} /></button>
                       </div>
-                      <p className="text-[10px] text-gray-500 mb-2">{skill.description}</p>
-                      <details className="text-[10px] text-gray-400">
-                        <summary className="cursor-pointer hover:text-gray-300">Instructions</summary>
-                        <pre className="mt-1 p-2 rounded bg-[#0f0f1a] text-[9px] whitespace-pre-wrap">{skill.instructions}</pre>
+                      <p className="text-[10px] text-[var(--text-muted)] mb-2">{skill.description}</p>
+                      <details className="text-[10px] text-[var(--text-secondary)]">
+                        <summary className="cursor-pointer hover:text-[var(--text-primary)]">Instructions</summary>
+                        <pre className="mt-1 p-2 rounded bg-[var(--bg-primary)] text-[9px] whitespace-pre-wrap">{skill.instructions}</pre>
                       </details>
                       {skill.triggers.length > 0 && (
                         <div className="flex gap-1 flex-wrap mt-2">
-                          {skill.triggers.map((t) => <span key={t} className="text-[8px] px-1 py-0.5 rounded bg-[#2a2a3e] text-gray-400">{t}</span>)}
+                          {skill.triggers.map((t) => <span key={t} className="text-[8px] px-1 py-0.5 rounded bg-[var(--bg-hover)] text-[var(--text-secondary)]">{t}</span>)}
                         </div>
                       )}
                     </div>
                   ))}
-                  {skills.length === 0 && <p className="text-xs text-gray-500 text-center py-8">No skills defined.</p>}
+                  {skills.length === 0 && <p className="text-xs text-[var(--text-muted)] text-center py-8">No skills defined.</p>}
                 </div>
               </div>
             )}
 
             {activeView === 'tools' && (
               <div className="flex flex-col h-full">
-                <div className="flex gap-2 px-4 pt-4 border-b border-[#2a2a3e]">
-                  <button onClick={() => setToolsTab('tools')} className={`text-[10px] px-2 py-1 rounded-t transition-colors ${toolsTab === 'tools' ? 'bg-[#1a1a2e] text-indigo-400 border border-b-0 border-[#2a2a3e]' : 'text-gray-500 hover:text-gray-300'}`}>Tools</button>
-                  <button onClick={() => setToolsTab('connectors')} className={`text-[10px] px-2 py-1 rounded-t transition-colors ${toolsTab === 'connectors' ? 'bg-[#1a1a2e] text-indigo-400 border border-b-0 border-[#2a2a3e]' : 'text-gray-500 hover:text-gray-300'}`}>Connectors</button>
+                <div className="flex gap-2 px-4 pt-4 border-b border-[var(--border)]">
+                  <button onClick={() => setToolsTab('tools')} className={`text-[10px] px-2 py-1 rounded-t transition-colors ${toolsTab === 'tools' ? 'bg-[var(--bg-secondary)] text-[var(--accent)] border border-b-0 border-[var(--border)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}>Tools</button>
+                  <button onClick={() => setToolsTab('connectors')} className={`text-[10px] px-2 py-1 rounded-t transition-colors ${toolsTab === 'connectors' ? 'bg-[var(--bg-secondary)] text-[var(--accent)] border border-b-0 border-[var(--border)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}>Connectors</button>
                 </div>
                 {toolsTab === 'tools' ? (
                   <div className="flex-1 p-4 overflow-y-auto">
-                    <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Wrench size={16} className="text-indigo-400" /> Built-in Tools ({BUILT_IN_TOOLS.length})</h2>
+                    <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Wrench size={16} className="text-[var(--accent)]" /> Built-in Tools ({BUILT_IN_TOOLS.length})</h2>
                     <div className="grid grid-cols-2 gap-3">
                       {BUILT_IN_TOOLS.map((tool) => (
-                        <div key={tool.id} className="p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e]">
+                        <div key={tool.id} className="p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)]">
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-xs font-medium">{tool.name}</span>
                             <div className="flex gap-1">
@@ -834,9 +841,9 @@ const App: React.FC = () => {
                               }`}>{tool.permission}</span>
                             </div>
                           </div>
-                          <p className="text-[10px] text-gray-500">{tool.description}</p>
+                          <p className="text-[10px] text-[var(--text-muted)]">{tool.description}</p>
                           <div className="flex gap-1 mt-1">
-                            <span className="text-[8px] px-1 py-0.5 rounded bg-gray-500/10 text-gray-400">{tool.category}</span>
+                            <span className="text-[8px] px-1 py-0.5 rounded bg-gray-500/10 text-[var(--text-secondary)]">{tool.category}</span>
                             {tool.requiresConfirmation && <span className="text-[8px] px-1 py-0.5 rounded bg-orange-500/10 text-orange-400">Requires confirm</span>}
                           </div>
                         </div>
@@ -851,7 +858,7 @@ const App: React.FC = () => {
 
             {activeView === 'knowledge' && (
               <div className="p-4 overflow-y-auto">
-                <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Globe size={16} className="text-indigo-400" /> Knowledge Sources</h2>
+                <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Globe size={16} className="text-[var(--accent)]" /> Knowledge Sources</h2>
                 <div className="grid grid-cols-2 gap-3">
                   {[
                     { name: 'Wikipedia', desc: 'Encyclopedic articles', rate: 'Unlimited', icon: '📚' },
@@ -863,12 +870,12 @@ const App: React.FC = () => {
                     { name: 'GDELT', desc: 'Global news monitoring', rate: '20/min', icon: '📰' },
                     { name: 'CrossRef', desc: 'DOI lookup & metadata', rate: '50/sec', icon: '🔗' },
                   ].map((src) => (
-                    <div key={src.name} className="p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e]">
+                    <div key={src.name} className="p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)]">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-sm">{src.icon}</span>
                         <span className="text-xs font-medium">{src.name}</span>
                       </div>
-                      <p className="text-[10px] text-gray-500 mb-1">{src.desc}</p>
+                      <p className="text-[10px] text-[var(--text-muted)] mb-1">{src.desc}</p>
                       <span className="text-[8px] px-1.5 py-0.5 rounded bg-green-500/10 text-green-400">{src.rate}</span>
                     </div>
                   ))}
@@ -880,15 +887,15 @@ const App: React.FC = () => {
 
             {activeView === 'templates' && (
               <div className="p-4 overflow-y-auto">
-                <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Template size={16} className="text-indigo-400" /> Document Templates</h2>
+                <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Template size={16} className="text-[var(--accent)]" /> Document Templates</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {templates.map((t) => (
-                    <div key={t.id} className="p-4 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e] hover:border-indigo-500/30 transition-colors">
+                    <div key={t.id} className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] hover:border-[var(--accent)]/30 transition-colors">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-xs font-medium">{t.name}</h3>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400">{t.category}</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--accent-subtler)] text-[var(--accent)]">{t.category}</span>
                       </div>
-                      <p className="text-[10px] text-gray-500 mb-3">{t.description}</p>
+                      <p className="text-[10px] text-[var(--text-muted)] mb-3">{t.description}</p>
                       <button
                         onClick={() => {
                           const newFile: KBFile = {
@@ -905,7 +912,7 @@ const App: React.FC = () => {
                           setActiveFile(newFile);
                           setActiveView('editor');
                         }}
-                        className="text-[10px] bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700"
+                        className="text-[10px] bg-[var(--accent)] text-white px-3 py-1 rounded hover:bg-[var(--accent-dark)]"
                         aria-label={`Use template: ${t.name}`}
                       >
                         Use Template
@@ -918,15 +925,15 @@ const App: React.FC = () => {
           </main>
 
           {showGooglePanel && (
-            <aside className="w-80 border-l border-[#2a2a3e] bg-[#1a1a2e]/50 shrink-0 hidden md:block">
-              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-gray-500 text-xs">Loading...</div>}>
+            <aside className="w-80 border-l border-[var(--border)] bg-[var(--bg-secondary)]/50 shrink-0 hidden md:block">
+              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-[var(--text-muted)] text-xs">Loading...</div>}>
                 <GoogleWorkspacePanel currentFile={activeFile || undefined} />
               </React.Suspense>
             </aside>
           )}
 
           {showGmailCompose && (
-            <aside className="w-80 border-l border-[#2a2a3e] bg-[#1a1a2e]/50 shrink-0 hidden md:block">
+            <aside className="w-80 border-l border-[var(--border)] bg-[var(--bg-secondary)]/50 shrink-0 hidden md:block">
               <GmailCompose
                 currentFile={activeFile || undefined}
                 userEmail={currentUser?.email}
@@ -936,7 +943,7 @@ const App: React.FC = () => {
           )}
 
           {showICD11 && (
-            <aside className="w-80 border-l border-[#2a2a3e] shrink-0 hidden md:block">
+            <aside className="w-80 border-l border-[var(--border)] shrink-0 hidden md:block">
               <ICD11Lookup
                 onSelect={(entry) => console.log('ICD-11 Selected:', entry)}
                 onClose={() => setShowICD11(false)}
@@ -945,14 +952,14 @@ const App: React.FC = () => {
           )}
 
           {showEpiMap && (
-            <aside className="w-80 border-l border-[#2a2a3e] bg-[#1a1a2e]/50 shrink-0 hidden md:block">
+            <aside className="w-80 border-l border-[var(--border)] bg-[var(--bg-secondary)]/50 shrink-0 hidden md:block">
               <div className="flex flex-col h-full">
-                <div className="flex items-center justify-between px-3 py-2 border-b border-[#2a2a3e] shrink-0">
+                <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--border)] shrink-0">
                   <h2 className="text-xs font-semibold flex items-center gap-1.5">
-                    <MapPin size={12} className="text-indigo-400" />
+                    <MapPin size={12} className="text-[var(--accent)]" />
                     Epidemiology Map
                   </h2>
-              <button onClick={() => setShowEpiMap(false)} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400" aria-label="Close epidemiology map">
+              <button onClick={() => setShowEpiMap(false)} className="p-1 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)]" aria-label="Close epidemiology map">
                 <X size={12} />
               </button>
                 </div>
@@ -973,7 +980,7 @@ const App: React.FC = () => {
           />
         )}
 
-        <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-gray-500 text-xs">Loading...</div>}>
+        <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-[var(--text-muted)] text-xs">Loading...</div>}>
           <SettingsPanel
             show={showSettings}
             onClose={() => setShowSettings(false)}
@@ -1000,7 +1007,7 @@ const App: React.FC = () => {
           />
         </React.Suspense>
 
-        <footer className="h-6 flex items-center justify-between px-3 bg-[#1a1a2e] border-t border-[#2a2a3e] text-[10px] text-gray-500 shrink-0 no-print">
+        <footer className="h-6 flex items-center justify-between px-3 bg-[var(--bg-secondary)] border-t border-[var(--border)] text-[10px] text-[var(--text-muted)] shrink-0 no-print">
           <div className="flex items-center gap-3">
             <span>{files.length} files</span>
             <span>{folders.length} folders</span>

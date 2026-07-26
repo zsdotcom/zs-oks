@@ -169,11 +169,11 @@ function EpiMap({ dataPoints, onPointClick, height = '400px', timelineData, onTi
         className="epi-map-container"
         style={{ flex: 1, borderRadius: 8, border: '1px solid var(--border-color, #d1d5db)' }}
       />
-      <div className="p-2 border-t border-[#2a2a3e] space-y-2">
+      <div className="p-2 border-t border-[var(--border)] space-y-2">
         <div className="flex items-center gap-2">
           <button
             onClick={togglePlay}
-            className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400"
+            className="p-1.5 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)]"
             title={isPlaying ? 'Pause' : 'Play'}
           >
             {isPlaying ? (
@@ -183,7 +183,7 @@ function EpiMap({ dataPoints, onPointClick, height = '400px', timelineData, onTi
             )}
           </button>
           {currentDate && (
-            <span className="text-[10px] text-indigo-400 font-mono">{currentDate}</span>
+            <span className="text-[10px] text-[var(--accent)] font-mono">{currentDate}</span>
           )}
           <div className="flex items-center gap-1 ml-auto">
             {[0.5, 1, 2].map(speed => (
@@ -192,8 +192,8 @@ function EpiMap({ dataPoints, onPointClick, height = '400px', timelineData, onTi
                 onClick={() => setSpeedMultiplier(speed)}
                 className={`text-[10px] px-1.5 py-0.5 rounded transition-colors ${
                   speedMultiplier === speed
-                    ? 'bg-indigo-600/20 text-indigo-400'
-                    : 'text-gray-500 hover:text-gray-300'
+                    ? 'bg-[var(--accent-subtle)] text-[var(--accent)]'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 {speed}x
@@ -207,8 +207,8 @@ function EpiMap({ dataPoints, onPointClick, height = '400px', timelineData, onTi
           max={Math.max(0, (timelineData?.length || 1) - 1)}
           value={currentIndex}
           onChange={handleSliderChange}
-          className="w-full h-1 appearance-none bg-[#2a2a3e] rounded cursor-pointer"
-          style={{ accentColor: '#4f46e5' }}
+          className="w-full h-1 appearance-none bg-[var(--bg-hover)] rounded cursor-pointer"
+          style={{ accentColor: 'var(--accent)' }}
         />
       </div>
     </div>

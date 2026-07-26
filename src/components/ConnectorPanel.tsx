@@ -102,25 +102,25 @@ export const ConnectorPanel: React.FC = () => {
   return (
     <div className="p-4 overflow-y-auto">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold flex items-center gap-2 text-gray-200">
+        <h2 className="text-sm font-semibold flex items-center gap-2 text-[var(--text-primary)]">
           <span>🔌</span> Connectors
         </h2>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="text-[10px] px-2 py-1 rounded bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600/30 transition-colors"
+          className="text-[10px] px-2 py-1 rounded bg-[var(--accent-subtle)] text-[var(--accent)] hover:bg-[var(--accent)]/30 transition-colors"
         >
           {showAddForm ? 'Cancel' : '+ Add Connector'}
         </button>
       </div>
 
       {showAddForm && (
-        <div className="mb-4 p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e] space-y-2">
+        <div className="mb-4 p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] space-y-2">
           <input
             type="text"
             placeholder="Connector name"
             value={newConnector.name}
             onChange={(e) => setNewConnector((prev) => ({ ...prev, name: e.target.value }))}
-            className="w-full text-[10px] px-2 py-1.5 rounded bg-[#0f0f23] border border-[#2a2a3e] text-gray-300 placeholder-gray-600 focus:outline-none focus:border-indigo-500"
+            className="w-full text-[10px] px-2 py-1.5 rounded bg-[var(--bg-primary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-gray-600 focus:outline-none focus:border-[var(--accent)]"
           />
           <div className="flex gap-2">
             {CONNECTOR_TYPES.map((t) => (
@@ -128,7 +128,7 @@ export const ConnectorPanel: React.FC = () => {
                 key={t.type}
                 onClick={() => setNewConnector((prev) => ({ ...prev, type: t.type, config: {} }))}
                 className={`text-[10px] px-2 py-1 rounded transition-colors ${
-                  newConnector.type === t.type ? 'bg-indigo-600/20 text-indigo-400' : 'bg-[#0f0f23] text-gray-500 hover:text-gray-300'
+                  newConnector.type === t.type ? 'bg-[var(--accent-subtle)] text-[var(--accent)]' : 'bg-[var(--bg-primary)] text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 {t.icon} {t.type}
@@ -142,13 +142,13 @@ export const ConnectorPanel: React.FC = () => {
               placeholder={field.placeholder}
               value={newConnector.config[field.key] || ''}
               onChange={(e) => handleFieldChange(field.key, e.target.value)}
-              className="w-full text-[10px] px-2 py-1.5 rounded bg-[#0f0f23] border border-[#2a2a3e] text-gray-300 placeholder-gray-600 focus:outline-none focus:border-indigo-500"
+              className="w-full text-[10px] px-2 py-1.5 rounded bg-[var(--bg-primary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-gray-600 focus:outline-none focus:border-[var(--accent)]"
             />
           ))}
           <button
             onClick={handleAdd}
             disabled={!newConnector.name.trim()}
-            className="text-[10px] px-3 py-1.5 rounded bg-indigo-600 text-white hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="text-[10px] px-3 py-1.5 rounded bg-[var(--accent)] text-white hover:bg-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Save Connector
           </button>
@@ -156,7 +156,7 @@ export const ConnectorPanel: React.FC = () => {
       )}
 
       {connectors.length === 0 ? (
-        <div className="text-center py-12 text-gray-600">
+        <div className="text-center py-12 text-[var(--text-muted)]">
           <p className="text-xs mb-2">No connectors configured</p>
           <p className="text-[10px]">Add a connector to integrate with external services</p>
         </div>
@@ -165,18 +165,18 @@ export const ConnectorPanel: React.FC = () => {
           {connectors.map((connector) => {
             const typeConfig = CONNECTOR_TYPES.find((t) => t.type === connector.type);
             return (
-              <div key={connector.id} className="p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e]">
+              <div key={connector.id} className="p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)]">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-sm">{typeConfig?.icon || '🔌'}</span>
-                    <span className="text-xs font-medium text-gray-200">{connector.name}</span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400">{connector.type}</span>
+                    <span className="text-xs font-medium text-[var(--text-primary)]">{connector.name}</span>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-[var(--accent-subtler)] text-[var(--accent)]">{connector.type}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className={`text-[9px] px-1.5 py-0.5 rounded ${
                       connector.status === 'connected' ? 'bg-green-500/10 text-green-400' :
                       connector.status === 'error' ? 'bg-red-500/10 text-red-400' :
-                      'bg-gray-500/10 text-gray-400'
+                      'bg-gray-500/10 text-[var(--text-secondary)]'
                     }`}>
                       {connector.status}
                     </span>
@@ -195,11 +195,11 @@ export const ConnectorPanel: React.FC = () => {
                     </button>
                   </div>
                 </div>
-                <div className="text-[9px] text-gray-500 space-y-0.5">
+                <div className="text-[9px] text-[var(--text-muted)] space-y-0.5">
                   {Object.entries(connector.config).map(([key, value]) => (
                     <div key={key} className="flex gap-2">
-                      <span className="text-gray-600">{key}:</span>
-                      <span className="text-gray-400 truncate max-w-[200px]">
+                      <span className="text-[var(--text-muted)]">{key}:</span>
+                      <span className="text-[var(--text-secondary)] truncate max-w-[200px]">
                         {key.includes('token') || key.includes('secret') || key.includes('key')
                           ? '••••••••' : value}
                       </span>

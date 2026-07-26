@@ -71,24 +71,24 @@ function parseMarkdownSections(markdown: string): DocSection[] {
 
 function renderMarkdownToHtml(markdown: string): string {
   let html = markdown
-    .replace(/^### (.+)$/gm, '<h3 class="text-sm font-semibold mt-4 mb-1 text-gray-200">$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2 class="text-base font-bold mt-5 mb-2 text-indigo-300">$1</h2>')
+    .replace(/^### (.+)$/gm, '<h3 class="text-sm font-semibold mt-4 mb-1 text-[var(--text-primary)]">$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 class="text-base font-bold mt-5 mb-2 text-[var(--accent-light)]">$1</h2>')
     .replace(/^# (.+)$/gm, '<h1 class="text-lg font-bold mt-2 mb-3 text-white">$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-gray-200">$1</strong>')
-    .replace(/\*([^*]+)\*/g, '<em class="text-gray-400">$1</em>')
-    .replace(/`([^`]+)`/g, '<code class="text-[10px] px-1 py-0.5 rounded bg-indigo-900/50 text-indigo-300">$1</code>')
-    .replace(/^- (.+)$/gm, '<li class="text-[11px] text-gray-400 ml-3 list-disc">$1</li>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-[var(--text-primary)]">$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em class="text-[var(--text-secondary)]">$1</em>')
+    .replace(/`([^`]+)`/g, '<code class="text-[10px] px-1 py-0.5 rounded bg-[var(--accent-dark)]/50 text-[var(--accent-light)]">$1</code>')
+    .replace(/^- (.+)$/gm, '<li class="text-[11px] text-[var(--text-secondary)] ml-3 list-disc">$1</li>')
     .replace(/^\| (.+) \|$/gm, (match: string) => {
       const cells = match.split('|').filter(Boolean).map((c: string) => c.trim());
-      if (cells.every((c: string) => /^[-:]+$/.test(c))) return '<tr class="border-b border-[#2a2a3e]"><td colspan="99"><hr class="border-[#2a2a3e]" /></td></tr>';
-      return `<tr class="border-b border-[#2a2a3e]">${cells.map((c: string) => `<td class="text-[10px] px-2 py-1 text-gray-400">${c}</td>`).join('')}</tr>`;
+      if (cells.every((c: string) => /^[-:]+$/.test(c))) return '<tr class="border-b border-[var(--border)]"><td colspan="99"><hr class="border-[var(--border)]" /></td></tr>';
+      return `<tr class="border-b border-[var(--border)]">${cells.map((c: string) => `<td class="text-[10px] px-2 py-1 text-[var(--text-secondary)]">${c}</td>`).join('')}</tr>`;
     })
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-indigo-400 hover:text-indigo-300 underline" target="_blank" rel="noopener">$1</a>')
-    .replace(/\n\n/g, '</p><p class="text-[11px] text-gray-400 leading-relaxed mb-2">')
-    .replace(/^---$/gm, '<hr class="border-[#2a2a3e] my-3" />');
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-[var(--accent)] hover:text-[var(--accent-light)] underline" target="_blank" rel="noopener">$1</a>')
+    .replace(/\n\n/g, '</p><p class="text-[11px] text-[var(--text-secondary)] leading-relaxed mb-2">')
+    .replace(/^---$/gm, '<hr class="border-[var(--border)] my-3" />');
 
-  html = '<p class="text-[11px] text-gray-400 leading-relaxed mb-2">' + html + '</p>';
-  html = html.replace(/<\/p>\s*<p class="text-\[11px\] text-gray-400 leading-relaxed mb-2">\s*<\/p>/g, '</p><p class="text-[11px] text-gray-400 leading-relaxed mb-2"></p>');
+  html = '<p class="text-[11px] text-[var(--text-secondary)] leading-relaxed mb-2">' + html + '</p>';
+  html = html.replace(/<\/p>\s*<p class="text-\[11px\] text-\[var\(--text-secondary\)\] leading-relaxed mb-2">\s*<\/p>/g, '</p><p class="text-[11px] text-[var(--text-secondary)] leading-relaxed mb-2"></p>');
   return html;
 }
 
@@ -129,8 +129,8 @@ export const DocumentationViewer: React.FC = () => {
   const sections = useMemo(() => parseMarkdownSections(markdown), [markdown]);
 
   return (
-    <div className="flex h-full bg-[#0f0f23] text-gray-300 overflow-hidden">
-      <aside className="w-56 border-r border-[#2a2a3e] overflow-y-auto shrink-0 bg-[#1a1a2e]">
+    <div className="flex h-full bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-hidden">
+      <aside className="w-56 border-r border-[var(--border)] overflow-y-auto shrink-0 bg-[var(--bg-secondary)]">
         <div className="p-2">
           <div className="relative mb-2">
             <input
@@ -138,7 +138,7 @@ export const DocumentationViewer: React.FC = () => {
               placeholder="Search docs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full text-[10px] px-2 py-1.5 rounded bg-[#0f0f23] border border-[#2a2a3e] text-gray-300 placeholder-gray-600 focus:outline-none focus:border-indigo-500"
+              className="w-full text-[10px] px-2 py-1.5 rounded bg-[var(--bg-primary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-gray-600 focus:outline-none focus:border-[var(--accent)]"
             />
           </div>
           {filteredDocs ? (
@@ -147,7 +147,7 @@ export const DocumentationViewer: React.FC = () => {
                 <button
                   key={d.path}
                   onClick={() => { setActiveDoc(d.path.replace('/docs/', '').replace('.md', '')); setSearchQuery(''); }}
-                  className="w-full text-left text-[10px] px-2 py-1 rounded hover:bg-indigo-500/20 text-indigo-400"
+                  className="w-full text-left text-[10px] px-2 py-1 rounded hover:bg-[var(--accent-subtle)] text-[var(--accent)]"
                 >
                   {d.title}
                 </button>
@@ -156,7 +156,7 @@ export const DocumentationViewer: React.FC = () => {
           ) : (
             CATEGORIES.map((cat) => (
               <div key={cat} className="mb-2">
-                <div className="text-[9px] font-semibold uppercase tracking-wider text-gray-600 px-2 mb-1">{cat}</div>
+                <div className="text-[9px] font-semibold uppercase tracking-wider text-[var(--text-muted)] px-2 mb-1">{cat}</div>
                 {Object.entries(DOCS_MAP)
                   .filter(([, d]) => d.category === cat)
                   .map(([id, d]) => (
@@ -164,7 +164,7 @@ export const DocumentationViewer: React.FC = () => {
                       key={id}
                       onClick={() => setActiveDoc(id)}
                       className={`w-full text-left text-[10px] px-2 py-1 rounded transition-colors ${
-                        activeDoc === id ? 'bg-indigo-500/20 text-indigo-300' : 'text-gray-500 hover:text-gray-300 hover:bg-[#2a2a3e]'
+                        activeDoc === id ? 'bg-[var(--accent-subtle)] text-[var(--accent-light)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
                       }`}
                     >
                       {d.title}
@@ -178,26 +178,26 @@ export const DocumentationViewer: React.FC = () => {
 
       <main className="flex-1 overflow-y-auto p-4">
         <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#2a2a3e]">
-            <span className="text-[9px] font-medium uppercase tracking-wider text-indigo-500">{doc?.category || ''}</span>
-            <span className="text-[10px] text-gray-600">/</span>
-            <h1 className="text-xs font-semibold text-gray-200">{doc?.title || 'Documentation'}</h1>
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[var(--border)]">
+            <span className="text-[9px] font-medium uppercase tracking-wider text-[var(--accent)]">{doc?.category || ''}</span>
+            <span className="text-[10px] text-[var(--text-muted)]">/</span>
+            <h1 className="text-xs font-semibold text-[var(--text-primary)]">{doc?.title || 'Documentation'}</h1>
           </div>
 
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500" />
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--accent)]" />
             </div>
           ) : (
             <div className="space-y-1">
               <div
-                className="prose prose-invert max-w-none [&_pre]:bg-[#1a1a2e] [&_pre]:p-2 [&_pre]:rounded [&_pre]:text-[10px] [&_pre]:overflow-x-auto [&_code]:text-[10px]"
+                className="prose prose-invert max-w-none [&_pre]:bg-[var(--bg-secondary)] [&_pre]:p-2 [&_pre]:rounded [&_pre]:text-[10px] [&_pre]:overflow-x-auto [&_code]:text-[10px]"
                 dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(markdown) }}
               />
 
               {sections.length > 1 && (
-                <div className="mt-6 pt-4 border-t border-[#2a2a3e]">
-                  <div className="text-[9px] font-semibold uppercase tracking-wider text-gray-600 mb-2">Sections</div>
+                <div className="mt-6 pt-4 border-t border-[var(--border)]">
+                  <div className="text-[9px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">Sections</div>
                   <div className="flex flex-wrap gap-1">
                     {sections.map((s) => (
                       <button
@@ -206,7 +206,7 @@ export const DocumentationViewer: React.FC = () => {
                           const el = document.getElementById(s.id);
                           el?.scrollIntoView({ behavior: 'smooth' });
                         }}
-                        className="text-[9px] px-2 py-1 rounded bg-[#2a2a3e] text-gray-400 hover:bg-indigo-500/20 hover:text-indigo-400 transition-colors"
+                        className="text-[9px] px-2 py-1 rounded bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:bg-[var(--accent-subtle)] hover:text-[var(--accent)] transition-colors"
                       >
                         {s.title}
                       </button>

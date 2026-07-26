@@ -207,30 +207,30 @@ const ChatInterface: React.FC<Props> = ({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between px-4 py-2 border-b border-[#2a2a3e]">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--border)]">
         <div className="flex items-center gap-2">
-          <Sparkles size={18} color="#4f46e5" />
+          <Sparkles size={18} color="var(--accent)" />
           <span className="text-sm font-medium">AI Chat</span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-[#4f46e5]/20 text-indigo-400">{providerConfig.selectedModel}</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--accent-subtle)] text-[var(--accent)]">{providerConfig.selectedModel}</span>
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-xs text-gray-400">Context turns:</label>
-          <input type="range" min={2} max={30} value={turnDepth} onChange={(e) => setTurnDepth(Number(e.target.value))} className="w-20 h-1 accent-indigo-500" />
-          <span className="text-xs text-gray-500 w-4">{turnDepth}</span>
-          <button onClick={exportChat} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Export chat"><Download size={14} /></button>
+          <label className="text-xs text-[var(--text-secondary)]">Context turns:</label>
+          <input type="range" min={2} max={30} value={turnDepth} onChange={(e) => setTurnDepth(Number(e.target.value))} className="w-20 h-1 accent-[var(--accent)]" />
+          <span className="text-xs text-[var(--text-muted)] w-4">{turnDepth}</span>
+          <button onClick={exportChat} className="p-1.5 rounded hover:bg-[var(--bg-hover)]" title="Export chat"><Download size={14} /></button>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto chat-container px-4 py-3 space-y-4">
         {messages.length === 0 && initialSuggestions.length > 0 && !isRecording && (
           <div className="space-y-3 mt-8">
-            <p className="text-sm text-gray-400">Try asking:</p>
+            <p className="text-sm text-[var(--text-secondary)]">Try asking:</p>
             {initialSuggestions.map((s, i) => (
-              <button key={i} onClick={() => handleSend(s)} className="block w-full text-left p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e] hover:border-indigo-500/50 text-sm transition-colors">
+              <button key={i} onClick={() => handleSend(s)} className="block w-full text-left p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] hover:border-[var(--accent)]/50 text-sm transition-colors">
                 {s}
               </button>
             ))}
-            {isFetchingSuggestions && <p className="text-xs text-gray-500">Loading suggestions...</p>}
+            {isFetchingSuggestions && <p className="text-xs text-[var(--text-muted)]">Loading suggestions...</p>}
           </div>
         )}
 
@@ -238,11 +238,11 @@ const ChatInterface: React.FC<Props> = ({
           <div key={msg.id} className={`flex ${msg.sender === MessageSender.USER ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[80%] rounded-lg px-4 py-3 ${
               msg.sender === MessageSender.USER
-                ? 'bg-indigo-600 text-white'
-                : 'bg-[#1a1a2e] border border-[#2a2a3e] text-gray-200'
+                ? 'bg-[var(--accent)] text-white'
+                : 'bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--text-primary)]'
             }`}>
               {msg.isLoading ? (
-                <div className="flex items-center gap-2 text-sm text-gray-400">
+                <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
                   <Loader2 size={14} className="animate-spin" />
                   Thinking...
                 </div>
@@ -257,7 +257,7 @@ const ChatInterface: React.FC<Props> = ({
                 />
               )}
               {msg.modelName && !msg.isLoading && (
-                <div className="text-[10px] text-gray-500 mt-1">{msg.modelName}</div>
+                <div className="text-[10px] text-[var(--text-muted)] mt-1">{msg.modelName}</div>
               )}
             </div>
           </div>
@@ -265,19 +265,19 @@ const ChatInterface: React.FC<Props> = ({
         <div ref={chatEndRef} />
       </div>
 
-      <div className="px-4 py-3 border-t border-[#2a2a3e]">
+      <div className="px-4 py-3 border-t border-[var(--border)]">
         <div className="flex items-center gap-1 mb-1.5">
-          <button onClick={() => wrapSelection('**', '**')} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400 hover:text-gray-200" title="Bold"><Bold size={14} /></button>
-          <button onClick={() => wrapSelection('*', '*')} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400 hover:text-gray-200" title="Italic"><Italic size={14} /></button>
-          <button onClick={() => wrapSelection('`', '`')} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400 hover:text-gray-200" title="Inline code"><Code size={14} /></button>
-          <button onClick={() => wrapSelection('[', '](url)')} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400 hover:text-gray-200" title="Link"><Link size={14} /></button>
-          <button onClick={() => insertAtCursor('- ')} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400 hover:text-gray-200" title="List item"><List size={14} /></button>
-          <button onClick={() => insertAtCursor('## ')} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400 hover:text-gray-200" title="Heading"><Heading size={14} /></button>
+          <button onClick={() => wrapSelection('**', '**')} className="p-1 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]" title="Bold"><Bold size={14} /></button>
+          <button onClick={() => wrapSelection('*', '*')} className="p-1 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]" title="Italic"><Italic size={14} /></button>
+          <button onClick={() => wrapSelection('`', '`')} className="p-1 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]" title="Inline code"><Code size={14} /></button>
+          <button onClick={() => wrapSelection('[', '](url)')} className="p-1 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]" title="Link"><Link size={14} /></button>
+          <button onClick={() => insertAtCursor('- ')} className="p-1 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]" title="List item"><List size={14} /></button>
+          <button onClick={() => insertAtCursor('## ')} className="p-1 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]" title="Heading"><Heading size={14} /></button>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={isRecording ? stopRecording : startRecording}
-            className={`p-2 rounded-lg transition-colors ${isRecording ? 'bg-red-500/20 text-red-400 voice-recording' : 'hover:bg-[#2a2a3e] text-gray-400'}`}
+            className={`p-2 rounded-lg transition-colors ${isRecording ? 'bg-red-500/20 text-red-400 voice-recording' : 'hover:bg-[var(--bg-hover)] text-[var(--text-secondary)]'}`}
             title={isRecording ? 'Stop recording' : 'Voice input'}
           >
             {isRecording ? <MicOff size={18} /> : <Mic size={18} />}
@@ -294,7 +294,7 @@ const ChatInterface: React.FC<Props> = ({
             }}
             placeholder="Ask anything... (Enter to send, Shift+Enter for new line)"
             rows={1}
-            className="flex-1 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-indigo-500/50 placeholder-gray-500 resize-none"
+            className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[var(--accent)]/50 placeholder-gray-500 resize-none"
             style={{ minHeight: '36px', maxHeight: '120px' }}
             onInput={(e) => {
               const el = e.currentTarget;
@@ -305,16 +305,16 @@ const ChatInterface: React.FC<Props> = ({
           <button
             onClick={() => handleSend()}
             disabled={!input.trim() || isLoading}
-            className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white transition-colors"
+            className="p-2 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-dark)] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-colors"
           >
             <Send size={18} />
           </button>
         </div>
         {files.filter((f) => f.isActive).length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1">
-            <span className="text-[10px] text-gray-500">Active context:</span>
+            <span className="text-[10px] text-[var(--text-muted)]">Active context:</span>
             {files.filter((f) => f.isActive).map((f) => (
-              <span key={f.id} className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400">{f.name}</span>
+              <span key={f.id} className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--accent-subtler)] text-[var(--accent)]">{f.name}</span>
             ))}
           </div>
         )}

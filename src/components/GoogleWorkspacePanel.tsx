@@ -94,33 +94,33 @@ export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="px-3 py-2 border-b border-[#2a2a3e] flex items-center justify-between">
+      <div className="px-3 py-2 border-b border-[var(--border)] flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Globe size={14} className="text-indigo-400" />
+          <Globe size={14} className="text-[var(--accent)]" />
           <span className="text-sm font-medium">Google Workspace</span>
         </div>
         {user ? (
-          <button onClick={handleSignOut} className="flex items-center gap-1 text-xs text-gray-400 hover:text-red-400" aria-label={`Sign out ${user.email}`}><LogOut size={12} /> Sign out</button>
+          <button onClick={handleSignOut} className="flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-red-400" aria-label={`Sign out ${user.email}`}><LogOut size={12} /> Sign out</button>
         ) : (
-          <button onClick={handleSignIn} className="flex items-center gap-1 text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700" aria-label="Sign in with Google"><LogIn size={12} /> Sign in</button>
+          <button onClick={handleSignIn} className="flex items-center gap-1 text-xs bg-[var(--accent)] text-white px-2 py-1 rounded hover:bg-[var(--accent-dark)]" aria-label="Sign in with Google"><LogIn size={12} /> Sign in</button>
         )}
       </div>
 
       {/* User info */}
       {user && (
-        <div className="px-3 py-1.5 border-b border-[#2a2a3e] flex items-center gap-2">
+        <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2">
           {user.photoURL && <img src={user.photoURL} alt="" className="w-5 h-5 rounded-full" />}
           <span className="text-xs">{user.displayName || user.email}</span>
         </div>
       )}
 
       {/* Tabs */}
-      <div className="flex gap-0 border-b border-[#2a2a3e]" role="tablist" aria-label="Google workspace sections">
+      <div className="flex gap-0 border-b border-[var(--border)]" role="tablist" aria-label="Google workspace sections">
           {(['overview', 'drive', 'sheets', 'docs', 'gmail', 'tasks'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-1.5 text-xs capitalize ${activeTab === tab ? 'border-b-2 border-indigo-500 text-indigo-400' : 'text-gray-500 hover:text-gray-300'}`}
+            className={`px-3 py-1.5 text-xs capitalize ${activeTab === tab ? 'border-b-2 border-[var(--accent)] text-[var(--accent)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
             role="tab"
             aria-selected={activeTab === tab}
           >
@@ -136,7 +136,7 @@ export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
 
         {activeTab === 'overview' && (
           <div className="space-y-3">
-            <div className="text-xs text-gray-400">
+            <div className="text-xs text-[var(--text-secondary)]">
               <p className="mb-2">Connect your Google account to enable:</p>
               <ul className="space-y-1 ml-3">
                 <li>• Cloud backup to your Google Drive</li>
@@ -146,7 +146,7 @@ export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
               </ul>
             </div>
             {!user && (
-              <button onClick={handleSignIn} disabled={isLoading} className="w-full py-2 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 disabled:opacity-50">
+              <button onClick={handleSignIn} disabled={isLoading} className="w-full py-2 bg-[var(--accent)] text-white text-xs rounded-lg hover:bg-[var(--accent-dark)] disabled:opacity-50">
                 {isLoading ? 'Connecting...' : 'Sign in with Google'}
               </button>
             )}
@@ -155,21 +155,21 @@ export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
 
         {activeTab === 'drive' && (
           <div className="space-y-2">
-            <button onClick={fetchDriveFiles} disabled={!user || isLoading} className="flex items-center gap-1 text-xs bg-indigo-600 text-white px-3 py-1.5 rounded hover:bg-indigo-700 disabled:opacity-50">
+            <button onClick={fetchDriveFiles} disabled={!user || isLoading} className="flex items-center gap-1 text-xs bg-[var(--accent)] text-white px-3 py-1.5 rounded hover:bg-[var(--accent-dark)] disabled:opacity-50">
               <Cloud size={12} /> {isLoading ? 'Loading...' : 'List Drive Files'}
             </button>
             {driveFiles.length > 0 && (
               <div className="space-y-1">
                 {driveFiles.map((f: any) => (
-                  <div key={f.id} className="flex items-center gap-2 p-2 rounded bg-[#1a1a2e] border border-[#2a2a3e] text-xs">
-                    <FileText size={12} className="text-gray-400" />
+                  <div key={f.id} className="flex items-center gap-2 p-2 rounded bg-[var(--bg-secondary)] border border-[var(--border)] text-xs">
+                    <FileText size={12} className="text-[var(--text-secondary)]" />
                     <span className="flex-1 truncate">{f.name}</span>
-                    <span className="text-[10px] text-gray-500">{f.mimeType?.split('/').pop()}</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">{f.mimeType?.split('/').pop()}</span>
                   </div>
                 ))}
               </div>
             )}
-            {!user && <p className="text-xs text-gray-500">Sign in to access your Drive.</p>}
+            {!user && <p className="text-xs text-[var(--text-muted)]">Sign in to access your Drive.</p>}
           </div>
         )}
 
@@ -178,7 +178,7 @@ export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
             <button onClick={exportToGoogleSheet} disabled={!user || !currentFile || isLoading} className="w-full py-2 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center gap-1">
               <Upload size={12} /> Export to Google Sheet
             </button>
-            {!currentFile && <p className="text-xs text-gray-500">Select a file in the editor first.</p>}
+            {!currentFile && <p className="text-xs text-[var(--text-muted)]">Select a file in the editor first.</p>}
           </div>
         )}
 
@@ -187,29 +187,29 @@ export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
             <button onClick={exportToGoogleDoc} disabled={!user || !currentFile || isLoading} className="w-full py-2 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-1">
               <FileText size={12} /> Export to Google Doc
             </button>
-            {!currentFile && <p className="text-xs text-gray-500">Select a file in the editor first.</p>}
+            {!currentFile && <p className="text-xs text-[var(--text-muted)]">Select a file in the editor first.</p>}
           </div>
         )}
 
         {activeTab === 'gmail' && (
-          <div className="space-y-2 text-xs text-gray-400">
+          <div className="space-y-2 text-xs text-[var(--text-secondary)]">
             <p>Gmail integration requires signing in with appropriate scopes.</p>
             <p>After signing in, you can compose and send reports directly from the Studio.</p>
           </div>
         )}
 
         {activeTab === 'tasks' && (
-          <div className="space-y-2 text-xs text-gray-400">
+          <div className="space-y-2 text-xs text-[var(--text-secondary)]">
             <p>Google Tasks integration lets you create and manage tasks from your workspace.</p>
             {user ? (
               <div className="space-y-2 mt-2">
-                <div className="p-2 rounded bg-[#1a1a2e] border border-[#2a2a3e]">
-                  <p className="text-xs text-gray-300 font-medium">Sample Tasks</p>
-                  <p className="text-[10px] text-gray-500 mt-1">• Review outbreak report draft</p>
-                  <p className="text-[10px] text-gray-500">• Update epidemiological curves</p>
-                  <p className="text-[10px] text-gray-500">• Cross-reference WHO thresholds</p>
+                <div className="p-2 rounded bg-[var(--bg-secondary)] border border-[var(--border)]">
+                  <p className="text-xs text-[var(--text-primary)] font-medium">Sample Tasks</p>
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1">• Review outbreak report draft</p>
+                  <p className="text-[10px] text-[var(--text-muted)]">• Update epidemiological curves</p>
+                  <p className="text-[10px] text-[var(--text-muted)]">• Cross-reference WHO thresholds</p>
                 </div>
-                <p className="text-[10px] text-gray-600">Full Google Tasks API sync coming soon.</p>
+                <p className="text-[10px] text-[var(--text-muted)]">Full Google Tasks API sync coming soon.</p>
               </div>
             ) : (
               <p className="mt-2">Sign in with Google to access Tasks.</p>

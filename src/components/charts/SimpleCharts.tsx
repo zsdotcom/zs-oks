@@ -24,7 +24,7 @@ export const BarChart: React.FC<{
   height?: number;
   barColor?: string;
   title?: string;
-}> = ({ data, width = 400, height = 250, barColor = '#4f46e5', title }) => {
+}> = ({ data, width = 400, height = 250, barColor = 'var(--accent)', title }) => {
   const padding = { top: 30, right: 20, bottom: 40, left: 50 };
   const chartW = width - padding.left - padding.right;
   const chartH = height - padding.top - padding.bottom;
@@ -167,7 +167,7 @@ export const PieChart: React.FC<{
       {title && <text x={cx} y={18} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">{title}</text>}
       {slices.map((s, i) => (
         <g key={i}>
-          <path d={s.path} fill={s.color} stroke="#1a1a2e" strokeWidth="2" opacity="0.85" />
+          <path d={s.path} fill={s.color} stroke="var(--bg-secondary)" strokeWidth="2" opacity="0.85" />
           {s.percent !== '0.0' && <text x={s.labelX} y={s.labelY} textAnchor="middle" fill="#e2e8f0" fontSize="9" dominantBaseline="middle">{s.percent}%</text>}
         </g>
       ))}
@@ -269,7 +269,7 @@ export const GanttChart: React.FC<{
         const y = padding.top + i * rowH;
         const x = padding.left + task.start * dayW;
         const barW = task.duration * dayW;
-        const color = task.color || '#4f46e5';
+        const color = task.color || 'var(--accent)';
         const progressW = barW * (task.progress / 100);
         return (
           <g key={task.id}>
@@ -314,11 +314,11 @@ export const StatCard: React.FC<{
   value: string | number;
   icon?: React.ReactNode;
   color?: string;
-}> = ({ label, value, icon, color = '#4f46e5' }) => (
-  <div className="flex items-center gap-3 p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e]">
+}> = ({ label, value, icon, color = 'var(--accent)' }) => (
+  <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)]">
     {icon && <div style={{ color }}>{icon}</div>}
     <div>
-      <div className="text-xs text-gray-400">{label}</div>
+      <div className="text-xs text-[var(--text-secondary)]">{label}</div>
       <div className="text-lg font-bold" style={{ color }}>{value}</div>
     </div>
   </div>
@@ -437,7 +437,7 @@ export const Scatter: React.FC<{
     const y1 = slope * x1 + intercept;
     const x2 = xMax;
     const y2 = slope * x2 + intercept;
-    trendLineEl = <line x1={xScale(x1)} y1={yScale(y1)} x2={xScale(x2)} y2={yScale(y2)} stroke="#4f46e5" strokeWidth="1.5" strokeDasharray="4 2" opacity="0.6" />;
+    trendLineEl = <line x1={xScale(x1)} y1={yScale(y1)} x2={xScale(x2)} y2={yScale(y2)} stroke="var(--accent)" strokeWidth="1.5" strokeDasharray="4 2" opacity="0.6" />;
   }
 
   return (
@@ -463,14 +463,14 @@ export const Scatter: React.FC<{
         return (
           <g key={i}>
             {isHovered && p.label && (
-              <rect x={cx + 8} y={cy - 20} width={p.label.length * 7 + 12} height="18" rx="3" fill="#1a1a2e" stroke="#4f46e5" strokeWidth="0.5" />
+              <rect x={cx + 8} y={cy - 20} width={p.label.length * 7 + 12} height="18" rx="3" fill="var(--bg-secondary)" stroke="var(--accent)" strokeWidth="0.5" />
             )}
             {isHovered && p.label && (
               <text x={cx + 14} y={cy - 8} fill="#e2e8f0" fontSize="9">{p.label}</text>
             )}
             <circle
               cx={cx} cy={cy} r={p.size || 5}
-              fill={p.color || '#4f46e5'}
+              fill={p.color || 'var(--accent)'}
               opacity={isHovered ? 1 : 0.7}
               stroke={isHovered ? '#fff' : 'none'}
               strokeWidth="1.5"
@@ -502,7 +502,7 @@ export const Timeline: React.FC<{
   const height = Math.max(120, events.length * 60 + 60);
 
   const categoryColors: Record<string, string> = {
-    default: '#4f46e5',
+    default: 'var(--accent)',
     disease: '#ef4444',
     intervention: '#22c55e',
     research: '#3b82f6',
@@ -531,12 +531,12 @@ export const Timeline: React.FC<{
         const isHovered = hovered === i;
         return (
           <g key={i}>
-            <circle cx={lineX} cy={y} r={r} fill={color} stroke="#1a1a2e" strokeWidth="2" style={{ cursor: 'pointer' }}
+            <circle cx={lineX} cy={y} r={r} fill={color} stroke="var(--bg-secondary)" strokeWidth="2" style={{ cursor: 'pointer' }}
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
             />
             {isHovered && ev.description && (
-              <rect x={lineX + 15} y={y - 20} width={Math.max(ev.description.length * 6.5 + 16, ev.label.length * 7 + 16)} height="36" rx="4" fill="#1a1a2e" stroke={color} strokeWidth="0.5" />
+              <rect x={lineX + 15} y={y - 20} width={Math.max(ev.description.length * 6.5 + 16, ev.label.length * 7 + 16)} height="36" rx="4" fill="var(--bg-secondary)" stroke={color} strokeWidth="0.5" />
             )}
             {isHovered && ev.description && (
               <>
