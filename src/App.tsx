@@ -15,23 +15,27 @@ import { useChat } from './hooks/useChat';
 import KnowledgeBaseManager from './components/KnowledgeBaseManager';
 import ChatInterface from './components/ChatInterface';
 import ThemeSwitcher from './components/ThemeSwitcher';
-import { WorkspaceDocumentEditor } from './components/WorkspaceDocumentEditor';
-import { A2AMetricsDashboard } from './components/A2AMetricsDashboard';
-import { GoogleWorkspacePanel } from './components/GoogleWorkspacePanel';
 import SearchPanel from './components/SearchPanel';
-import SettingsPanel from './components/SettingsPanel';
 import WorkspaceManager from './components/WorkspaceManager';
 import { KanbanBoardView } from './components/KanbanBoardView';
 import { ChatSessionSidebar } from './components/ChatSessionSidebar';
 import { GmailCompose } from './components/GmailCompose';
-import { MCPServerPanel } from './components/MCPServerPanel';
 import { ErrorBoundary } from './components/ErrorBoundary';
+
+const WorkspaceDocumentEditor = React.lazy(() => import('./components/WorkspaceDocumentEditor').then(m => ({ default: m.WorkspaceDocumentEditor })));
+const A2AMetricsDashboard = React.lazy(() => import('./components/A2AMetricsDashboard').then(m => ({ default: m.A2AMetricsDashboard })));
+const GoogleWorkspacePanel = React.lazy(() => import('./components/GoogleWorkspacePanel').then(m => ({ default: m.GoogleWorkspacePanel })));
+const SettingsPanel = React.lazy(() => import('./components/SettingsPanel'));
+const MCPServerPanel = React.lazy(() => import('./components/MCPServerPanel').then(m => ({ default: m.MCPServerPanel })));
+import { ICD11Lookup } from './components/ICD11Lookup';
+import { EpiMap } from './components/EpiMap';
+import type { EpiDataPoint } from './components/EpiMap';
 import {
   Sparkles, Brain, Code, ShieldCheck, Database, GitMerge, Activity, BarChart,
   Edit, BookOpen, X, Search, MessageSquare, Settings, Folder, FileText,
   Moon, Sun, Cloud, Wifi, WifiOff, Layout, Menu, Clock, Users, Zap,
   Globe, Layers, Template, Kanban, Plus, Trash, Mail,
-  Target, Book, BarChart3, FileEdit, SearchCheck, Library,
+  Target, Book, BarChart3, FileEdit, SearchCheck, Library, MapPin,
 } from './components/icons/lucide-shim';
 
 const INITIAL_FOLDERS: KBFolder[] = [
@@ -109,6 +113,18 @@ const App: React.FC = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showGooglePanel, setShowGooglePanel] = useState(false);
   const [showGmailCompose, setShowGmailCompose] = useState(false);
+  const [showICD11, setShowICD11] = useState(false);
+  const [showEpiMap, setShowEpiMap] = useState(false);
+  const [epiDataPoints] = useState<EpiDataPoint[]>([
+    { id: 'epi-1', lat: -1.286, lng: 36.817, label: 'Nairobi', disease: 'Malaria', cases: 1240, severity: 'high', date: '2026-06-15', status: 'active' },
+    { id: 'epi-2', lat: 6.524, lng: 3.379, label: 'Lagos', disease: 'Dengue fever', cases: 890, severity: 'medium', date: '2026-06-14', status: 'active' },
+    { id: 'epi-3', lat: 28.613, lng: 77.209, label: 'Delhi', disease: 'COVID-19', cases: 3200, severity: 'critical', date: '2026-06-13', status: 'active' },
+    { id: 'epi-4', lat: -23.550, lng: -46.633, label: 'São Paulo', disease: 'Dengue fever', cases: 2100, severity: 'high', date: '2026-06-12', status: 'active' },
+    { id: 'epi-5', lat: 40.712, lng: -74.006, label: 'New York', disease: 'Influenza', cases: 560, severity: 'low', date: '2026-06-10', status: 'contained' },
+    { id: 'epi-6', lat: 48.856, lng: 2.352, label: 'Paris', disease: 'Measles', cases: 340, severity: 'medium', date: '2026-06-08', status: 'contained' },
+    { id: 'epi-7', lat: 35.676, lng: 139.650, label: 'Tokyo', disease: 'COVID-19', cases: 780, severity: 'medium', date: '2026-06-07', status: 'active' },
+    { id: 'epi-8', lat: -33.868, lng: 151.209, label: 'Sydney', disease: 'Influenza', cases: 190, severity: 'low', date: '2026-06-05', status: 'resolved' },
+  ]);
 
   const {
     files, setFiles, folders, setFolders,
@@ -437,6 +453,12 @@ const App: React.FC = () => {
             <button onClick={() => { setShowGmailCompose(!showGmailCompose); setShowGooglePanel(false); }} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Compose Email" disabled={!currentUser}>
               <Mail size={14} className="text-gray-400" />
             </button>
+            <button onClick={() => { setShowICD11(!showICD11); setShowEpiMap(false); }} className={`p-1.5 rounded hover:bg-[#2a2a3e] ${showICD11 ? 'bg-indigo-600/20' : ''}`} title="ICD-11 Code Lookup">
+              <Book size={14} className="text-gray-400" />
+            </button>
+            <button onClick={() => { setShowEpiMap(!showEpiMap); setShowICD11(false); }} className={`p-1.5 rounded hover:bg-[#2a2a3e] ${showEpiMap ? 'bg-indigo-600/20' : ''}`} title="Epidemiology Map">
+              <MapPin size={14} className="text-gray-400" />
+            </button>
             <ThemeSwitcher isDark={isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} />
             <button onClick={() => setShowSettings(!showSettings)} className="p-1.5 rounded hover:bg-[#2a2a3e]">
               <Settings size={14} className="text-gray-400" />
@@ -526,13 +548,15 @@ const App: React.FC = () => {
             )}
 
             {activeView === 'editor' && (
-              <WorkspaceDocumentEditor
-                file={activeFile}
-                onSave={handleSaveFileWrapper}
-                versions={documentVersions}
-                onSaveVersion={handleSaveVersion}
-                templates={templates.map((t) => ({ id: t.id, name: t.name, content: t.content, category: t.category }))}
-              />
+              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-gray-500 text-xs">Loading...</div>}>
+                <WorkspaceDocumentEditor
+                  file={activeFile}
+                  onSave={handleSaveFileWrapper}
+                  versions={documentVersions}
+                  onSaveVersion={handleSaveVersion}
+                  templates={templates.map((t) => ({ id: t.id, name: t.name, content: t.content, category: t.category }))}
+                />
+              </React.Suspense>
             )}
 
             {activeView === 'search' && (
@@ -540,7 +564,9 @@ const App: React.FC = () => {
             )}
 
             {activeView === 'observability' && (
-              <A2AMetricsDashboard metrics={a2aMetrics} agents={a2aAgents.map((a) => ({ id: a.id, name: a.name, color: a.color, avatar: a.avatar }))} />
+              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-gray-500 text-xs">Loading...</div>}>
+                <A2AMetricsDashboard metrics={a2aMetrics} agents={a2aAgents.map((a) => ({ id: a.id, name: a.name, color: a.color, avatar: a.avatar }))} />
+              </React.Suspense>
             )}
 
             {activeView === 'kanban' && (
@@ -555,12 +581,14 @@ const App: React.FC = () => {
             )}
 
             {activeView === 'mcp' && (
-              <MCPServerPanel
-                servers={mcpServers}
-                onAddServer={handleMCPAddServer}
-                onRemoveServer={handleMCPRemoveServer}
-                onToggleTool={handleMCPToggleTool}
-              />
+              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-gray-500 text-xs">Loading...</div>}>
+                <MCPServerPanel
+                  servers={mcpServers}
+                  onAddServer={handleMCPAddServer}
+                  onRemoveServer={handleMCPRemoveServer}
+                  onToggleTool={handleMCPToggleTool}
+                />
+              </React.Suspense>
             )}
 
             {activeView === 'templates' && (
@@ -603,7 +631,9 @@ const App: React.FC = () => {
 
           {showGooglePanel && (
             <aside className="w-80 border-l border-[#2a2a3e] bg-[#1a1a2e]/50 shrink-0 hidden md:block">
-              <GoogleWorkspacePanel currentFile={activeFile || undefined} />
+              <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-gray-500 text-xs">Loading...</div>}>
+                <GoogleWorkspacePanel currentFile={activeFile || undefined} />
+              </React.Suspense>
             </aside>
           )}
 
@@ -616,21 +646,51 @@ const App: React.FC = () => {
               />
             </aside>
           )}
+
+          {showICD11 && (
+            <aside className="w-80 border-l border-[#2a2a3e] shrink-0 hidden md:block">
+              <ICD11Lookup
+                onSelect={(entry) => console.log('ICD-11 Selected:', entry)}
+                onClose={() => setShowICD11(false)}
+              />
+            </aside>
+          )}
+
+          {showEpiMap && (
+            <aside className="w-80 border-l border-[#2a2a3e] bg-[#1a1a2e]/50 shrink-0 hidden md:block">
+              <div className="flex flex-col h-full">
+                <div className="flex items-center justify-between px-3 py-2 border-b border-[#2a2a3e] shrink-0">
+                  <h2 className="text-xs font-semibold flex items-center gap-1.5">
+                    <MapPin size={12} className="text-indigo-400" />
+                    Epidemiology Map
+                  </h2>
+                  <button onClick={() => setShowEpiMap(false)} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400">
+                    <X size={12} />
+                  </button>
+                </div>
+                <div className="flex-1 overflow-hidden p-2">
+                  <EpiMap dataPoints={epiDataPoints} height="100%" />
+                </div>
+              </div>
+            </aside>
+          )}
         </div>
 
-        <SettingsPanel
-          show={showSettings}
-          onClose={() => setShowSettings(false)}
-          providerConfig={providerConfig}
-          onProviderConfigChange={setProviderConfig}
-          a2aAgents={a2aAgents}
-          isA2ALoading={isA2ALoading}
-          onRunDebate={() => handleA2ADebate('Discuss the best approach to build a resilient knowledge base for field researchers')}
-          onExportAll={handleExportAll}
-          onImport={handleImport}
-          sandboxSettings={sandboxSettings}
-          onSandboxChange={setSandboxSettings}
-        />
+        <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-gray-500 text-xs">Loading...</div>}>
+          <SettingsPanel
+            show={showSettings}
+            onClose={() => setShowSettings(false)}
+            providerConfig={providerConfig}
+            onProviderConfigChange={setProviderConfig}
+            a2aAgents={a2aAgents}
+            isA2ALoading={isA2ALoading}
+            onRunDebate={() => handleA2ADebate('Discuss the best approach to build a resilient knowledge base for field researchers')}
+            onExportAll={handleExportAll}
+            onImport={handleImport}
+            sandboxSettings={sandboxSettings}
+            onSandboxChange={setSandboxSettings}
+          />
+        </React.Suspense>
 
         <footer className="h-6 flex items-center justify-between px-3 bg-[#1a1a2e] border-t border-[#2a2a3e] text-[10px] text-gray-500 shrink-0 no-print">
           <div className="flex items-center gap-3">

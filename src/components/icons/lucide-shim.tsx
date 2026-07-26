@@ -377,3 +377,16 @@ export const RefreshCw = make('refresh-cw', [
   <polyline key="2" points="1 20 1 14 7 14" />,
   <path key="3" d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />,
 ]);
+
+export const ChevronDown = make('chevron-down', [
+  <polyline key="1" points="6 9 12 15 18 9" />,
+]);
+
+export const ChevronRight = make('chevron-right', [
+  <polyline key="1" points="9 18 15 12 9 6" />,
+]);
+
+export const MapPin = make('map-pin', [
+  <path key="1" d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />,
+  <circle key="2" cx="12" cy="10" r="3" />,
+]);

@@ -67,7 +67,7 @@ npm run preview      # serve dist/ locally
 | `npm run dev` | Vite dev server, port **3000**, bound `0.0.0.0` |
 | `npm run typecheck` | `tsc --noEmit` — run before `build` |
 | `npm run build` | `tsc --noEmit && vite build` |
-| `npm run test` | Vitest — 2 test files, 21 tests (covering memory API) |
+| `npm run test` | Vitest — 5 test files, 69 tests (memory, gemini, ICD-11, sandbox) |
 | `npm run test:watch` | Vitest watch mode |
 | `npm run test:coverage` | Vitest with V8 coverage |
 | `npm run test:bench` | Vitest bench (no benchmarks exist) |
