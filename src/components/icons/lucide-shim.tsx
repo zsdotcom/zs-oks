@@ -9,10 +9,11 @@ interface IconProps {
   size?: number;
   className?: string;
   color?: string;
+  style?: React.CSSProperties;
 }
 
 function make(name: string, paths: React.ReactNode[], viewBox = '0 0 24 24') {
-  const Icon: React.FC<IconProps> = ({ size = 20, className = '', color }) => (
+  const Icon: React.FC<IconProps> = ({ size = 20, className = '', color, style }) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={size}
@@ -25,6 +26,7 @@ function make(name: string, paths: React.ReactNode[], viewBox = '0 0 24 24') {
       strokeLinejoin="round"
       className={className}
       data-lucide={name}
+      style={style}
     >
       {paths}
     </svg>

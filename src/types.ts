@@ -332,12 +332,13 @@ export interface DocumentTemplate {
 /* ─── Knowledge Source Types ─── */
 export interface KnowledgeSource {
   id: string;
-  name: 'wikipedia' | 'arxiv' | 'openalex' | 'pubmed' | 'semantic-scholar' | 'who-gho' | 'cdc-wonder' | 'gdelt' | 'crossref' | 'rss' | 'google-scholar' | 'core';
+  name: string;
   displayName: string;
   baseUrl: string;
   enabled: boolean;
   rateLimit: string;
   requiresKey: boolean;
+  requiresToken?: boolean;
   lastFetch?: Date;
 }
 
@@ -348,8 +349,12 @@ export const KNOWLEDGE_SOURCES: KnowledgeSource[] = [
   { id: 'ks-pubmed', name: 'pubmed', displayName: 'PubMed', baseUrl: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils', enabled: true, rateLimit: '10/sec', requiresKey: false },
   { id: 'ks-semantic', name: 'semantic-scholar', displayName: 'Semantic Scholar', baseUrl: 'https://api.semanticscholar.org/graph/v1', enabled: true, rateLimit: '100/sec', requiresKey: false },
   { id: 'ks-who', name: 'who-gho', displayName: 'WHO GHO', baseUrl: 'https://ghoapi.azureedge.net/api', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-cdc', name: 'cdc-wonder', displayName: 'CDC WONDER', baseUrl: 'https://wonder.cdc.gov', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-gdelt', name: 'gdelt', displayName: 'GDELT', baseUrl: 'https://api.gdeltproject.org/api/v2', enabled: true, rateLimit: '20/min', requiresKey: false },
+  { id: 'ks-cdc', name: 'cdc-wonder', displayName: 'CDC WONDER', baseUrl: 'https://data.cdc.gov/resource', enabled: true, rateLimit: '1000/hr', requiresKey: false },
+  { id: 'ks-cdc-socrata', name: 'cdc', displayName: 'CDC Open Data (Socrata)', baseUrl: 'https://data.cdc.gov', enabled: true, rateLimit: '1000/hr', requiresKey: false, requiresToken: false },
+  { id: 'ks-delphi', name: 'delphi', displayName: 'Delphi Epidata (CMU)', baseUrl: 'https://api.delphi.cmu.edu/epidata', enabled: true, rateLimit: '10000/day', requiresKey: false },
+  { id: 'ks-infectonet', name: 'infectonet', displayName: 'InfectoNET Genomics', baseUrl: 'https://infectonet.org/api', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
+  { id: 'ks-open-meteo', name: 'open-meteo', displayName: 'Open-Meteo Weather', baseUrl: 'https://api.open-meteo.com/v1', enabled: true, rateLimit: '10000/day', requiresKey: false },
+  { id: 'ks-gdelt', name: 'gdelt', displayName: 'GDELT Project', baseUrl: 'https://api.gdeltproject.org/api/v2', enabled: true, rateLimit: '20/min', requiresKey: false },
   { id: 'ks-crossref', name: 'crossref', displayName: 'CrossRef', baseUrl: 'https://api.crossref.org', enabled: true, rateLimit: '50/sec', requiresKey: false },
   { id: 'ks-rss', name: 'rss', displayName: 'RSS Feeds', baseUrl: '', enabled: true, rateLimit: 'User-defined', requiresKey: false },
 ];
@@ -385,7 +390,7 @@ export interface ConnectorConfig {
 }
 
 /* ─── App-wide State ─── */
-export type AppView = 'chat' | 'editor' | 'observability' | 'kanban' | 'templates' | 'search' | 'settings' | 'mcp' | 'skills' | 'tools' | 'knowledge' | 'docs';
+export type AppView = 'chat' | 'editor' | 'observability' | 'kanban' | 'templates' | 'search' | 'settings' | 'mcp' | 'skills' | 'tools' | 'data' | 'knowledge' | 'docs';
 
 export interface AppState {
   currentUser: AppUser | null;
