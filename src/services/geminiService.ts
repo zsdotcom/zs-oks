@@ -39,6 +39,14 @@ export async function queryLLM(
       return queryOllama(messages, config, contextDocs, systemPrompt);
     case 'anthropic':
       return queryAnthropic(messages, config, contextDocs, systemPrompt);
+    case 'openrouter':
+      return queryOpenAICompatible(messages, config, contextDocs, systemPrompt, 'https://openrouter.ai/api/v1');
+    case 'cerebras':
+      return queryOpenAICompatible(messages, config, contextDocs, systemPrompt, 'https://api.cerebras.ai/v1');
+    case 'github':
+      return queryOpenAICompatible(messages, config, contextDocs, systemPrompt, 'https://models.inference.ai.azure.com/v1');
+    case 'cloudflare':
+      return queryCloudflare(messages, config, contextDocs, systemPrompt);
     default:
       throw new Error(`Unsupported provider: ${config.provider}`);
   }
@@ -226,6 +234,52 @@ async function queryAnthropic(
 
   const data = await res.json();
   return data.content?.[0]?.text || 'No response generated.';
+}
+
+async function queryCloudflare(
+  messages: ChatMessage[],
+  config: ProviderConfig,
+  contextDocs: string | undefined,
+  systemPrompt: string | undefined
+): Promise<string> {
+  const apiKey = config.apiKey;
+  if (!apiKey) throw new Error('Cloudflare API key required.');
+
+  const accountId = config.customEndpoint?.split('/').pop() || '';
+  const model = config.selectedModel || '@cf/meta/llama-3.3-70b-instruct';
+  const baseUrl = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/v1`;
+
+  const chatMessages = [
+    { role: 'system', content: systemPrompt || 'You are a helpful assistant.' },
+    ...(contextDocs ? [{ role: 'user', content: `## Context:\n${contextDocs}` }] : []),
+    ...messages
+      .filter((m) => m.sender !== MessageSender.SYSTEM && !m.isLoading)
+      .map((m) => ({
+        role: m.sender === MessageSender.USER ? 'user' : 'assistant',
+        content: m.text,
+      })),
+  ];
+
+  try {
+    const res = await fetch(`${baseUrl}/run/${model}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({ messages: chatMessages }),
+    });
+    if (!res.ok) throw new Error(`Cloudflare API error: ${res.status}`);
+    const data = await res.json();
+    return data.result?.response || data.result?.content || 'No response generated.';
+  } catch (err) {
+    try {
+      const openaiBase = 'https://api.cloudflare.com/client/v4/accounts';
+      return queryOpenAICompatible(messages, { ...config, customEndpoint: undefined }, contextDocs, systemPrompt, `${openaiBase}/${accountId}/ai/v1/run`);
+    } catch {
+      throw err;
+    }
+  }
 }
 
 /* ─── A2A Multi-Agent Debate ─── */

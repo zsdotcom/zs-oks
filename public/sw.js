@@ -4,6 +4,7 @@ const STATIC_ASSETS = [
   '/index.html',
   '/manifest.json',
   '/favicon.svg',
+  '/404.html',
 ];
 
 self.addEventListener('install', (event) => {
@@ -38,7 +39,7 @@ self.addEventListener('fetch', (event) => {
         return response;
       }).catch(() => {
         if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
+          return caches.match('/404.html');
         }
         return new Response('Offline', { status: 503 });
       });

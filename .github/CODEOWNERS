@@ -1,0 +1,21 @@
+# Default owner for all files
+* @codeandbrain
+
+# CI/CD workflow ownership
+.github/workflows/ @codeandbrain
+.github/actions/ @codeandbrain
+
+# Source code ownership
+src/ @codeandbrain
+
+# Documentation ownership
+docs/ @codeandbrain
+README.md @codeandbrain
+AGENTS.md @codeandbrain
+
+# Infrastructure ownership
+Dockerfile @codeandbrain
+docker-compose.yml @codeandbrain
+nginx.conf @codeandbrain
+.vscode/ @codeandbrain
+.devcontainer/ @codeandbrain

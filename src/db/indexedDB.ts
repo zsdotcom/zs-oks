@@ -6,7 +6,7 @@
  */
 
 const DB_NAME = 'open-knowledge-studio';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 export interface DBSchema {
   episodic: { id: string; projectId: string; agentId: string; text: string; summary?: string | null; createdAt: string };
@@ -19,8 +19,11 @@ export interface DBSchema {
   providers: { id: string; config: string };
   urlGroups: { id: string; name: string; urls: string[] };
   prompts: { id: string; title: string; description: string; content: string; category: string; createdAt: string };
-  a2aAgents: { id: string; name: string; role: string; avatar: string; systemPrompt: string; color: string; isActive: boolean };
+  a2aAgents: { id: string; name: string; role: string; avatar: string; systemPrompt: string; color: string; isActive: boolean; skills?: string[]; tools?: string[]; memoryType?: string; maxTurnDepth?: number; provider?: string; modelName?: string };
   metrics: { id: string; timestamp: string; topic: string; agentId: string; agentName: string; latencyMs: number; thinkingSeconds?: number; tokensEstimated: number; status: string };
+  skills: { id: string; name: string; description: string; category: string; instructions: string; allowedTools: string[]; priority: string; triggers: string[]; createdAt: string; updatedAt: string };
+  connectors: { id: string; name: string; type: string; enabled: boolean; config: string; status: string; lastSync: string };
+  workspaceProjects: { id: string; name: string; description: string; createdAt: string; agentIds: string[]; tags: string[]; sourceUrl?: string };
   sandbox: { id: string; settings: string };
   sessions: { id: string; title: string; messages: string; provider: string; modelName: string; createdAt: string };
   versions: { id: string; documentId: string; content: string; createdAt: string; size: string; label?: string };
@@ -44,7 +47,7 @@ function openDatabase(): Promise<IDBDatabase> {
 
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
-      const stores: StoreName[] = ['episodic', 'semantic', 'procedural', 'working', 'long_term', 'files', 'folders', 'providers', 'urlGroups', 'prompts', 'a2aAgents', 'metrics', 'sandbox', 'sessions', 'versions', 'kanban', 'templates', 'tags', 'appState'];
+      const stores: StoreName[] = ['episodic', 'semantic', 'procedural', 'working', 'long_term', 'files', 'folders', 'providers', 'urlGroups', 'prompts', 'a2aAgents', 'metrics', 'sandbox', 'sessions', 'versions', 'kanban', 'templates', 'tags', 'appState', 'skills', 'connectors', 'workspaceProjects'];
       stores.forEach((storeName) => {
         if (!db.objectStoreNames.contains(storeName)) {
           const store = db.createObjectStore(storeName, { keyPath: 'id' });

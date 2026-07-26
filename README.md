@@ -25,7 +25,7 @@
 - **Hybrid Vector Search:** Orama JS loaded dynamically from CDN provides hybrid (vector + keyword) search, with automatic fallback to keyword matching.
 - **6-Tier Memory:** Session (in-memory), Episodic, Semantic (vector-indexed), Procedural, Working, Long-Term — all exposed via `memoryApi.ts`.
 - **Zero NPM Dependencies:** Only `react` + `react-dom` at build time — Transformers.js and Orama JS are loaded from jsdelivr CDN at runtime.
-- **35 tests** across unit, integration, and benchmark suites.
+- **74 tests** across unit, integration, benchmark, service, and sandbox suites.
 
 ## Agent Color Reference
 
@@ -82,11 +82,12 @@ open-knowledge-studio/
 ├── vite.config.ts
 ├── vitest.config.ts
 ├── opencode.jsonc
-├── docs/                              # Serialized documentation (000-110)
-│   ├── 000-project-overview.md
-│   ├── 010-blueprint.md
-│   ...
-│   └── agents/
+├── docs/                              # Categorized documentation
+│   ├── index.md                       # Documentation index
+│   ├── project/                       # Project overview, architecture, design
+│   ├── developers/                    # Dev setup, guidelines, CI/CD, deploy
+│   ├── guides/                        # User guides (agents, workflows, features)
+│   └── agents/                        # Per-agent docs with skills/templates/tools
 ├── public/
 │   ├── favicon.svg
 │   ├── manifest.json
@@ -138,10 +139,10 @@ open-knowledge-studio/
 
 ---
 
-## Testing (35 tests)
+## Testing (74 tests)
 
 ```bash
-npm test               # Run all 35 tests (2 suites)
+npm test               # Run all 74 tests (5 suites)
 npm run test:watch     # Watch mode
 npm run test:coverage  # With V8 coverage
 npm run test:bench     # Performance benchmarks (5 cases)
@@ -153,12 +154,12 @@ npm run test:bench     # Performance benchmarks (5 cases)
 
 | Platform | Docs | Quick command |
 | :--- | :--- | :--- |
-| GitHub Actions (CI/CD) | [`docs/098-cicd-pipeline.md`](docs/098-cicd-pipeline.md) | `npm run typecheck && npm test && npm run build` |
-| Docker | [`docs/099-deployment.md`](docs/099-deployment.md) | `docker build -t oks . && docker run -p 8080:80 oks` |
-| Vercel | [`docs/099-deployment.md`](docs/099-deployment.md) | Import repo, preset Vite, deploy |
-| Netlify | [`docs/099-deployment.md`](docs/099-deployment.md) | Import repo, build `npm run build`, publish `dist` |
+| GitHub Actions (CI/CD) | [`docs/developers/098-cicd-pipeline.md`](docs/developers/098-cicd-pipeline.md) | `npm run typecheck && npm test && npm run build` |
+| Docker | [`docs/developers/099-deployment.md`](docs/developers/099-deployment.md) | `docker build -t oks . && docker run -p 8080:80 oks` |
+| Vercel | [`docs/developers/099-deployment.md`](docs/developers/099-deployment.md) | Import repo, preset Vite, deploy |
+| Netlify | [`docs/developers/099-deployment.md`](docs/developers/099-deployment.md) | Import repo, build `npm run build`, publish `dist` |
 
-For credentials and API key setup see [`docs/100-reference.md`](docs/100-reference.md).
+For credentials and API key setup see [`docs/project/100-reference.md`](docs/project/100-reference.md).
 
 ---
 

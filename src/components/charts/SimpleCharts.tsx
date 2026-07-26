@@ -125,6 +125,189 @@ export const LineChart: React.FC<{
   );
 };
 
+/* ─── Pie Chart ─── */
+interface PieSlice {
+  label: string;
+  value: number;
+  color: string;
+}
+
+export const PieChart: React.FC<{
+  data: PieSlice[];
+  width?: number;
+  height?: number;
+  title?: string;
+  showLegend?: boolean;
+}> = ({ data, width = 300, height = 300, title, showLegend = true }) => {
+  const total = data.reduce((s, d) => s + d.value, 0) || 1;
+  const cx = width / 2;
+  const cy = height / 2;
+  const radius = Math.min(cx, cy) - 40;
+  let currentAngle = -Math.PI / 2;
+
+  const slices = data.map((d) => {
+    const angle = (d.value / total) * 2 * Math.PI;
+    const startAngle = currentAngle;
+    const endAngle = currentAngle + angle;
+    currentAngle = endAngle;
+    const x1 = cx + radius * Math.cos(startAngle);
+    const y1 = cy + radius * Math.sin(startAngle);
+    const x2 = cx + radius * Math.cos(endAngle);
+    const y2 = cy + radius * Math.sin(endAngle);
+    const largeArc = angle > Math.PI ? 1 : 0;
+    const path = `M ${cx} ${cy} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+    const midAngle = startAngle + angle / 2;
+    const labelX = cx + (radius + 20) * Math.cos(midAngle);
+    const labelY = cy + (radius + 20) * Math.sin(midAngle);
+    return { ...d, path, labelX, labelY, percent: ((d.value / total) * 100).toFixed(1) };
+  });
+
+  return (
+    <svg width={width} height={height} className="w-full h-auto">
+      {title && <text x={cx} y={18} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">{title}</text>}
+      {slices.map((s, i) => (
+        <g key={i}>
+          <path d={s.path} fill={s.color} stroke="#1a1a2e" strokeWidth="2" opacity="0.85" />
+          {s.percent !== '0.0' && <text x={s.labelX} y={s.labelY} textAnchor="middle" fill="#e2e8f0" fontSize="9" dominantBaseline="middle">{s.percent}%</text>}
+        </g>
+      ))}
+      {showLegend && (
+        <g>
+          {data.map((d, i) => (
+            <g key={i} transform={`translate(${width - 120}, ${20 + i * 20})`}>
+              <rect x={0} y={0} width={10} height={10} rx="2" fill={d.color} />
+              <text x={16} y={9} fill="#888" fontSize="9">{d.label}</text>
+            </g>
+          ))}
+        </g>
+      )}
+    </svg>
+  );
+};
+
+/* ─── Epi Curve (Epidemiological Curve) ─── */
+interface EpiCurveData {
+  date: string;
+  cases: number;
+  deaths?: number;
+  recovered?: number;
+}
+
+export const EpiCurve: React.FC<{
+  data: EpiCurveData[];
+  width?: number;
+  height?: number;
+  title?: string;
+}> = ({ data, width = 600, height = 300, title }) => {
+  const padding = { top: 30, right: 30, bottom: 60, left: 60 };
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+  const maxCases = Math.max(...data.map((d) => d.cases), 1);
+  const barW = Math.max(4, chartW / data.length * 0.8);
+
+  return (
+    <svg width={width} height={height} className="w-full h-auto">
+      {title && <text x={width / 2} y={18} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">{title}</text>}
+      <text x={12} y={height / 2} textAnchor="middle" fill="#888" fontSize="10" transform={`rotate(-90, 12, ${height / 2})`}>Cases</text>
+      {[0, 0.25, 0.5, 0.75, 1].map((pct) => {
+        const y = padding.top + chartH * (1 - pct);
+        const val = Math.round(maxCases * pct);
+        return (
+          <g key={pct}>
+            <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#3a3a3a" strokeWidth="0.5" />
+            <text x={padding.left - 8} y={y + 4} textAnchor="end" fill="#888" fontSize="9">{val}</text>
+          </g>
+        );
+      })}
+      {data.map((d, i) => {
+        const x = padding.left + (i * chartW) / data.length + (chartW / data.length - barW) / 2;
+        const barH = (d.cases / maxCases) * chartH;
+        const y = padding.top + chartH - barH;
+        return (
+          <g key={i}>
+            <rect x={x} y={y} width={barW} height={barH} rx="2" fill="#ef4444" opacity="0.7" />
+            {d.deaths && (
+              <rect x={x + barW + 1} y={padding.top + chartH - (d.deaths / maxCases) * chartH} width={barW * 0.5} height={(d.deaths / maxCases) * chartH} rx="2" fill="#7f1d1d" opacity="0.8" />
+            )}
+            <text x={x + barW / 2} y={height - padding.bottom + 14} textAnchor="end" fill="#888" fontSize="7" transform={`rotate(-45, ${x + barW / 2}, ${height - padding.bottom + 14})`}>{d.date}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
+
+/* ─── Gantt Chart ─── */
+interface GanttTask {
+  id: string;
+  label: string;
+  start: number;
+  duration: number;
+  progress: number;
+  color?: string;
+  dependsOn?: string[];
+}
+
+export const GanttChart: React.FC<{
+  tasks: GanttTask[];
+  width?: number;
+  height?: number;
+  title?: string;
+  totalDays?: number;
+}> = ({ tasks, width = 600, height: propHeight, title, totalDays = 30 }) => {
+  const padding = { top: 30, right: 20, bottom: 20, left: 150 };
+  const rowH = 30;
+  const chartH = tasks.length * rowH + 20;
+  const totalH = chartH + padding.top + padding.bottom;
+  const chartW = width - padding.left - padding.right;
+  const dayW = chartW / totalDays;
+
+  return (
+    <svg width={width} height={Math.max(totalH, propHeight || totalH)} className="w-full h-auto">
+      {title && <text x={width / 2} y={18} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">{title}</text>}
+      {tasks.map((task, i) => {
+        const y = padding.top + i * rowH;
+        const x = padding.left + task.start * dayW;
+        const barW = task.duration * dayW;
+        const color = task.color || '#4f46e5';
+        const progressW = barW * (task.progress / 100);
+        return (
+          <g key={task.id}>
+            <text x={padding.left - 10} y={y + rowH / 2 + 4} textAnchor="end" fill="#e2e8f0" fontSize="10">{task.label}</text>
+            <rect x={x} y={y + 6} width={barW} height={rowH - 12} rx="4" fill={color} opacity="0.3" />
+            <rect x={x} y={y + 6} width={progressW} height={rowH - 12} rx="4" fill={color} opacity="0.85" />
+            <text x={x + 4} y={y + rowH / 2 + 4} fill="#fff" fontSize="8">{task.progress}%</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
+
+/* ─── Color-Coded Status Badge ─── */
+export const StatusBadge: React.FC<{
+  status: 'success' | 'processing' | 'error' | 'info' | 'warning';
+  label?: string;
+  size?: 'sm' | 'md';
+}> = ({ status, label, size = 'sm' }) => {
+  const colors = {
+    success: { bg: '#10b981', text: '#fff' },
+    processing: { bg: '#f59e0b', text: '#000' },
+    error: { bg: '#ef4444', text: '#fff' },
+    info: { bg: '#3b82f6', text: '#fff' },
+    warning: { bg: '#f97316', text: '#000' },
+  };
+  const c = colors[status];
+  const px = size === 'sm' ? 'px-1.5 py-0.5' : 'px-2.5 py-1';
+  const fs = size === 'sm' ? 'text-[10px]' : 'text-xs';
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-full ${px} ${fs} font-medium`} style={{ backgroundColor: c.bg + '20', color: c.bg }}>
+      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: c.bg }} />
+      {label || status}
+    </span>
+  );
+};
+
 /* ─── Mini Stat Card ─── */
 export const StatCard: React.FC<{
   label: string;

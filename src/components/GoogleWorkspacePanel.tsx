@@ -13,7 +13,7 @@ interface Props {
 
 export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
   const [user, setUser] = useState<AppUser | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'drive' | 'sheets' | 'docs' | 'gmail'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'drive' | 'sheets' | 'docs' | 'gmail' | 'tasks'>('overview');
   const [driveFiles, setDriveFiles] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -116,7 +116,7 @@ export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
 
       {/* Tabs */}
       <div className="flex gap-0 border-b border-[#2a2a3e]" role="tablist" aria-label="Google workspace sections">
-        {(['overview', 'drive', 'sheets', 'docs', 'gmail'] as const).map((tab) => (
+          {(['overview', 'drive', 'sheets', 'docs', 'gmail', 'tasks'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -195,6 +195,25 @@ export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
           <div className="space-y-2 text-xs text-gray-400">
             <p>Gmail integration requires signing in with appropriate scopes.</p>
             <p>After signing in, you can compose and send reports directly from the Studio.</p>
+          </div>
+        )}
+
+        {activeTab === 'tasks' && (
+          <div className="space-y-2 text-xs text-gray-400">
+            <p>Google Tasks integration lets you create and manage tasks from your workspace.</p>
+            {user ? (
+              <div className="space-y-2 mt-2">
+                <div className="p-2 rounded bg-[#1a1a2e] border border-[#2a2a3e]">
+                  <p className="text-xs text-gray-300 font-medium">Sample Tasks</p>
+                  <p className="text-[10px] text-gray-500 mt-1">• Review outbreak report draft</p>
+                  <p className="text-[10px] text-gray-500">• Update epidemiological curves</p>
+                  <p className="text-[10px] text-gray-500">• Cross-reference WHO thresholds</p>
+                </div>
+                <p className="text-[10px] text-gray-600">Full Google Tasks API sync coming soon.</p>
+              </div>
+            ) : (
+              <p className="mt-2">Sign in with Google to access Tasks.</p>
+            )}
           </div>
         )}
       </div>

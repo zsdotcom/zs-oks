@@ -11,7 +11,7 @@
 - **Services**: `src/services/`
 - **Database Layer**: `src/db/`
 - **Utilities**: `src/utils/`
-- **Documentation**: `docs/`
+- **Documentation**: `docs/` (`project/`, `developers/`, `guides/`, `agents/`)
 - **Public Assets**: `public/`
 - **Test Suite**: `src/test/`
 
@@ -67,13 +67,13 @@ npm run preview      # serve dist/ locally
 | `npm run dev` | Vite dev server, port **3000**, bound `0.0.0.0` |
 | `npm run typecheck` | `tsc -b --noEmit` — run before `build` |
 | `npm run build` | `tsc -b --noEmit && vite build` |
-| `npm run test` | Vitest — 5 test files, 69 tests (memory, gemini, ICD-11, sandbox) |
+| `npm run test` | Vitest — 6 test files, 74 tests (memory, gemini, ICD-11, sandbox) |
 | `npm run test:watch` | Vitest watch mode |
 | `npm run test:coverage` | Vitest with V8 coverage |
 | `npm run test:bench` | Vitest bench (no benchmarks exist) |
 | `npm run test:bench:compare` | Bench with regression comparison |
 
-All test commands are configured in `vitest.config.ts` (happy-dom, fake-indexeddb, coverage thresholds: 80/75/85/80) but no test files have been written yet.
+All test commands are configured in `vitest.config.ts` (happy-dom, fake-indexeddb, coverage thresholds: 80/75/85/80).
 
 ## Architecture
 
@@ -131,7 +131,7 @@ src/
 - **Google OAuth** (`src/services/googleAuthService.ts`) loads GIS script from CDN dynamically. Set `VITE_GOOGLE_OAUTH_CLIENT_ID` in `.env`.
 - **The `docs/` directory** has been updated to reflect the current codebase state. If you find a discrepancy, trust the source code.
 - **Coverage thresholds** in vitest config: statements 80%, branches 75%, functions 85%, lines 80%.
-- **`memoryApi.ts`** (`src/services/memoryApi.ts`) wraps `src/db/indexedDB.ts` with a 6-tier memory API (Session, Episodic, Semantic, Procedural, Working, Long-Term). The `computeEmbedding()` function is currently a stub that returns `[]` — real vector embeddings via Transformers.js or similar are not yet implemented.
+- **`memoryApi.ts`** (`src/services/memoryApi.ts`) wraps `src/db/indexedDB.ts` with a 6-tier memory API (Session, Episodic, Semantic, Procedural, Working, Long-Term). `computeEmbedding()` uses Transformers.js in a Web Worker for real 384-dim vector embeddings.
 
 ## Build & deploy
 
@@ -148,8 +148,16 @@ Build order matters: `typecheck` must pass before `vite build`.
 - Setup file at `src/test/setup.ts` — mocks BroadcastChannel, Worker, crypto.randomUUID
 - Coverage excludes `src/test/**`, test files, and `src/index.tsx`
 - Benchmarks write to `benchmark-results.json` (gitignored)
-- 3 test files exist in `src/test/`: `memory.unit.test.ts` (15 unit tests), `memory.integration.test.ts` (6 integration tests), `memory.benchmark.ts` (4 benchmarks)
+- 6 test files exist in `src/test/`:
+  - `memory.unit.test.ts` (15 unit tests)
+  - `memory.integration.test.ts` (6 integration tests)
+  - `memory.benchmark.ts` (4 benchmarks)
+  - `gemini.test.ts` (18 unit tests)
+  - `sandbox.test.ts` (9 unit tests)
+  - `icd11.test.ts` (18 unit tests)
 
 ## In-app agent system (product feature)
 
-The product ships an in-app A2A debate panel with 3 agents (Design & UX Expert, Cybersecurity Architect, Performance & QA Analyst). These are **not OpenCode agents** — they are characters defined in the app's UI (`A2AAgent` type, `ChatMessage` types). See `src/App.tsx:84-88` for the actual in-app agent definitions and `docs/060-agents-configuration.md` for configuration details.
+The product ships an in-app A2A debate panel with 6 agents (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian). These are **not OpenCode agents** — they are characters defined in the app's UI (`A2AAgent` type, `ChatMessage` types). See `src/App.tsx:84-88` for the actual in-app agent definitions and `docs/guides/060-agents-configuration.md` for configuration details.
+
+

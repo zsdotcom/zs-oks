@@ -1,0 +1,31 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 5
+    labels:
+      - 'dependencies'
+      - 'automated'
+    ignore:
+      - dependency-name: 'react'
+        versions: ['>=20.0.0']
+      - dependency-name: 'react-dom'
+        versions: ['>=20.0.0']
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'monthly'
+    open-pull-requests-limit: 3
+    labels:
+      - 'ci'
+      - 'automated'
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'

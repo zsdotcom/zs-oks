@@ -4,6 +4,8 @@ import {
   ProviderConfig, SavedPrompt, A2AAgent, A2AMetric, SandboxSettings,
   DocumentVersion, KanbanBoard, DocumentTemplate, DocumentTag,
   AppView, AppUser, TaskColumn, TaskCard, MCPServer, MCPTool,
+  SkillDefinition, ConnectorConfig, WorkspaceProject, LLMProvider,
+  PROVIDER_OPTIONS, BUILT_IN_TOOLS,
 } from './types';
 import { queryLLM, getInitialSuggestions, runA2ADebate, runOrchestratedWorkflow, runSequentialWorkflow } from './services/geminiService';
 import { signInWithGoogle, logoutUser, subscribeAuth, updateUserDoc } from './services/googleAuthService';
@@ -13,6 +15,8 @@ import { useChat } from './hooks/useChat';
 import { usePWAInstall } from './hooks/usePWAInstall';
 import { fireWebhooks, getAllWebhooks, addWebhook, removeWebhook as removeWebhookSvc, updateWebhook as updateWebhookSvc } from './services/webhookService';
 import type { WebhookConfig } from './services/webhookService';
+import { loadSkillRegistry, getSkillRegistry, addSkill, removeSkill, findRelevantSkills, PRESET_SKILLS } from './services/skillService';
+import { loadConnectors, getConnectors, addConnector, removeConnector } from './services/connectorService';
 import KnowledgeBaseManager from './components/KnowledgeBaseManager';
 import ChatInterface from './components/ChatInterface';
 import ThemeSwitcher from './components/ThemeSwitcher';
@@ -23,6 +27,7 @@ import { KanbanBoardView } from './components/KanbanBoardView';
 import { ChatSessionSidebar } from './components/ChatSessionSidebar';
 import { GmailCompose } from './components/GmailCompose';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { StatusBadge } from './components/charts/SimpleCharts';
 
 const WorkspaceDocumentEditor = React.lazy(() => import('./components/WorkspaceDocumentEditor').then(m => ({ default: m.WorkspaceDocumentEditor })));
 const A2AMetricsDashboard = React.lazy(() => import('./components/A2AMetricsDashboard').then(m => ({ default: m.A2AMetricsDashboard })));
@@ -36,7 +41,7 @@ import {
   Sparkles, Brain, Code, ShieldCheck, Database, GitMerge, Activity, BarChart,
   Edit, BookOpen, X, Search, MessageSquare, Settings, Folder, FileText,
   Moon, Sun, Cloud, Wifi, WifiOff, Layout, Menu, Clock, Users, Zap,
-  Globe, Layers, Template, Kanban, Plus, Trash, Mail,
+  Globe, Layers, Template, Kanban, Plus, Trash, Mail, Wrench,
   Target, Book, BarChart3, FileEdit, SearchCheck, Library, MapPin,
   Download,
 } from './components/icons/lucide-shim';
@@ -194,6 +199,16 @@ const App: React.FC = () => {
   const [editingAgent, setEditingAgent] = useState<A2AAgent | undefined>();
   const [webhooks, setWebhooks] = useState<WebhookConfig[]>([]);
 
+  // Skills state
+  const [skills, setSkills] = useState<SkillDefinition[]>(PRESET_SKILLS.map((s) => ({ ...s })));
+  const [showSkillBuilder, setShowSkillBuilder] = useState(false);
+
+  // Connectors state
+  const [connectors, setConnectors] = useState<ConnectorConfig[]>([]);
+
+  // Workspace projects state
+  const [workspaceProjects, setWorkspaceProjects] = useState<WorkspaceProject[]>([]);
+
   useEffect(() => {
     migrateLocalStorage();
     dbGetAll<A2AAgent>('a2aAgents').then((loaded) => {
@@ -208,6 +223,14 @@ const App: React.FC = () => {
     dbGetKey('ui-theme').then((v) => { if (v) setSelectedTheme(v); }).catch(() => {});
     dbGetKey('ui-accent').then((v) => { if (v) setAccentColor(v); }).catch(() => {});
     setWebhooks(getAllWebhooks());
+    loadSkillRegistry().then(() => {
+      const reg = getSkillRegistry();
+      if (reg.length > 0) setSkills(reg);
+    });
+    loadConnectors().then(() => setConnectors(getConnectors()));
+    dbGetAll<any>('workspaceProjects').then((loaded: any[]) => {
+      if (loaded.length > 0) setWorkspaceProjects(loaded.map((p: any) => ({ ...p, createdAt: new Date(p.createdAt) })));
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -471,6 +494,46 @@ const App: React.FC = () => {
     });
   }, []);
 
+  // Skill handlers
+  const handleCreateSkill = useCallback(() => {
+    const newSkill: SkillDefinition = {
+      id: `skill-${Date.now()}`,
+      name: 'new-skill',
+      description: 'Custom skill definition',
+      category: 'research',
+      instructions: 'Define skill instructions here.',
+      allowedTools: [],
+      priority: 'medium',
+      triggers: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    setSkills((prev) => [...prev, newSkill]);
+    addSkill(newSkill).catch(() => {});
+  }, []);
+
+  const handleDeleteSkill = useCallback((id: string) => {
+    setSkills((prev) => prev.filter((s) => s.id !== id));
+    removeSkill(id).catch(() => {});
+  }, []);
+
+  // Provider test handler
+  const handleTestProvider = useCallback(async (provider: LLMProvider, apiKey: string): Promise<boolean> => {
+    if (!apiKey) return false;
+    try {
+      const testConfig: ProviderConfig = { ...providerConfig, provider, apiKey };
+      await queryLLM(
+        [{ id: 'test', text: 'Reply with "ok" if you can read this.', sender: MessageSender.USER, timestamp: new Date() }],
+        testConfig,
+        undefined,
+        'Reply with exactly one word: ok'
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }, [providerConfig]);
+
   const handleMCPToggleTool = useCallback((serverId: string, toolName: string) => {
     setMcpServers((prev) => prev.map((s) => s.id === serverId ? {
       ...s, tools: s.tools.map((t) => t.name === toolName ? { ...t, isActive: !t.isActive } : t),
@@ -485,6 +548,9 @@ const App: React.FC = () => {
     { view: 'kanban', icon: <Kanban size={14} />, label: 'Kanban' },
     { view: 'templates', icon: <Template size={14} />, label: 'Templates' },
     { view: 'mcp', icon: <Database size={14} />, label: 'MCP' },
+    { view: 'skills', icon: <BookOpen size={14} />, label: 'Skills' },
+    { view: 'tools', icon: <Wrench size={14} />, label: 'Tools' },
+    { view: 'knowledge', icon: <Globe size={14} />, label: 'Knowledge' },
   ];
 
   return (
@@ -565,16 +631,20 @@ const App: React.FC = () => {
                   onSwitchProject={setActiveProjectId}
                   onCreateProject={(name) => {
                     const id = `proj-${Date.now()}`;
+                    const proj: WorkspaceProject = { id, name, description: '', createdAt: new Date(), updatedAt: new Date(), fileCount: 0, agentCount: 0, tags: [], agentIds: [] };
+                    setWorkspaceProjects((prev) => [...prev, proj]);
                     setFolders((prev) => [...prev, { id, name }]);
                     setActiveProjectId(id);
                   }}
                   onDeleteProject={(id) => {
                     setFolders((prev) => prev.filter((f) => f.id !== id));
                     setFiles((prev) => prev.filter((f) => f.parentFolderId !== id));
+                    setWorkspaceProjects((prev) => prev.filter((p) => p.id !== id));
                     if (activeProjectId === id) setActiveProjectId('default');
                   }}
                   onAddAgent={() => {}}
                   onRemoveAgent={() => {}}
+                  projects={workspaceProjects}
                 />
                 <div className="border-t border-[#2a2a3e] my-2" />
                 <KnowledgeBaseManager
@@ -671,6 +741,91 @@ const App: React.FC = () => {
               </React.Suspense>
             )}
 
+            {activeView === 'skills' && (
+              <div className="p-4 overflow-y-auto">
+                <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><BookOpen size={16} className="text-indigo-400" /> Skills Registry</h2>
+                <div className="space-y-2">
+                  {skills.map((skill) => (
+                    <div key={skill.id} className="p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e]">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium">{skill.name.replace(/-/g, ' ')}</span>
+                          <StatusBadge status={skill.priority === 'high' ? 'error' : skill.priority === 'medium' ? 'warning' : 'info'} label={skill.priority} />
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400">{skill.category}</span>
+                        </div>
+                        <button onClick={() => handleDeleteSkill(skill.id)} className="p-1 rounded hover:bg-red-500/20 text-red-400"><Trash size={12} /></button>
+                      </div>
+                      <p className="text-[10px] text-gray-500 mb-2">{skill.description}</p>
+                      <details className="text-[10px] text-gray-400">
+                        <summary className="cursor-pointer hover:text-gray-300">Instructions</summary>
+                        <pre className="mt-1 p-2 rounded bg-[#0f0f1a] text-[9px] whitespace-pre-wrap">{skill.instructions}</pre>
+                      </details>
+                      {skill.triggers.length > 0 && (
+                        <div className="flex gap-1 flex-wrap mt-2">
+                          {skill.triggers.map((t) => <span key={t} className="text-[8px] px-1 py-0.5 rounded bg-[#2a2a3e] text-gray-400">{t}</span>)}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  {skills.length === 0 && <p className="text-xs text-gray-500 text-center py-8">No skills defined.</p>}
+                </div>
+              </div>
+            )}
+
+            {activeView === 'tools' && (
+              <div className="p-4 overflow-y-auto">
+                <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Wrench size={16} className="text-indigo-400" /> Built-in Tools ({BUILT_IN_TOOLS.length})</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  {BUILT_IN_TOOLS.map((tool) => (
+                    <div key={tool.id} className="p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e]">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-medium">{tool.name}</span>
+                        <div className="flex gap-1">
+                          <span className={`text-[8px] px-1.5 py-0.5 rounded ${
+                            tool.permission === 'safe' ? 'bg-green-500/10 text-green-400' :
+                            tool.permission === 'standard' ? 'bg-blue-500/10 text-blue-400' :
+                            tool.permission === 'elevated' ? 'bg-yellow-500/10 text-yellow-400' : 'bg-red-500/10 text-red-400'
+                          }`}>{tool.permission}</span>
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-gray-500">{tool.description}</p>
+                      <div className="flex gap-1 mt-1">
+                        <span className="text-[8px] px-1 py-0.5 rounded bg-gray-500/10 text-gray-400">{tool.category}</span>
+                        {tool.requiresConfirmation && <span className="text-[8px] px-1 py-0.5 rounded bg-orange-500/10 text-orange-400">Requires confirm</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeView === 'knowledge' && (
+              <div className="p-4 overflow-y-auto">
+                <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Globe size={16} className="text-indigo-400" /> Knowledge Sources</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { name: 'Wikipedia', desc: 'Encyclopedic articles', rate: 'Unlimited', icon: '📚' },
+                    { name: 'arXiv', desc: 'Academic preprints', rate: 'Unlimited', icon: '📄' },
+                    { name: 'OpenAlex', desc: 'Scholarly works & citations', rate: '100K/day', icon: '🎓' },
+                    { name: 'PubMed', desc: 'Biomedical literature', rate: '10/sec', icon: '🔬' },
+                    { name: 'Semantic Scholar', desc: 'Paper summaries & TLDRs', rate: '100/sec', icon: '🤖' },
+                    { name: 'WHO GHO', desc: 'Global health indicators', rate: 'Unlimited', icon: '🌍' },
+                    { name: 'GDELT', desc: 'Global news monitoring', rate: '20/min', icon: '📰' },
+                    { name: 'CrossRef', desc: 'DOI lookup & metadata', rate: '50/sec', icon: '🔗' },
+                  ].map((src) => (
+                    <div key={src.name} className="p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e]">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm">{src.icon}</span>
+                        <span className="text-xs font-medium">{src.name}</span>
+                      </div>
+                      <p className="text-[10px] text-gray-500 mb-1">{src.desc}</p>
+                      <span className="text-[8px] px-1.5 py-0.5 rounded bg-green-500/10 text-green-400">{src.rate}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {activeView === 'templates' && (
               <div className="p-4 overflow-y-auto">
                 <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Template size={16} className="text-indigo-400" /> Document Templates</h2>
@@ -762,6 +917,7 @@ const App: React.FC = () => {
             onSave={handleSaveAgent}
             onClose={() => { setShowAgentBuilder(false); setEditingAgent(undefined); }}
             editAgent={editingAgent}
+            allSkills={skills.map((s) => s.id)}
           />
         )}
 
@@ -785,6 +941,10 @@ const App: React.FC = () => {
             onAddWebhook={handleAddWebhook}
             onRemoveWebhook={handleRemoveWebhook}
             onUpdateWebhook={handleUpdateWebhook}
+            skills={skills}
+            onCreateSkill={handleCreateSkill}
+            onDeleteSkill={handleDeleteSkill}
+            onTestProvider={handleTestProvider}
           />
         </React.Suspense>
 
