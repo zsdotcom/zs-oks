@@ -186,7 +186,8 @@ Typecheck passes. Let me run build:
 > tsc --noEmit && vite build
 
 vite v8.1.5 building client environment for production...
-[2Ktransforming...✓ 42 modules transformed.
+[2K
+transforming...✓ 42 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/index.html                   1.53 kB │ gzip:  0.73 kB
@@ -1220,7 +1221,8 @@ Typecheck passes. Let me run tests and build:
 > tsc --noEmit && vite build
 
 vite v8.1.5 building client environment for production...
-[2Ktransforming...✓ 42 modules transformed.
+[2K
+transforming...✓ 42 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/index.html                   1.53 kB │ gzip:  0.73 kB
@@ -1806,7 +1808,8 @@ Now let me do the final typecheck, test, and build verification:
 > tsc --noEmit && vite build
 
 vite v8.1.5 building client environment for production...
-[2Ktransforming...✓ 42 modules transformed.
+[2K
+transforming...✓ 42 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/index.html                   1.53 kB │ gzip:  0.73 kB
@@ -8068,7 +8071,8 @@ Typecheck passes, all 21 tests pass. Let me also verify the build works and clea
 > tsc --noEmit && vite build
 
 vite v8.1.5 building client environment for production...
-[2Ktransforming...✓ 42 modules transformed.
+[2K
+transforming...✓ 42 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/index.html                   1.53 kB │ gzip:  0.73 kB
@@ -13853,7 +13857,8 @@ Let me run the final verification:
 > tsc --noEmit && vite build
 
 vite v8.1.5 building client environment for production...
-[2Ktransforming...✓ 42 modules transformed.
+[2K
+transforming...✓ 42 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/index.html                   1.53 kB │ gzip:  0.73 kB
