@@ -66,7 +66,7 @@ End-user documentation for features and workflows.
 | **Test count** | 74 across 6 files |
 | **Test coverage** | >80% statements, >75% branches, >85% functions, >80% lines |
 | **Build size** | ~90 KB gzip |
-| **IndexedDB stores** | 22 (6 memory tiers + application data) |
+| **IndexedDB stores** | 22 (6 memory tiers + 16 application stores) |
 | **Tech stack** | React 19.2.7 · Vite 8.1.5 · TypeScript 7.0.2 · Vitest 4.1.10 |
 
 ---

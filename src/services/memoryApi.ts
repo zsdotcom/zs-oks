@@ -89,6 +89,10 @@ export async function rebuildSemanticIndex(): Promise<void> {
   for (const entry of all) {
     await dbPut('semantic', entry);
   }
+  try {
+    const { oramaRebuildFromDB } = await import('./oramaService');
+    await oramaRebuildFromDB();
+  } catch {}
 }
 
 /* ─── Tier 4: Procedural Memory ─── */

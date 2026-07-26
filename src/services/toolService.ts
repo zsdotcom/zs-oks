@@ -1,6 +1,6 @@
 import { ToolDefinition, ToolPermission, BUILT_IN_TOOLS } from '../types';
-import { storeProcedural, storeWorking } from './memoryApi';
-import { computeEmbedding } from './memoryApi';
+import { storeSession, storeEpisodic, storeSemantic, searchSemantic, deleteSemantic, storeProcedural, storeWorking, storeLongTerm, computeEmbedding } from './memoryApi';
+import { searchAll, buildSearchIndex } from './searchService';
 
 export function getAvailableTools(agentTools?: string[]): ToolDefinition[] {
   if (!agentTools || agentTools.length === 0) return BUILT_IN_TOOLS;
@@ -72,6 +72,21 @@ export async function executeTool(
       case 'translate':
         result = await translateText(params.text, params.targetLang);
         break;
+      case 'remember':
+        result = await handleRemember(params, context);
+        break;
+      case 'recall':
+        result = await handleRecall(params);
+        break;
+      case 'forget':
+        result = await handleForget(params);
+        break;
+      case 'semantic-search':
+        result = await searchSemantic(params.query || '', params.topK || 5);
+        break;
+      case 'list-agents':
+        result = { message: 'Active agents can be listed via the Agent Builder panel' };
+        break;
       default:
         return { success: false, result: null, error: `Tool '${toolId}' not implemented as executable` };
     }
@@ -79,6 +94,59 @@ export async function executeTool(
   } catch (err: any) {
     return { success: false, result: null, error: err.message };
   }
+}
+
+async function handleRemember(params: Record<string, any>, context: { agentId: string; projectId: string }): Promise<any> {
+  const { key, value, tier } = params;
+  const tierVal = tier || 'session';
+  const id = `mem-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const now = new Date().toISOString();
+
+  switch (tierVal) {
+    case 'session':
+      storeSession(key, value);
+      return { stored: true, tier: 'session', key };
+    case 'episodic':
+      await storeEpisodic({ id, projectId: context.projectId, agentId: context.agentId, text: value, summary: null, createdAt: now });
+      return { stored: true, tier: 'episodic', id };
+    case 'semantic':
+      await storeSemantic({ id, projectId: context.projectId, agentId: context.agentId, topic: key, text: value, embedding: [], createdAt: now });
+      return { stored: true, tier: 'semantic', id };
+    case 'procedural':
+      await storeProcedural({ id, projectId: context.projectId, skillId: key, instructions: value, triggers: [], createdAt: now });
+      return { stored: true, tier: 'procedural', id };
+    case 'working':
+      await storeWorking({ id, projectId: context.projectId, agentId: context.agentId, sessionId: key, key, value, createdAt: now });
+      return { stored: true, tier: 'working', id };
+    case 'long_term':
+      await storeLongTerm({ id, projectId: context.projectId, category: key, text: value, references: [], createdAt: now });
+      return { stored: true, tier: 'long_term', id };
+    default:
+      storeSession(key, value);
+      return { stored: true, tier: 'session', key };
+  }
+}
+
+async function handleRecall(params: Record<string, any>): Promise<any> {
+  const { query, tier, topK } = params;
+  const k = topK || 5;
+
+  if (tier === 'semantic' || !tier) {
+    const results = await searchSemantic(query || '', k);
+    if (results.length > 0) return results;
+  }
+  await buildSearchIndex();
+  const results = searchAll(query || '');
+  return results.slice(0, k);
+}
+
+async function handleForget(params: Record<string, any>): Promise<any> {
+  const { key, tier } = params;
+  if (tier === 'semantic') {
+    await deleteSemantic(key);
+    return { removed: true, tier: 'semantic', key };
+  }
+  return { removed: false, message: 'Forget is primarily supported for semantic memory. Use the IndexedDB store directly for other tiers.' };
 }
 
 function safeEvaluate(expr: string): number {

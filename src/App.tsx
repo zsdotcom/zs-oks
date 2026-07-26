@@ -37,6 +37,8 @@ const MCPServerPanel = React.lazy(() => import('./components/MCPServerPanel').th
 import { ICD11Lookup } from './components/ICD11Lookup';
 import { EpiMap } from './components/EpiMap';
 import type { EpiDataPoint } from './components/EpiMap';
+import { DocumentationViewer } from './components/DocumentationViewer';
+import { ConnectorPanel } from './components/ConnectorPanel';
 import {
   Sparkles, Brain, Code, ShieldCheck, Database, GitMerge, Activity, BarChart,
   Edit, BookOpen, X, Search, MessageSquare, Settings, Folder, FileText,
@@ -95,12 +97,48 @@ const INITIAL_URL_GROUPS: URLGroup[] = [
 ];
 
 const DEFAULT_A2A_AGENTS: A2AAgent[] = [
-  { id: 'coord', name: 'Coordinator', role: 'Orchestrates workflows and delegates tasks', avatar: '🎯', systemPrompt: `You are the Coordinator Agent of Open Knowledge Studio. Your role is to receive user requests and analyze their complexity. If the task is simple, handle it directly. If the task is complex, decompose it into sub-tasks and delegate to the appropriate specialized agents. Monitor progress and validate outputs before presenting to the user.`, color: '#8B5CF6', isActive: true },
-  { id: 'research', name: 'Researcher', role: 'Searches and synthesizes information', avatar: '🔬', systemPrompt: `You are the Research Agent of Open Knowledge Studio. Your role is to identify research queries, synthesize findings from available information, and generate structured summaries with proper citations. Tag all findings with confidence levels.`, color: '#06B6D4', isActive: true },
-  { id: 'data', name: 'Data Analyst', role: 'Processes data and generates statistics', avatar: '📊', systemPrompt: `You are the Data Analyst Agent of Open Knowledge Studio. Your role is to process datasets, perform statistical analysis, generate visualizations, and compute metrics. Always sanitize inputs, handle missing data gracefully, and provide confidence intervals. When presenting data, generate diagrams using Mermaid syntax (flowcharts, bar charts, pie charts, xy charts) inside \`\`\`mermaid code fences. Use KaTeX $$inline math$$ for statistical formulas.`, color: '#F59E0B', isActive: true },
-  { id: 'writer', name: 'Writer', role: 'Drafts documents and formats outputs', avatar: '✍️', systemPrompt: `You are the Writer Agent of Open Knowledge Studio. Your role is to draft documents from structured data, apply templates, format outputs, and maintain consistent formatting. Ensure all claims are backed by evidence.`, color: '#10B981', isActive: true },
-  { id: 'review', name: 'Reviewer', role: 'Quality checks and peer review', avatar: '🔍', systemPrompt: `You are the Reviewer Agent of Open Knowledge Studio. Your role is to perform quality checks, audit citations, validate compliance, and identify contradictory claims. Be specific and constructive in feedback.`, color: '#EF4444', isActive: true },
-  { id: 'librarian', name: 'Librarian', role: 'Maintains memory and manages knowledge', avatar: '📚', systemPrompt: `You are the Librarian Agent of Open Knowledge Studio. Your role is to maintain memory, organize knowledge, manage references, and ensure information is properly indexed and retrievable.`, color: '#8B5CF6', isActive: true },
+  {
+    id: 'coord', name: 'Coordinator', role: 'Orchestrates workflows and delegates tasks', avatar: '🎯', color: '#8B5CF6', isActive: true,
+    memoryType: 'full', maxTurnDepth: 50, provider: 'gemini', modelName: 'gemini-2.5-pro',
+    skills: ['workflow-decompose', 'workflow-delegate', 'workflow-validate', 'workflow-merge'],
+    tools: ['spawn-agent', 'status-track', 'send-message', 'read-file', 'write-file', 'list-agents', 'remember', 'recall'],
+    systemPrompt: `You are the Coordinator Agent of Open Knowledge Studio. Your role is to receive user requests and analyze their complexity. If the task is simple, handle it directly. If the task is complex, decompose it into sub-tasks and delegate to the appropriate specialized agents. Monitor the progress of delegated agents using the A2A protocol. Validate each agent's output before merging it into the final response. Save all key decisions and outcomes to episodic memory. Use color-coded status updates: 🟢 Complete, 🟡 In Progress, 🔴 Error.`,
+  },
+  {
+    id: 'research', name: 'Researcher', role: 'Searches and synthesizes information', avatar: '🔬', color: '#06B6D4', isActive: true,
+    memoryType: 'persistent', maxTurnDepth: 30, provider: 'groq', modelName: 'llama-3.3-70b-versatile',
+    skills: ['literature-review', 'outbreak-research', 'guideline-research', 'source-evaluate'],
+    tools: ['search-wikipedia', 'search-arxiv', 'search-openalex', 'search-pubmed', 'search-who', 'search-cdc', 'search-web', 'rss-fetch', 'read-file', 'write-file', 'vectorize', 'semantic-search', 'remember', 'recall'],
+    systemPrompt: `You are the Research Agent of Open Knowledge Studio. Your role is to identify the user's research query and determine the best sources. Query relevant free APIs (Wikipedia, arXiv, OpenAlex, PubMed, WHO, CDC). Synthesize findings into a structured summary with inline citations. Evaluate source credibility. Tag all findings with confidence levels (High/Medium/Low). Always include source URL, access date, and relevance score for each cited piece of information. Cache API results in IndexedDB to avoid redundant calls.`,
+  },
+  {
+    id: 'data', name: 'Data Analyst', role: 'Processes data and generates statistics', avatar: '📊', color: '#F59E0B', isActive: true,
+    memoryType: 'session', maxTurnDepth: 25, provider: 'groq', modelName: 'llama-3.3-70b-versatile',
+    skills: ['attack-rate-calc', 'epi-curve', 'r0-estimator', 'chi-square-test', 'confidence-interval', 'data-clean', 'outbreak-detection'],
+    tools: ['calculate', 'draw-chart', 'draw-diagram', 'render-latex', 'read-file', 'write-file', 'vectorize', 'remember', 'recall'],
+    systemPrompt: `You are the Data Analyst Agent of Open Knowledge Studio. Your role is to read and parse datasets uploaded by the user (CSV, JSON). Clean the data: handle missing values, normalize formats, detect outliers. Perform statistical analysis using the calculate tool. Generate visualizations: charts, epi curves, and Mermaid diagrams. Compute epidemiological metrics: attack rates, R0, confidence intervals. Always include confidence intervals with all statistical estimates. Use color-coded charts: red for critical values, green for normal range. When presenting data, generate diagrams using Mermaid syntax inside \`\`\`mermaid code fences. Use KaTeX $$inline math$$ for statistical formulas.`,
+  },
+  {
+    id: 'writer', name: 'Writer', role: 'Drafts documents and formats outputs', avatar: '✍️', color: '#10B981', isActive: true,
+    memoryType: 'session', maxTurnDepth: 20, provider: 'gemini', modelName: 'gemini-2.5-flash',
+    skills: ['report-writer', 'policy-brief', 'protocol-template', 'citation-format', 'executive-summary'],
+    tools: ['read-file', 'write-file', 'export-pdf', 'render-latex', 'speak', 'remember', 'recall'],
+    systemPrompt: `You are the Writer Agent of Open Knowledge Studio. Your role is to draft documents from research notes and data. Apply the appropriate template. Use consistent citation formatting (APA by default). Generate executive summaries for complex documents. Never invent facts. Only use information from provided research notes. Always cite sources using the project's configured citation style. Include a methodology section for all analytical documents.`,
+  },
+  {
+    id: 'review', name: 'Reviewer', role: 'Quality checks and peer review', avatar: '🔍', color: '#EF4444', isActive: true,
+    memoryType: 'session', maxTurnDepth: 15, provider: 'gemini', modelName: 'gemini-2.5-flash',
+    skills: ['quality-check', 'consistency-audit', 'citation-audit', 'methodology-review', 'compliance-check'],
+    tools: ['read-file', 'write-file', 'send-message', 'calculate', 'semantic-search', 'recall'],
+    systemPrompt: `You are the Reviewer Agent of Open Knowledge Studio. Your role is to review documents and outputs from other agents for quality and accuracy. Check for internal consistency: do numbers match across sections? Audit citations: are they complete, valid, and properly formatted? Review methodology: are statistical methods appropriate and correctly applied? Check compliance with WHO/CDC reporting standards where applicable. Provide structured feedback with severity levels: Critical, Major, Minor. Rate overall quality on a scale of 1-5 with justification.`,
+  },
+  {
+    id: 'librarian', name: 'Librarian', role: 'Maintains memory and manages knowledge', avatar: '📚', color: '#A855F7', isActive: true,
+    memoryType: 'full', maxTurnDepth: 30, provider: 'gemini', modelName: 'gemini-2.5-flash',
+    skills: ['memory-maintenance', 'knowledge-refresh', 'index-rebuild', 'reference-manager', 'glossary-build'],
+    tools: ['remember', 'recall', 'forget', 'vectorize', 'semantic-search', 'search-wikipedia', 'search-openalex', 'read-file', 'write-file'],
+    systemPrompt: `You are the Librarian Agent of Open Knowledge Studio. Your role is to maintain all six memory tiers: Session, Episodic, Semantic, Procedural, Working, and Long-Term. Run periodic knowledge refresh cycles using free sources (Wikipedia, OpenAlex, WHO, CDC). Rebuild the semantic search index when new documents are added. Manage references and build project-specific glossaries. Compress episodic memory by summarizing old sessions. Never delete memories without user confirmation. Always cite the source when refreshing knowledge.`,
+  },
 ];
 
 const INITIAL_SAVED_PROMPTS: SavedPrompt[] = [
@@ -123,6 +161,7 @@ const App: React.FC = () => {
   const [showGooglePanel, setShowGooglePanel] = useState(false);
   const [showGmailCompose, setShowGmailCompose] = useState(false);
   const [showICD11, setShowICD11] = useState(false);
+  const [toolsTab, setToolsTab] = useState<'tools' | 'connectors'>('tools');
   const [showEpiMap, setShowEpiMap] = useState(false);
   const [epiDataPoints] = useState<EpiDataPoint[]>([
     { id: 'epi-1', lat: -1.286, lng: 36.817, label: 'Nairobi', disease: 'Malaria', cases: 1240, severity: 'high', date: '2026-06-15', status: 'active' },
@@ -551,6 +590,7 @@ const App: React.FC = () => {
     { view: 'skills', icon: <BookOpen size={14} />, label: 'Skills' },
     { view: 'tools', icon: <Wrench size={14} />, label: 'Tools' },
     { view: 'knowledge', icon: <Globe size={14} />, label: 'Knowledge' },
+    { view: 'docs', icon: <BookOpen size={14} />, label: 'Docs' },
   ];
 
   return (
@@ -773,29 +813,39 @@ const App: React.FC = () => {
             )}
 
             {activeView === 'tools' && (
-              <div className="p-4 overflow-y-auto">
-                <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Wrench size={16} className="text-indigo-400" /> Built-in Tools ({BUILT_IN_TOOLS.length})</h2>
-                <div className="grid grid-cols-2 gap-3">
-                  {BUILT_IN_TOOLS.map((tool) => (
-                    <div key={tool.id} className="p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e]">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-medium">{tool.name}</span>
-                        <div className="flex gap-1">
-                          <span className={`text-[8px] px-1.5 py-0.5 rounded ${
-                            tool.permission === 'safe' ? 'bg-green-500/10 text-green-400' :
-                            tool.permission === 'standard' ? 'bg-blue-500/10 text-blue-400' :
-                            tool.permission === 'elevated' ? 'bg-yellow-500/10 text-yellow-400' : 'bg-red-500/10 text-red-400'
-                          }`}>{tool.permission}</span>
-                        </div>
-                      </div>
-                      <p className="text-[10px] text-gray-500">{tool.description}</p>
-                      <div className="flex gap-1 mt-1">
-                        <span className="text-[8px] px-1 py-0.5 rounded bg-gray-500/10 text-gray-400">{tool.category}</span>
-                        {tool.requiresConfirmation && <span className="text-[8px] px-1 py-0.5 rounded bg-orange-500/10 text-orange-400">Requires confirm</span>}
-                      </div>
-                    </div>
-                  ))}
+              <div className="flex flex-col h-full">
+                <div className="flex gap-2 px-4 pt-4 border-b border-[#2a2a3e]">
+                  <button onClick={() => setToolsTab('tools')} className={`text-[10px] px-2 py-1 rounded-t transition-colors ${toolsTab === 'tools' ? 'bg-[#1a1a2e] text-indigo-400 border border-b-0 border-[#2a2a3e]' : 'text-gray-500 hover:text-gray-300'}`}>Tools</button>
+                  <button onClick={() => setToolsTab('connectors')} className={`text-[10px] px-2 py-1 rounded-t transition-colors ${toolsTab === 'connectors' ? 'bg-[#1a1a2e] text-indigo-400 border border-b-0 border-[#2a2a3e]' : 'text-gray-500 hover:text-gray-300'}`}>Connectors</button>
                 </div>
+                {toolsTab === 'tools' ? (
+                  <div className="flex-1 p-4 overflow-y-auto">
+                    <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Wrench size={16} className="text-indigo-400" /> Built-in Tools ({BUILT_IN_TOOLS.length})</h2>
+                    <div className="grid grid-cols-2 gap-3">
+                      {BUILT_IN_TOOLS.map((tool) => (
+                        <div key={tool.id} className="p-3 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e]">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-medium">{tool.name}</span>
+                            <div className="flex gap-1">
+                              <span className={`text-[8px] px-1.5 py-0.5 rounded ${
+                                tool.permission === 'safe' ? 'bg-green-500/10 text-green-400' :
+                                tool.permission === 'standard' ? 'bg-blue-500/10 text-blue-400' :
+                                tool.permission === 'elevated' ? 'bg-yellow-500/10 text-yellow-400' : 'bg-red-500/10 text-red-400'
+                              }`}>{tool.permission}</span>
+                            </div>
+                          </div>
+                          <p className="text-[10px] text-gray-500">{tool.description}</p>
+                          <div className="flex gap-1 mt-1">
+                            <span className="text-[8px] px-1 py-0.5 rounded bg-gray-500/10 text-gray-400">{tool.category}</span>
+                            {tool.requiresConfirmation && <span className="text-[8px] px-1 py-0.5 rounded bg-orange-500/10 text-orange-400">Requires confirm</span>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <ConnectorPanel />
+                )}
               </div>
             )}
 
@@ -825,6 +875,8 @@ const App: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {activeView === 'docs' && <DocumentationViewer />}
 
             {activeView === 'templates' && (
               <div className="p-4 overflow-y-auto">

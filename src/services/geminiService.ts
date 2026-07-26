@@ -5,7 +5,7 @@
  * @license SPDX-License-Identifier: Apache-2.0
  */
 
-import { ChatMessage, MessageSender, ProviderConfig } from '../types';
+import { ChatMessage, MessageSender, ProviderConfig, A2AAgent } from '../types';
 
 /* ─── Gemini 3.5 Flash (Stable) ─── */
 const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
@@ -283,9 +283,16 @@ async function queryCloudflare(
 }
 
 /* ─── A2A Multi-Agent Debate ─── */
+function buildAgentConfig(baseConfig: ProviderConfig, agent: Partial<A2AAgent>): ProviderConfig {
+  if (agent.provider && agent.modelName) {
+    return { ...baseConfig, provider: agent.provider, selectedModel: agent.modelName };
+  }
+  return baseConfig;
+}
+
 export async function runA2ADebate(
   topic: string,
-  agents: { name: string; systemPrompt: string; color: string; avatar: string }[],
+  agents: (Partial<A2AAgent> & { name: string; systemPrompt: string; color: string; avatar: string })[],
   config: ProviderConfig,
   contextDocs?: string,
   onAgentResponse?: (agentName: string, response: string, latency: number) => void
@@ -294,10 +301,11 @@ export async function runA2ADebate(
 
   for (const agent of agents) {
     const start = Date.now();
+    const agentCfg = buildAgentConfig(config, agent);
     try {
       const response = await queryLLM(
         [{ id: '1', text: topic, sender: MessageSender.USER, timestamp: new Date() }],
-        config,
+        agentCfg,
         contextDocs,
         agent.systemPrompt
       );
@@ -347,7 +355,7 @@ interface TaskDecomposition {
 
 async function decomposeTask(
   topic: string,
-  agents: { id: string; name: string; role: string; systemPrompt: string; color: string; avatar: string }[],
+  agents: (Partial<A2AAgent> & { id: string; name: string; role: string; systemPrompt: string })[],
   config: ProviderConfig,
   contextDocs?: string
 ): Promise<TaskDecomposition[]> {
@@ -387,7 +395,7 @@ Example: [{"agentId":"research","subTask":"Find the latest R0 values for measles
 
 export async function runOrchestratedWorkflow(
   topic: string,
-  agents: { id: string; name: string; role: string; systemPrompt: string; color: string; avatar: string }[],
+  agents: (Partial<A2AAgent> & { id: string; name: string; role: string; systemPrompt: string; color: string; avatar: string })[],
   config: ProviderConfig,
   contextDocs?: string,
   onAgentResponse?: (agentName: string, response: string, latency: number) => void
@@ -407,6 +415,7 @@ export async function runOrchestratedWorkflow(
   for (const step of decomposition) {
     const agent = agentMap.get(step.agentId);
     if (!agent) continue;
+    const agentCfg = buildAgentConfig(config, agent);
 
     const start = Date.now();
     const agentPrompt = `You are assigned the following sub-task:\n${step.subTask}\n\nRationale: ${step.rationale}\n\nOriginal request: ${topic}`;
@@ -414,7 +423,7 @@ export async function runOrchestratedWorkflow(
     try {
       const response = await queryLLM(
         [{ id: step.agentId, text: agentPrompt, sender: 0, timestamp: new Date() } as any],
-        config,
+        agentCfg,
         contextDocs,
         agent.systemPrompt
       );
@@ -428,12 +437,13 @@ export async function runOrchestratedWorkflow(
 
   // Step 3: Coordinator synthesizes
   if (!coordinator) return subResults.map((r) => `### ${r.name}\n${r.response}`).join('\n\n');
+  const coordCfg = buildAgentConfig(config, coordinator);
 
   const synthesisPrompt = `Original request: "${topic}"\n\nAgent results:\n${subResults.map((r) => `### ${r.name}\n${r.response}`).join('\n\n')}\n\nSynthesize these findings into a comprehensive, well-structured final response. Integrate all contributions, resolve contradictions, and provide a cohesive answer.`;
 
   const finalResponse = await queryLLM(
     [{ id: 'synth', text: synthesisPrompt, sender: 0 as any, timestamp: new Date() }],
-    config,
+    coordCfg,
     contextDocs,
     coordinator.systemPrompt
   );
@@ -445,7 +455,7 @@ export async function runOrchestratedWorkflow(
 
 export async function runSequentialWorkflow(
   topic: string,
-  chain: { agentId: string; name: string; systemPrompt: string }[],
+  chain: (Partial<A2AAgent> & { agentId: string; name: string; systemPrompt: string })[],
   config: ProviderConfig,
   contextDocs?: string,
   onStepComplete?: (agentName: string, response: string, latency: number) => void
@@ -455,12 +465,13 @@ export async function runSequentialWorkflow(
 
   for (const step of chain) {
     const start = Date.now();
+    const stepCfg = buildAgentConfig(config, step);
     const prompt = `Previous context:\n${accumulatedContext}\n\nContinue the workflow. Build upon what the previous agents have produced.`;
 
     try {
       const response = await queryLLM(
         [{ id: step.agentId, text: prompt, sender: 0 as any, timestamp: new Date() }],
-        config,
+        stepCfg,
         contextDocs,
         step.systemPrompt
       );

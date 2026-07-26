@@ -13,7 +13,7 @@ last_updated: "2026-07-26"
 ## 1. Executive Summary
 
 The 6-Tier Memory Architecture provides structured state management and knowledge persistence. It is implemented across:
-- `src/db/indexedDB.ts` — Generic IndexedDB CRUD (19 object stores)
+- `src/db/indexedDB.ts` — Generic IndexedDB CRUD (22 object stores, v2)
 - `src/services/memoryApi.ts` — Domain-specific memory tier API
 - `src/services/embeddingWorker.ts` — Web Worker for Transformers.js vector embeddings
 - `src/services/oramaService.ts` — Orama JS hybrid vector search

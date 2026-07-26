@@ -1,4 +1,5 @@
 import type { DBSchema } from '../db/indexedDB';
+import { dbGetAll } from '../db/indexedDB';
 
 let db: any = null;
 let oramaInsert: any = null;
@@ -39,6 +40,22 @@ async function initOrama() {
     return db;
   })();
   return initPromise;
+}
+
+export async function oramaRebuildFromDB(): Promise<void> {
+  await oramaClear();
+  const entries = await dbGetAll<any>('semantic');
+  for (const entry of entries) {
+    await oramaInsertEntry({
+      id: entry.id,
+      projectId: entry.projectId,
+      agentId: entry.agentId,
+      topic: entry.topic,
+      text: entry.text,
+      embedding: entry.embedding || [],
+      createdAt: entry.createdAt,
+    });
+  }
 }
 
 export async function oramaInsertEntry(entry: OramaEntry): Promise<void> {
