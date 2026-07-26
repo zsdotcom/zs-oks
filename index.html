@@ -26,15 +26,6 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/index.tsx"></script>
-  <script>
-    // Register service worker for PWA offline support
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {
-          // Service worker registration failed — app still works online
-        });
-      });
-    }
-  </script>
+  <script type="module" src="/src/sw-register.ts"></script>
 </body>
 </html>
