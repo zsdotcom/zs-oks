@@ -4,7 +4,7 @@
 **Date:** July 25, 2026
 **Author:** Manus AI
 **Target Repository:** Open Knowledge Studio v1.0
-**Test Framework:** Vitest 3.x + Vite 8 + happy-dom + fake-indexeddb
+**Test Framework:** Vitest 4.x + Vite 8 + happy-dom + fake-indexeddb
 
 ---
 
@@ -40,8 +40,8 @@ The following packages are required for the test suite. All are free and open-so
 
 | Package | Version | Purpose | Size |
 | :--- | :--- | :--- | :--- |
-| **vitest** | 3.x | Test runner (replaces Jest) | 2.4MB |
-| **happy-dom** | 16.x | DOM mocking environment | 1.2MB |
+| **vitest** | 4.x | Test runner (replaces Jest) | 2.4MB |
+| **happy-dom** | 20.x | DOM mocking environment | 1.2MB |
 | **fake-indexeddb** | 6.x | In-memory IndexedDB polyfill for Node.js | 200KB |
 | **@vitejs/plugin-react** | 6.x | React HMR + JSX transform | 1.1MB |
 

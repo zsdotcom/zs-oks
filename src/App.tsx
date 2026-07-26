@@ -22,11 +22,13 @@ import { WorkspaceDocumentEditor } from './components/WorkspaceDocumentEditor';
 import { A2AMetricsDashboard } from './components/A2AMetricsDashboard';
 import { GoogleWorkspacePanel } from './components/GoogleWorkspacePanel';
 import SearchPanel from './components/SearchPanel';
+import SettingsPanel from './components/SettingsPanel';
+import WorkspaceManager from './components/WorkspaceManager';
 import {
   Sparkles, Brain, Code, ShieldCheck, Database, GitMerge, Activity, BarChart,
   Edit, BookOpen, X, Search, MessageSquare, Settings, Folder, FileText,
   Moon, Sun, Cloud, Wifi, WifiOff, Layout, Menu, Clock, Users, Zap,
-  Globe, Layers, Template, Kanban, Download, Upload, Plus, Trash
+  Globe, Layers, Template, Kanban, Plus, Trash
 } from './components/icons/lucide-shim';
 
 /* ─── Initial Data ─── */
@@ -126,6 +128,7 @@ const App: React.FC = () => {
   const [sandboxSettings, setSandboxSettings] = useState<SandboxSettings>({ strictSandbox: true, allowedOutbound: true, showAuditLedger: false });
   const [showSettings, setShowSettings] = useState(false);
   const [showGooglePanel, setShowGooglePanel] = useState(false);
+  const [activeProjectId, setActiveProjectId] = useState<string>('default');
 
   // Persistence with IndexedDB
   useEffect(() => {
@@ -347,14 +350,37 @@ const App: React.FC = () => {
         {/* ─── Left Sidebar ─── */}
         {isSidebarOpen && (
           <aside className="w-72 border-r border-[#2a2a3e] bg-[#1a1a2e]/50 flex flex-col shrink-0 overflow-hidden">
-            <KnowledgeBaseManager
-              files={files}
-              folders={folders}
-              setFiles={setFiles}
-              setFolders={setFolders}
-              onFileSelect={handleFileSelect}
-              activeFileId={activeFile?.id || null}
-            />
+            <div className="flex-1 overflow-y-auto">
+              <WorkspaceManager
+                files={files}
+                folders={folders}
+                agents={a2aAgents}
+                tags={tags}
+                activeProjectId={activeProjectId}
+                onSwitchProject={setActiveProjectId}
+                onCreateProject={(name) => {
+                  const id = `proj-${Date.now()}`;
+                  setFolders((prev) => [...prev, { id, name }]);
+                  setActiveProjectId(id);
+                }}
+                onDeleteProject={(id) => {
+                  setFolders((prev) => prev.filter((f) => f.id !== id));
+                  setFiles((prev) => prev.filter((f) => f.parentFolderId !== id));
+                  if (activeProjectId === id) setActiveProjectId('default');
+                }}
+                onAddAgent={() => {}}
+                onRemoveAgent={() => {}}
+              />
+              <div className="border-t border-[#2a2a3e] my-2" />
+              <KnowledgeBaseManager
+                files={files}
+                folders={folders}
+                setFiles={setFiles}
+                setFolders={setFolders}
+                onFileSelect={handleFileSelect}
+                activeFileId={activeFile?.id || null}
+              />
+            </div>
           </aside>
         )}
 
@@ -440,90 +466,19 @@ const App: React.FC = () => {
       </div>
 
       {/* ─── Settings Modal ─── */}
-      {showSettings && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowSettings(false)}>
-          <div className="bg-[#1a1a2e] rounded-xl border border-[#2a2a3e] w-full max-w-lg max-h-[80vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-sm font-semibold">Settings</h2>
-              <button onClick={() => setShowSettings(false)}><X size={16} /></button>
-            </div>
-
-            {/* LLM Provider */}
-            <div className="space-y-3 mb-6">
-              <h3 className="text-xs font-medium text-gray-400">AI Provider</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {(['gemini', 'openai', 'anthropic', 'deepseek', 'groq', 'ollama'] as const).map((p) => (
-                  <button key={p} onClick={() => setProviderConfig((c) => ({ ...c, provider: p }))} className={`p-2 rounded-lg text-xs border transition-colors ${providerConfig.provider === p ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400' : 'border-[#2a2a3e] hover:border-[#3a3a4e]'}`}>
-                    {p.charAt(0).toUpperCase() + p.slice(1)}
-                  </button>
-                ))}
-              </div>
-              <input
-                type="text"
-                value={providerConfig.apiKey}
-                onChange={(e) => setProviderConfig((c) => ({ ...c, apiKey: e.target.value }))}
-                placeholder="API Key..."
-                className="w-full bg-[#0f0f1a] border border-[#2a2a3e] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-indigo-500/50"
-              />
-              <input
-                type="text"
-                value={providerConfig.selectedModel}
-                onChange={(e) => setProviderConfig((c) => ({ ...c, selectedModel: e.target.value }))}
-                placeholder="Model (e.g., gemini-3.5-flash)"
-                className="w-full bg-[#0f0f1a] border border-[#2a2a3e] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-indigo-500/50"
-              />
-              <div className="flex items-center gap-3">
-                <label className="text-xs text-gray-400">Temperature:</label>
-                <input type="range" min={0} max={1} step={0.1} value={providerConfig.temperature} onChange={(e) => setProviderConfig((c) => ({ ...c, temperature: parseFloat(e.target.value) }))} className="flex-1 accent-indigo-500" />
-                <span className="text-xs w-8">{providerConfig.temperature}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <input type="checkbox" checked={providerConfig.enableThinking} onChange={(e) => setProviderConfig((c) => ({ ...c, enableThinking: e.target.checked }))} className="accent-indigo-500" />
-                <label className="text-xs">Enable thinking mode</label>
-              </div>
-              <div className="flex items-center gap-2">
-                <input type="checkbox" checked={providerConfig.enableSearchGrounding} onChange={(e) => setProviderConfig((c) => ({ ...c, enableSearchGrounding: e.target.checked }))} className="accent-indigo-500" />
-                <label className="text-xs">Enable web search grounding</label>
-              </div>
-            </div>
-
-            {/* Data Management */}
-            <div className="space-y-3 mb-6">
-              <h3 className="text-xs font-medium text-gray-400">Data Management</h3>
-              <div className="flex gap-2">
-                <button onClick={handleExportAll} className="flex items-center gap-1 text-xs bg-[#0f0f1a] border border-[#2a2a3e] rounded-lg px-3 py-2 hover:border-indigo-500/50">
-                  <Download size={12} /> Export All Data
-                </button>
-                <label className="flex items-center gap-1 text-xs bg-[#0f0f1a] border border-[#2a2a3e] rounded-lg px-3 py-2 hover:border-indigo-500/50 cursor-pointer">
-                  <Upload size={12} /> Import Data
-                  <input type="file" accept=".json" onChange={handleImport} className="hidden" />
-                </label>
-              </div>
-            </div>
-
-            {/* A2A Agent Management */}
-            <div className="space-y-3">
-              <h3 className="text-xs font-medium text-gray-400">A2A Agents</h3>
-              {a2aAgents.map((agent) => (
-                <div key={agent.id} className="flex items-center gap-2 p-2 rounded bg-[#0f0f1a] border border-[#2a2a3e]">
-                  <span className="text-sm">{agent.avatar}</span>
-                  <div className="flex-1">
-                    <span className="text-xs font-medium">{agent.name}</span>
-                    <span className="block text-[10px] text-gray-500">{agent.role}</span>
-                  </div>
-                </div>
-              ))}
-              <button
-                onClick={() => handleA2ADebate('Discuss the best approach to build a resilient knowledge base for field researchers')}
-                disabled={isA2ALoading}
-                className="w-full py-2 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-1"
-              >
-                {isA2ALoading ? 'Running debate...' : 'Run Demo Debate'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <SettingsPanel
+        show={showSettings}
+        onClose={() => setShowSettings(false)}
+        providerConfig={providerConfig}
+        onProviderConfigChange={setProviderConfig}
+        a2aAgents={a2aAgents}
+        isA2ALoading={isA2ALoading}
+        onRunDebate={() => handleA2ADebate('Discuss the best approach to build a resilient knowledge base for field researchers')}
+        onExportAll={handleExportAll}
+        onImport={handleImport}
+        sandboxSettings={sandboxSettings}
+        onSandboxChange={setSandboxSettings}
+      />
 
       {/* ─── Footer Status Bar ─── */}
       <footer className="h-6 flex items-center justify-between px-3 bg-[#1a1a2e] border-t border-[#2a2a3e] text-[10px] text-gray-500 shrink-0 no-print">

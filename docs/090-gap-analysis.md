@@ -67,7 +67,7 @@ To support the v1.0 architecture, the following major upgrades to the tech stack
 | :--- | :--- | :--- | :--- |
 | **Vite** | 6.2.x | **8.1.x** | Switches to the Rust-based Rolldown bundler for massive build speedups. |
 | **React** | 19.1.x | **19.2.x** | Latest stable release with improved concurrent features. |
-| **TypeScript** | 5.8.x | **6.0.x** | Required for compatibility with React 19.2 and latest DOM typings. |
+| **TypeScript** | 5.8.x | **7.0.x** | Required for compatibility with React 19.2 and latest DOM typings. |
 | **Plugin React** | 5.0.x | **6.0.x** | Mandatory update for Vite 8 compatibility. |
 | **@types/node** | 22.x | **26.x** | Updated type definitions for Node.js APIs. |
 | **KaTeX** | N/A | **0.17.0+** | Pinned version for fast client-side math rendering. |

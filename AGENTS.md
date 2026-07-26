@@ -1,5 +1,22 @@
 # Open Knowledge Studio — Agent Instructions
 
+## Tech stack
+
+| Dependency | Version |
+| :--- | :--- |
+| React / React DOM | 19.2.7 |
+| Vite | 8.1.5 |
+| TypeScript | 7.0.2 |
+| @vitejs/plugin-react | 6.0.4 |
+| Vitest | 4.1.10 |
+| @vitest/coverage-v8 | 4.1.9 |
+| happy-dom | 20.10.6 |
+| fake-indexeddb | 6.2.5 |
+| @types/node | 26.1.1 |
+| @types/react / @types/react-dom | 19.2.17 / 19.2.3 |
+| KaTeX (CDN) | 0.18.1 |
+| Mermaid (CDN) | 11.16.0 |
+
 ## Quick start
 
 ```bash
@@ -37,18 +54,17 @@ public/
 
 index.html          # Entry point — loads Tailwind/KaTeX/Mermaid from CDN
 src/
-  index.tsx          # React entry (ReactDOM.createRoot)
-  App.tsx            # Monolithic component — ALL state in one file
-  types.ts           # ALL shared types/interfaces in one file
-  index.css          # Dark/light theme CSS variables, prose styles
+  index.tsx           # React entry (ReactDOM.createRoot)
+  App.tsx             # Monolithic component — ALL state in one file
+  types.ts            # ALL shared types/interfaces in one file
+  index.css           # Dark/light theme CSS variables, prose styles
   db/
-    indexedDB.ts     # 19 object stores, generic CRUD (dbGet/dbPut/dbDelete)
+    indexedDB.ts      # 19 object stores, generic CRUD (dbGet/dbPut/dbDelete)
   services/
-    geminiService.ts     # Multi-provider LLM router (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama)
-    googleAuthService.ts # Google OAuth (GIS) + Drive/Docs/Sheets REST API
-    searchService.ts     # Client-side token-based fuzzy search
+    geminiService.ts      # Multi-provider LLM router (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama)
+    googleAuthService.ts  # Google OAuth (GIS) + Drive/Docs/Sheets REST API
+    searchService.ts      # Client-side token-based fuzzy search
   components/
-    App.tsx                             # App.tsx IS the monolithic App component
     ChatInterface.tsx                   # AI chat with voice input, context grounding
     WorkspaceDocumentEditor.tsx         # Split-pane markdown editor + KaTeX/Mermaid preview
     KnowledgeBaseManager.tsx            # File/folder tree with drag-drop
