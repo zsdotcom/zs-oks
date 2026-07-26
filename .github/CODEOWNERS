@@ -1,21 +1,27 @@
 # Default owner for all files
-* @codeandbrain
+* @devopsariful @arwazarish @codeandbrain @healthbgd
 
 # CI/CD workflow ownership
-.github/workflows/ @codeandbrain
-.github/actions/ @codeandbrain
+.github/workflows/ @devopsariful @codeandbrain
+.github/actions/ @devopsariful @codeandbrain
+.github/CODEOWNERS @devopsariful @codeandbrain
 
 # Source code ownership
-src/ @codeandbrain
+src/ @codeandbrain @arwazarish
 
 # Documentation ownership
-docs/ @codeandbrain
-README.md @codeandbrain
-AGENTS.md @codeandbrain
+docs/ @codeandbrain @healthbgd
+README.md @codeandbrain @healthbgd
+AGENTS.md @codeandbrain @healthbgd
 
 # Infrastructure ownership
-Dockerfile @codeandbrain
-docker-compose.yml @codeandbrain
-nginx.conf @codeandbrain
-.vscode/ @codeandbrain
-.devcontainer/ @codeandbrain
+Dockerfile @devopsariful @codeandbrain
+docker-compose.yml @devopsariful @codeandbrain
+nginx.conf @devopsariful @codeandbrain
+.vscode/ @devopsariful @codeandbrain
+.devcontainer/ @devopsariful @codeandbrain
+
+# Testing ownership
+src/test/ @arwazarish @codeandbrain
+.github/workflows/ci.yml @arwazarish @devopsariful
+.github/workflows/deploy.yml @devopsariful @codeandbrain

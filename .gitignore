@@ -10,8 +10,8 @@ dist/
 .env.production
 .env.development
 
-# IDE & Editor
-.vscode/
+# IDE & Editor — specific files only, not the whole .vscode/
+.vscode/*.log
 .idea/
 *.swp
 *.swo
