@@ -51,7 +51,7 @@ async function queryGemini(
   systemPrompt?: string
 ): Promise<string> {
   const model = config.selectedModel || 'gemini-3.5-flash';
-  const apiKey = config.apiKey || (import.meta as any).env?.GEMINI_API_KEY || '';
+  const apiKey = config.apiKey || (typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_GEMINI_API_KEY : '') || '';
 
   if (!apiKey) throw new Error('Gemini API key is required. Set GEMINI_API_KEY in .env or provider config.');
 

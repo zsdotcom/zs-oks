@@ -1,20 +1,17 @@
-/**
- * Open Knowledge Studio v2 — Main Application
- * World-class, free, no-code-friendly knowledge studio.
- * @license SPDX-License-Identifier: Apache-2.0
- */
-
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   ChatMessage, MessageSender, KBFile, KBFolder, URLGroup,
   ProviderConfig, SavedPrompt, A2AAgent, A2AMetric, SandboxSettings,
   DocumentVersion, KanbanBoard, DocumentTemplate, DocumentTag,
-  AppView, AppUser, SearchResult, TaskColumn, TaskCard
+  AppView, AppUser, SearchResult, TaskColumn, TaskCard, MCPServer, MCPTool,
 } from './types';
 import { queryLLM, getInitialSuggestions, runA2ADebate } from './services/geminiService';
 import { signInWithGoogle, logoutUser, subscribeAuth, updateUserDoc } from './services/googleAuthService';
 import { search } from './services/searchService';
-import { dbGetAll, dbPut, dbDelete, dbGetKey, dbSetKey, migrateLocalStorage, exportAllData } from './db/indexedDB';
+import { dbGetAll, dbPut, dbDelete, dbGetKey, dbSetKey, migrateLocalStorage, exportAllData, importAllData } from './db/indexedDB';
+import { useDarkMode } from './hooks/usePersistence';
+import { useFiles } from './hooks/useFiles';
+import { useChat } from './hooks/useChat';
 import KnowledgeBaseManager from './components/KnowledgeBaseManager';
 import ChatInterface from './components/ChatInterface';
 import ThemeSwitcher from './components/ThemeSwitcher';
@@ -24,14 +21,18 @@ import { GoogleWorkspacePanel } from './components/GoogleWorkspacePanel';
 import SearchPanel from './components/SearchPanel';
 import SettingsPanel from './components/SettingsPanel';
 import WorkspaceManager from './components/WorkspaceManager';
+import { KanbanBoardView } from './components/KanbanBoardView';
+import { ChatSessionSidebar } from './components/ChatSessionSidebar';
+import { GmailCompose } from './components/GmailCompose';
+import { MCPServerPanel } from './components/MCPServerPanel';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import {
   Sparkles, Brain, Code, ShieldCheck, Database, GitMerge, Activity, BarChart,
   Edit, BookOpen, X, Search, MessageSquare, Settings, Folder, FileText,
   Moon, Sun, Cloud, Wifi, WifiOff, Layout, Menu, Clock, Users, Zap,
-  Globe, Layers, Template, Kanban, Plus, Trash
+  Globe, Layers, Template, Kanban, Plus, Trash, Mail,
 } from './components/icons/lucide-shim';
 
-/* ─── Initial Data ─── */
 const INITIAL_FOLDERS: KBFolder[] = [
   { id: 'dev-guidelines', name: 'Development Guidelines' },
   { id: 'market-research', name: 'Market Intelligence' },
@@ -80,7 +81,7 @@ const INITIAL_URL_GROUPS: URLGroup[] = [
   { id: 'model-capabilities', name: 'Model Capabilities', urls: ['https://ai.google.dev/gemini-api/docs/text-generation', 'https://ai.google.dev/gemini-api/docs/structured-output', 'https://ai.google.dev/gemini-api/docs/thinking'] },
 ];
 
-const INITIAL_A2A_AGENTS: A2AAgent[] = [
+const DEFAULT_A2A_AGENTS: A2AAgent[] = [
   { id: 'ux-agent', name: 'Design & UX Expert', role: 'Specialist in user interfaces and visual layout', avatar: '🎨', systemPrompt: 'You are an elite Design and User Experience Engineer. Focus heavily on layout, negative space, visual rhythm, micro-interactions, responsive sizing, and high-fidelity interface design.', color: '#3B82F6', isActive: true },
   { id: 'sec-agent', name: 'Cybersecurity Architect', role: 'Specialist in OAuth, API gateways, and encryption', avatar: '🛡️', systemPrompt: 'You are an elite Cybersecurity Architect. Critique design proposals from a threat perspective, advising on credentials security, token storage, least-privilege API access, and transport encryption.', color: '#EF4444', isActive: true },
   { id: 'qa-agent', name: 'Performance & QA Analyst', role: 'Specialist in testing, benchmarking, and edge cases', avatar: '⚙️', systemPrompt: 'You are an elite QA and Performance Automation Engineer. Focus on performance bottlenecks, latency benchmarking, memory leaks, invalid state handling, and end-to-end reliability.', color: '#10B981', isActive: true },
@@ -92,61 +93,88 @@ const INITIAL_SAVED_PROMPTS: SavedPrompt[] = [
   { id: 'p3', title: 'Performance & QA Analyst', description: 'Specialist in testing and benchmarking', content: 'You are an elite QA Engineer. Focus on performance bottlenecks, latency, memory leaks, and reliability.', category: 'QA & Testing', createdAt: new Date().toISOString() },
 ];
 
-/* ─── App Component ─── */
 const App: React.FC = () => {
-  // Core state
   const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
-  const [files, setFiles] = useState<KBFile[]>(INITIAL_FILES);
-  const [folders, setFolders] = useState<KBFolder[]>(INITIAL_FOLDERS);
-  const [providerConfig, setProviderConfig] = useState<ProviderConfig>(INITIAL_PROVIDER_CONFIG);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFetchingSuggestions, setIsFetchingSuggestions] = useState(false);
-  const [initialSuggestions, setInitialSuggestions] = useState<string[]>([]);
-  const [activeView, setActiveView] = useState<AppView>('chat');
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useDarkMode();
   const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [showChatSessions, setShowChatSessions] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showGooglePanel, setShowGooglePanel] = useState(false);
+  const [showGmailCompose, setShowGmailCompose] = useState(false);
 
-  // Feature state
-  const [activeFile, setActiveFile] = useState<KBFile | null>(null);
-  const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>(INITIAL_SAVED_PROMPTS);
-  const [a2aAgents] = useState<A2AAgent[]>(INITIAL_A2A_AGENTS);
+  const {
+    files, setFiles, folders, setFolders,
+    activeFile, setActiveFile,
+    documentVersions, setDocumentVersions,
+    handleFileSelect, handleSaveFile,
+  } = useFiles();
+
+  const [providerConfig, setProviderConfig] = useState<ProviderConfig>(INITIAL_PROVIDER_CONFIG);
+  const {
+    sessions, activeSessionId, messages,
+    isLoading, setIsLoading,
+    isFetchingSuggestions, setIsFetchingSuggestions,
+    initialSuggestions, setInitialSuggestions,
+    switchSession, createSession, deleteSession,
+    setMessages,
+  } = useChat(providerConfig);
+
+  const [a2aAgents, setA2aAgents] = useState<A2AAgent[]>(DEFAULT_A2A_AGENTS);
   const [a2aMetrics, setA2aMetrics] = useState<A2AMetric[]>([]);
   const [isA2ALoading, setIsA2ALoading] = useState(false);
-  const [documentVersions, setDocumentVersions] = useState<DocumentVersion[]>([]);
+  const [activeView, setActiveView] = useState<AppView>('chat');
   const [templates] = useState<DocumentTemplate[]>(INITIAL_TEMPLATES);
   const [tags] = useState<DocumentTag[]>([
     { id: 'tag-1', name: 'epidemiology', color: '#ef4444' },
     { id: 'tag-2', name: 'architecture', color: '#3b82f6' },
     { id: 'tag-3', name: 'research', color: '#10b981' },
   ]);
-  const [kanbanBoards, setKanbanBoards] = useState<KanbanBoard[]>([]);
   const [urlGroups] = useState<URLGroup[]>(INITIAL_URL_GROUPS);
-
-  // Settings state
+  const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>(INITIAL_SAVED_PROMPTS);
   const [sandboxSettings, setSandboxSettings] = useState<SandboxSettings>({ strictSandbox: true, allowedOutbound: true, showAuditLedger: false });
-  const [showSettings, setShowSettings] = useState(false);
-  const [showGooglePanel, setShowGooglePanel] = useState(false);
   const [activeProjectId, setActiveProjectId] = useState<string>('default');
+  const [showComposeEmail, setShowComposeEmail] = useState(false);
 
-  // Persistence with IndexedDB
+  // Kanban state
+  const [kanbanBoards, setKanbanBoards] = useState<KanbanBoard[]>([
+    { id: 'board-1', title: 'Project Tasks', columns: [
+      { id: 'col-todo', title: 'To Do', color: '#3B82F6', order: 0 },
+      { id: 'col-progress', title: 'In Progress', color: '#F59E0B', order: 1 },
+      { id: 'col-done', title: 'Done', color: '#10B981', order: 2 },
+    ], cards: [] },
+  ]);
+  const [activeBoardId, setActiveBoardId] = useState('board-1');
+
+  // MCP state
+  const [mcpServers, setMcpServers] = useState<MCPServer[]>([]);
+
   useEffect(() => {
     migrateLocalStorage();
+    dbGetAll<A2AAgent>('a2aAgents').then((loaded) => {
+      if (loaded.length > 0) setA2aAgents(loaded);
+    }).catch(() => {});
+    dbGetAll<KanbanBoard>('kanban').then((loaded) => {
+      if (loaded.length > 0) { setKanbanBoards(loaded); setActiveBoardId(loaded[0].id); }
+    }).catch(() => {});
+    dbGetAll<MCPServer>('sandbox').then((loaded) => {
+      if (loaded.length > 0) setMcpServers(loaded);
+    }).catch(() => {});
   }, []);
 
-  // Save files to IndexedDB on change
   useEffect(() => {
-    files.forEach((f) => dbPut('files', f));
-  }, [files]);
+    a2aAgents.forEach((a) => dbPut('a2aAgents', a).catch(() => {}));
+  }, [a2aAgents]);
 
-  // Auth subscription
+  useEffect(() => {
+    kanbanBoards.forEach((b) => dbPut('kanban', { id: `kb-${b.id}`, boards: JSON.stringify(b) }).catch(() => {}));
+  }, [kanbanBoards]);
+
   useEffect(() => {
     const unsub = subscribeAuth((u) => setCurrentUser(u));
     return unsub;
   }, []);
 
-  // Online/offline detection
   useEffect(() => {
     const onOnline = () => setIsOnline(true);
     const onOffline = () => setIsOnline(false);
@@ -155,35 +183,6 @@ const App: React.FC = () => {
     return () => { window.removeEventListener('online', onOnline); window.removeEventListener('offline', onOffline); };
   }, []);
 
-  // Theme toggle
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      document.documentElement.style.colorScheme = 'dark';
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.style.colorScheme = 'light';
-    }
-  }, [isDarkMode]);
-
-  // Auto-save document versions (every 30s)
-  useEffect(() => {
-    if (!activeFile) return;
-    const interval = setInterval(() => {
-      const version: DocumentVersion = {
-        id: `v-${Date.now()}`,
-        documentId: activeFile.id,
-        content: activeFile.content,
-        createdAt: new Date(),
-        size: `${(activeFile.content.length / 1024).toFixed(1)} KB`,
-        label: `Auto-saved ${new Date().toLocaleTimeString()}`,
-      };
-      setDocumentVersions((prev) => [...prev.slice(-50), version]);
-    }, 30000);
-    return () => clearInterval(interval);
-  }, [activeFile?.content]);
-
-  // Cloud sync (when signed in)
   useEffect(() => {
     if (!currentUser) return;
     const interval = setInterval(() => {
@@ -198,19 +197,10 @@ const App: React.FC = () => {
     return () => clearInterval(interval);
   }, [currentUser, files, folders, providerConfig, savedPrompts]);
 
-  // File selection handler
-  const handleFileSelect = useCallback((file: KBFile) => {
-    setActiveFile(file);
-    setActiveView('editor');
-  }, []);
+  const handleSaveFileWrapper = useCallback((updatedFile: KBFile) => {
+    handleSaveFile(updatedFile);
+  }, [handleSaveFile]);
 
-  // Save file handler
-  const handleSaveFile = useCallback((updatedFile: KBFile) => {
-    setFiles((prev) => prev.map((f) => f.id === updatedFile.id ? updatedFile : f));
-    if (activeFile?.id === updatedFile.id) setActiveFile(updatedFile);
-  }, [activeFile]);
-
-  // Version save handler
   const handleSaveVersion = useCallback((docId: string, content: string, label?: string) => {
     const version: DocumentVersion = {
       id: `v-${Date.now()}`,
@@ -221,9 +211,9 @@ const App: React.FC = () => {
       label,
     };
     setDocumentVersions((prev) => [...prev, version]);
+    dbPut('versions', version).catch(() => {});
   }, []);
 
-  // A2A debate handler
   const handleA2ADebate = async (topic: string) => {
     setIsA2ALoading(true);
     const contextDocs = files.filter((f) => f.isActive).map((f) => `### ${f.name}\n${f.content}`).join('\n\n') || undefined;
@@ -241,31 +231,33 @@ const App: React.FC = () => {
       setA2aMetrics((prev) => [...prev, metric]);
     });
     setIsA2ALoading(false);
-
-    // Add debate summary to chat
     const summaryMsg: ChatMessage = {
       id: `debate-${Date.now()}`,
       text: `## A2A Debate Results\n\n${a2aAgents.map((a, i) => `### ${a.name}\n${responses[i]}`).join('\n\n')}\n\n### Consensus\n${responses[responses.length - 1]}`,
       sender: MessageSender.MODEL,
       timestamp: new Date(),
     };
-    setChatMessages((prev) => [...prev, summaryMsg]);
+    setMessages([...messages, summaryMsg]);
   };
 
-  // Import data handler
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const text = await file.text();
-    const data = JSON.parse(text);
-    if (data.files) setFiles(data.files);
-    if (data.folders) setFolders(data.folders);
-    if (data.providerConfig) setProviderConfig(data.providerConfig);
-    if (data.savedPrompts) setSavedPrompts(data.savedPrompts);
+    try {
+      const parsed = JSON.parse(text);
+      if (parsed.files) setFiles(parsed.files);
+      if (parsed.folders) setFolders(parsed.folders);
+      if (parsed.providerConfig) setProviderConfig(parsed.providerConfig);
+      if (parsed.savedPrompts) setSavedPrompts(parsed.savedPrompts);
+      if (parsed.a2aAgents) setA2aAgents(parsed.a2aAgents);
+      if (parsed.kanban) setKanbanBoards(parsed.kanban.map((b: any) => JSON.parse(b.boards)));
+      if (parsed.mcpServers) setMcpServers(parsed.mcpServers);
+      await importAllData(text);
+    } catch {}
     e.target.value = '';
   };
 
-  // Export all data
   const handleExportAll = async () => {
     const data = await exportAllData();
     const blob = new Blob([data], { type: 'application/json' });
@@ -277,223 +269,318 @@ const App: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
+  const activeBoard = kanbanBoards.find((b) => b.id === activeBoardId) || null;
+
+  const handleUpdateBoard = useCallback((board: KanbanBoard) => {
+    setKanbanBoards((prev) => prev.map((b) => b.id === board.id ? board : b));
+  }, []);
+
+  const handleCreateBoard = useCallback((title: string) => {
+    const board: KanbanBoard = {
+      id: `board-${Date.now()}`,
+      title,
+      columns: [
+        { id: 'col-todo', title: 'To Do', color: '#3B82F6', order: 0 },
+        { id: 'col-progress', title: 'In Progress', color: '#F59E0B', order: 1 },
+        { id: 'col-done', title: 'Done', color: '#10B981', order: 2 },
+      ],
+      cards: [],
+    };
+    setKanbanBoards((prev) => [...prev, board]);
+    setActiveBoardId(board.id);
+  }, []);
+
+  const handleDeleteBoard = useCallback((id: string) => {
+    setKanbanBoards((prev) => prev.filter((b) => b.id !== id));
+    if (activeBoardId === id) {
+      setKanbanBoards((prev) => {
+        if (prev.length > 0) setActiveBoardId(prev[0].id);
+        return prev;
+      });
+    }
+  }, [activeBoardId]);
+
+  const handleMCPAddServer = useCallback((server: MCPServer) => {
+    setMcpServers((prev) => {
+      const updated = prev.some((s) => s.id === server.id)
+        ? prev.map((s) => s.id === server.id ? server : s)
+        : [...prev, server];
+      dbPut('sandbox', { id: 'mcp-servers', settings: JSON.stringify(updated) }).catch(() => {});
+      return updated;
+    });
+  }, []);
+
+  const handleMCPRemoveServer = useCallback((id: string) => {
+    setMcpServers((prev) => {
+      const updated = prev.filter((s) => s.id !== id);
+      dbPut('sandbox', { id: 'mcp-servers', settings: JSON.stringify(updated) }).catch(() => {});
+      return updated;
+    });
+  }, []);
+
+  const handleMCPToggleTool = useCallback((serverId: string, toolName: string) => {
+    setMcpServers((prev) => prev.map((s) => s.id === serverId ? {
+      ...s, tools: s.tools.map((t) => t.name === toolName ? { ...t, isActive: !t.isActive } : t),
+    } : s));
+  }, []);
+
+  const navItems: { view: AppView; icon: React.ReactNode; label: string }[] = [
+    { view: 'chat', icon: <MessageSquare size={14} />, label: 'Chat' },
+    { view: 'editor', icon: <Edit size={14} />, label: 'Editor' },
+    { view: 'search', icon: <Search size={14} />, label: 'Search' },
+    { view: 'observability', icon: <Activity size={14} />, label: 'Dashboard' },
+    { view: 'kanban', icon: <Kanban size={14} />, label: 'Kanban' },
+    { view: 'templates', icon: <Template size={14} />, label: 'Templates' },
+    { view: 'mcp', icon: <Database size={14} />, label: 'MCP' },
+  ];
+
   return (
-    <div className="h-screen flex flex-col bg-[#0f0f1a] text-gray-200 overflow-hidden">
-      {/* ─── Top Navigation Bar ─── */}
-      <header className="h-11 flex items-center justify-between px-3 bg-[#1a1a2e] border-b border-[#2a2a3e] shrink-0 no-print">
-        <div className="flex items-center gap-3">
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1 rounded hover:bg-[#2a2a3e]">
-            <Menu size={16} className="text-gray-400" />
-          </button>
-          <div className="flex items-center gap-2">
-            <Brain size={18} className="text-indigo-400" />
-            <span className="text-sm font-semibold">Open Knowledge Studio</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400">v2.0</span>
-          </div>
-          {/* View switcher */}
-          <nav className="flex items-center gap-0.5 ml-4">
-            {([
-              { view: 'chat' as AppView, icon: <MessageSquare size={14} />, label: 'Chat' },
-              { view: 'editor' as AppView, icon: <Edit size={14} />, label: 'Editor' },
-              { view: 'search' as AppView, icon: <Search size={14} />, label: 'Search' },
-              { view: 'observability' as AppView, icon: <Activity size={14} />, label: 'Dashboard' },
-              { view: 'templates' as AppView, icon: <Template size={14} />, label: 'Templates' },
-            ]).map(({ view, icon, label }) => (
-              <button
-                key={view}
-                onClick={() => setActiveView(view)}
-                className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${activeView === view ? 'bg-indigo-600/20 text-indigo-400' : 'text-gray-500 hover:text-gray-300'}`}
-              >
-                {icon}
-                <span className="hidden md:inline">{label}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {/* Online/Offline indicator */}
-          <div className="flex items-center gap-1 text-[10px]">
-            {isOnline ? <Wifi size={12} className="text-green-400" /> : <WifiOff size={12} className="text-red-400" />}
-            <span className={isOnline ? 'text-green-400' : 'text-red-400'}>{isOnline ? 'Online' : 'Offline'}</span>
-          </div>
-
-          {/* Cloud sync indicator */}
-          {currentUser && <Cloud size={14} className="text-indigo-400" />}
-
-          {/* Google Workspace */}
-          <button onClick={() => setShowGooglePanel(!showGooglePanel)} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Google Workspace">
-            <Globe size={14} className="text-gray-400" />
-          </button>
-
-          {/* Theme toggle */}
-          <ThemeSwitcher isDark={isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} />
-
-          {/* Settings */}
-          <button onClick={() => setShowSettings(!showSettings)} className="p-1.5 rounded hover:bg-[#2a2a3e]">
-            <Settings size={14} className="text-gray-400" />
-          </button>
-
-          {/* Auth */}
-          {currentUser ? (
-            <button onClick={logoutUser} className="flex items-center gap-1 text-xs text-gray-400 hover:text-red-400" title={currentUser.email || ''}>
-              {currentUser.photoURL && <img src={currentUser.photoURL} alt="" className="w-5 h-5 rounded-full" />}
+    <ErrorBoundary>
+      <div className="h-screen flex flex-col bg-[#0f0f1a] text-gray-200 overflow-hidden">
+        <header className="h-11 flex items-center justify-between px-3 bg-[#1a1a2e] border-b border-[#2a2a3e] shrink-0 no-print">
+          <div className="flex items-center gap-3">
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1 rounded hover:bg-[#2a2a3e]">
+              <Menu size={16} className="text-gray-400" />
             </button>
-          ) : (
-            <button onClick={signInWithGoogle} className="text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700">Sign in</button>
-          )}
-        </div>
-      </header>
-
-      {/* ─── Main Content ─── */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* ─── Left Sidebar ─── */}
-        {isSidebarOpen && (
-          <aside className="w-72 border-r border-[#2a2a3e] bg-[#1a1a2e]/50 flex flex-col shrink-0 overflow-hidden">
-            <div className="flex-1 overflow-y-auto">
-              <WorkspaceManager
-                files={files}
-                folders={folders}
-                agents={a2aAgents}
-                tags={tags}
-                activeProjectId={activeProjectId}
-                onSwitchProject={setActiveProjectId}
-                onCreateProject={(name) => {
-                  const id = `proj-${Date.now()}`;
-                  setFolders((prev) => [...prev, { id, name }]);
-                  setActiveProjectId(id);
-                }}
-                onDeleteProject={(id) => {
-                  setFolders((prev) => prev.filter((f) => f.id !== id));
-                  setFiles((prev) => prev.filter((f) => f.parentFolderId !== id));
-                  if (activeProjectId === id) setActiveProjectId('default');
-                }}
-                onAddAgent={() => {}}
-                onRemoveAgent={() => {}}
-              />
-              <div className="border-t border-[#2a2a3e] my-2" />
-              <KnowledgeBaseManager
-                files={files}
-                folders={folders}
-                setFiles={setFiles}
-                setFolders={setFolders}
-                onFileSelect={handleFileSelect}
-                activeFileId={activeFile?.id || null}
-              />
+            <div className="flex items-center gap-2">
+              <Brain size={18} className="text-indigo-400" />
+              <span className="text-sm font-semibold hidden sm:inline">Open Knowledge Studio</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400">v2.0</span>
             </div>
-          </aside>
-        )}
+            <nav className="flex items-center gap-0.5 ml-4 overflow-x-auto">
+              {navItems.map(({ view, icon, label }) => (
+                <button
+                  key={view}
+                  onClick={() => setActiveView(view)}
+                  className={`flex items-center gap-1 px-2 py-1 rounded text-xs whitespace-nowrap transition-colors ${activeView === view ? 'bg-indigo-600/20 text-indigo-400' : 'text-gray-500 hover:text-gray-300'}`}
+                >
+                  {icon}
+                  <span className="hidden md:inline">{label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1 text-[10px]">
+              {isOnline ? <Wifi size={12} className="text-green-400" /> : <WifiOff size={12} className="text-red-400" />}
+              <span className={`hidden sm:inline ${isOnline ? 'text-green-400' : 'text-red-400'}`}>{isOnline ? 'Online' : 'Offline'}</span>
+            </div>
+            {currentUser && <Cloud size={14} className="text-indigo-400" />}
+            <button onClick={() => { setShowGooglePanel(!showGooglePanel); setShowGmailCompose(false); }} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Google Workspace">
+              <Globe size={14} className="text-gray-400" />
+            </button>
+            <button onClick={() => { setShowGmailCompose(!showGmailCompose); setShowGooglePanel(false); }} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Compose Email" disabled={!currentUser}>
+              <Mail size={14} className="text-gray-400" />
+            </button>
+            <ThemeSwitcher isDark={isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} />
+            <button onClick={() => setShowSettings(!showSettings)} className="p-1.5 rounded hover:bg-[#2a2a3e]">
+              <Settings size={14} className="text-gray-400" />
+            </button>
+            {currentUser ? (
+              <button onClick={logoutUser} className="flex items-center gap-1 text-xs text-gray-400 hover:text-red-400" title={currentUser.email || ''}>
+                {currentUser.photoURL && <img src={currentUser.photoURL} alt="" className="w-5 h-5 rounded-full" />}
+              </button>
+            ) : (
+              <button onClick={signInWithGoogle} className="text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700">Sign in</button>
+            )}
+          </div>
+        </header>
 
-        {/* ─── Center Panel ─── */}
-        <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          {activeView === 'chat' && (
-            <ChatInterface
-              messages={chatMessages}
-              setMessages={setChatMessages}
-              providerConfig={providerConfig}
-              files={files}
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
-              initialSuggestions={initialSuggestions}
-              isFetchingSuggestions={isFetchingSuggestions}
-              setIsFetchingSuggestions={setIsFetchingSuggestions}
-              setInitialSuggestions={setInitialSuggestions}
-            />
-          )}
-
-          {activeView === 'editor' && (
-            <WorkspaceDocumentEditor
-              file={activeFile}
-              onSave={handleSaveFile}
-              versions={documentVersions}
-              onSaveVersion={handleSaveVersion}
-              templates={templates.map((t) => ({ id: t.id, name: t.name, content: t.content, category: t.category }))}
-            />
-          )}
-
-          {activeView === 'search' && (
-            <SearchPanel files={files} tags={tags} onFileSelect={handleFileSelect} />
-          )}
-
-          {activeView === 'observability' && (
-            <A2AMetricsDashboard metrics={a2aMetrics} agents={a2aAgents.map((a) => ({ id: a.id, name: a.name, color: a.color, avatar: a.avatar }))} />
-          )}
-
-          {activeView === 'templates' && (
-            <div className="p-4 overflow-y-auto">
-              <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Template size={16} className="text-indigo-400" /> Document Templates</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {templates.map((t) => (
-                  <div key={t.id} className="p-4 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e] hover:border-indigo-500/30 transition-colors">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-xs font-medium">{t.name}</h3>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400">{t.category}</span>
-                    </div>
-                    <p className="text-[10px] text-gray-500 mb-3">{t.description}</p>
-                    <button
-                      onClick={() => {
-                        const newFile: KBFile = {
-                          id: `template-${Date.now()}`,
-                          name: `${t.name}.md`,
-                          type: 'markdown',
-                          content: t.content,
-                          size: `${(t.content.length / 1024).toFixed(1)} KB`,
-                          parentFolderId: null,
-                          isActive: false,
-                          createdAt: new Date(),
-                        };
-                        setFiles((prev) => [newFile, ...prev]);
-                        setActiveFile(newFile);
-                        setActiveView('editor');
-                      }}
-                      className="text-[10px] bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700"
-                    >
-                      Use Template
-                    </button>
-                  </div>
-                ))}
+        <div className="flex-1 flex overflow-hidden">
+          {isSidebarOpen && (
+            <aside className="w-72 border-r border-[#2a2a3e] bg-[#1a1a2e]/50 flex flex-col shrink-0 overflow-hidden hidden md:flex">
+              <div className="flex-1 overflow-y-auto">
+                <WorkspaceManager
+                  files={files}
+                  folders={folders}
+                  agents={a2aAgents}
+                  tags={tags}
+                  activeProjectId={activeProjectId}
+                  onSwitchProject={setActiveProjectId}
+                  onCreateProject={(name) => {
+                    const id = `proj-${Date.now()}`;
+                    setFolders((prev) => [...prev, { id, name }]);
+                    setActiveProjectId(id);
+                  }}
+                  onDeleteProject={(id) => {
+                    setFolders((prev) => prev.filter((f) => f.id !== id));
+                    setFiles((prev) => prev.filter((f) => f.parentFolderId !== id));
+                    if (activeProjectId === id) setActiveProjectId('default');
+                  }}
+                  onAddAgent={() => {}}
+                  onRemoveAgent={() => {}}
+                />
+                <div className="border-t border-[#2a2a3e] my-2" />
+                <KnowledgeBaseManager
+                  files={files}
+                  folders={folders}
+                  setFiles={setFiles}
+                  setFolders={setFolders}
+                  onFileSelect={(file) => { handleFileSelect(file); setActiveView('editor'); }}
+                  activeFileId={activeFile?.id || null}
+                />
               </div>
-            </div>
+            </aside>
           )}
-        </main>
 
-        {/* ─── Right Panel (Google Workspace) ─── */}
-        {showGooglePanel && (
-          <aside className="w-80 border-l border-[#2a2a3e] bg-[#1a1a2e]/50 shrink-0">
-            <GoogleWorkspacePanel currentFile={activeFile || undefined} />
-          </aside>
-        )}
+          <main className="flex-1 flex min-w-0 overflow-hidden">
+            {activeView === 'chat' && (
+              <div className="flex flex-1">
+                {showChatSessions && (
+                  <ChatSessionSidebar
+                    sessions={sessions}
+                    activeSessionId={activeSessionId}
+                    onSwitch={switchSession}
+                    onCreate={createSession}
+                    onDelete={deleteSession}
+                    onClose={() => setShowChatSessions(false)}
+                  />
+                )}
+                <div className="flex-1 flex flex-col min-w-0">
+                  <div className="flex items-center gap-2 px-3 py-1 border-b border-[#2a2a3e] shrink-0">
+                    <button onClick={() => setShowChatSessions(!showChatSessions)} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400" title="Chat sessions">
+                      <MessageSquare size={12} />
+                    </button>
+                    <span className="text-[10px] text-gray-500">{sessions.length} sessions</span>
+                    <button onClick={createSession} className="ml-auto p-1 rounded hover:bg-[#2a2a3e] text-gray-400" title="New chat"><Plus size={12} /></button>
+                  </div>
+                  <ChatInterface
+                    messages={messages}
+                    setMessages={setMessages}
+                    providerConfig={providerConfig}
+                    files={files}
+                    isLoading={isLoading}
+                    setIsLoading={setIsLoading}
+                    initialSuggestions={initialSuggestions}
+                    isFetchingSuggestions={isFetchingSuggestions}
+                    setIsFetchingSuggestions={setIsFetchingSuggestions}
+                    setInitialSuggestions={setInitialSuggestions}
+                  />
+                </div>
+              </div>
+            )}
+
+            {activeView === 'editor' && (
+              <WorkspaceDocumentEditor
+                file={activeFile}
+                onSave={handleSaveFileWrapper}
+                versions={documentVersions}
+                onSaveVersion={handleSaveVersion}
+                templates={templates.map((t) => ({ id: t.id, name: t.name, content: t.content, category: t.category }))}
+              />
+            )}
+
+            {activeView === 'search' && (
+              <SearchPanel files={files} tags={tags} onFileSelect={(file) => { handleFileSelect(file); setActiveView('editor'); }} />
+            )}
+
+            {activeView === 'observability' && (
+              <A2AMetricsDashboard metrics={a2aMetrics} agents={a2aAgents.map((a) => ({ id: a.id, name: a.name, color: a.color, avatar: a.avatar }))} />
+            )}
+
+            {activeView === 'kanban' && (
+              <KanbanBoardView
+                board={activeBoard}
+                boards={kanbanBoards}
+                onUpdateBoard={handleUpdateBoard}
+                onCreateBoard={handleCreateBoard}
+                onDeleteBoard={handleDeleteBoard}
+                onSwitchBoard={(id) => setActiveBoardId(id)}
+              />
+            )}
+
+            {activeView === 'mcp' && (
+              <MCPServerPanel
+                servers={mcpServers}
+                onAddServer={handleMCPAddServer}
+                onRemoveServer={handleMCPRemoveServer}
+                onToggleTool={handleMCPToggleTool}
+              />
+            )}
+
+            {activeView === 'templates' && (
+              <div className="p-4 overflow-y-auto">
+                <h2 className="text-sm font-semibold mb-4 flex items-center gap-2"><Template size={16} className="text-indigo-400" /> Document Templates</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {templates.map((t) => (
+                    <div key={t.id} className="p-4 rounded-lg bg-[#1a1a2e] border border-[#2a2a3e] hover:border-indigo-500/30 transition-colors">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-xs font-medium">{t.name}</h3>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400">{t.category}</span>
+                      </div>
+                      <p className="text-[10px] text-gray-500 mb-3">{t.description}</p>
+                      <button
+                        onClick={() => {
+                          const newFile: KBFile = {
+                            id: `template-${Date.now()}`,
+                            name: `${t.name}.md`,
+                            type: 'markdown',
+                            content: t.content,
+                            size: `${(t.content.length / 1024).toFixed(1)} KB`,
+                            parentFolderId: null,
+                            isActive: false,
+                            createdAt: new Date(),
+                          };
+                          setFiles((prev) => [newFile, ...prev]);
+                          setActiveFile(newFile);
+                          setActiveView('editor');
+                        }}
+                        className="text-[10px] bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700"
+                      >
+                        Use Template
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </main>
+
+          {showGooglePanel && (
+            <aside className="w-80 border-l border-[#2a2a3e] bg-[#1a1a2e]/50 shrink-0 hidden md:block">
+              <GoogleWorkspacePanel currentFile={activeFile || undefined} />
+            </aside>
+          )}
+
+          {showGmailCompose && (
+            <aside className="w-80 border-l border-[#2a2a3e] bg-[#1a1a2e]/50 shrink-0 hidden md:block">
+              <GmailCompose
+                currentFile={activeFile || undefined}
+                userEmail={currentUser?.email}
+                onClose={() => setShowGmailCompose(false)}
+              />
+            </aside>
+          )}
+        </div>
+
+        <SettingsPanel
+          show={showSettings}
+          onClose={() => setShowSettings(false)}
+          providerConfig={providerConfig}
+          onProviderConfigChange={setProviderConfig}
+          a2aAgents={a2aAgents}
+          isA2ALoading={isA2ALoading}
+          onRunDebate={() => handleA2ADebate('Discuss the best approach to build a resilient knowledge base for field researchers')}
+          onExportAll={handleExportAll}
+          onImport={handleImport}
+          sandboxSettings={sandboxSettings}
+          onSandboxChange={setSandboxSettings}
+        />
+
+        <footer className="h-6 flex items-center justify-between px-3 bg-[#1a1a2e] border-t border-[#2a2a3e] text-[10px] text-gray-500 shrink-0 no-print">
+          <div className="flex items-center gap-3">
+            <span>{files.length} files</span>
+            <span>{folders.length} folders</span>
+            <span>{documentVersions.length} versions</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span>IndexedDB</span>
+            <span>{providerConfig.selectedModel}</span>
+            {currentUser && <span className="hidden sm:inline">{currentUser.email}</span>}
+          </div>
+        </footer>
       </div>
-
-      {/* ─── Settings Modal ─── */}
-      <SettingsPanel
-        show={showSettings}
-        onClose={() => setShowSettings(false)}
-        providerConfig={providerConfig}
-        onProviderConfigChange={setProviderConfig}
-        a2aAgents={a2aAgents}
-        isA2ALoading={isA2ALoading}
-        onRunDebate={() => handleA2ADebate('Discuss the best approach to build a resilient knowledge base for field researchers')}
-        onExportAll={handleExportAll}
-        onImport={handleImport}
-        sandboxSettings={sandboxSettings}
-        onSandboxChange={setSandboxSettings}
-      />
-
-      {/* ─── Footer Status Bar ─── */}
-      <footer className="h-6 flex items-center justify-between px-3 bg-[#1a1a2e] border-t border-[#2a2a3e] text-[10px] text-gray-500 shrink-0 no-print">
-        <div className="flex items-center gap-3">
-          <span>{files.length} files</span>
-          <span>{folders.length} folders</span>
-          <span>{documentVersions.length} versions</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <span>IndexedDB</span>
-          <span>Gemini 3.5 Flash</span>
-          {currentUser && <span>{currentUser.email}</span>}
-        </div>
-      </footer>
-    </div>
+    </ErrorBoundary>
   );
 };
 

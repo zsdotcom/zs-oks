@@ -319,3 +319,24 @@ export const LogOut = make('log-out', [
   <polyline key="2" points="16 17 21 12 16 7" />,
   <line key="3" x1="21" y1="12" x2="9" y2="12" />,
 ]);
+
+export const Printer = make('printer', [
+  <polyline key="1" points="6 9 6 2 18 2 18 9" />,
+  <path key="2" d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />,
+  <rect key="3" x="6" y="14" width="12" height="8" />,
+]);
+
+export const GripVertical = make('grip-vertical', [
+  <circle key="1" cx="9" cy="12" r="1" />,
+  <circle key="2" cx="9" cy="5" r="1" />,
+  <circle key="3" cx="9" cy="19" r="1" />,
+  <circle key="4" cx="15" cy="12" r="1" />,
+  <circle key="5" cx="15" cy="5" r="1" />,
+  <circle key="6" cx="15" cy="19" r="1" />,
+]);
+
+export const RefreshCw = make('refresh-cw', [
+  <polyline key="1" points="23 4 23 10 17 10" />,
+  <polyline key="2" points="1 20 1 14 7 14" />,
+  <path key="3" d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />,
+]);

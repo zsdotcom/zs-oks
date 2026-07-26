@@ -5,7 +5,29 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { KBFile, DocumentVersion } from '../types';
 import { parse, generateTOC } from '../utils/markdown';
-import { Edit, Download, Clock, Plus, X, Eye, Layout, Copy } from './icons/lucide-shim';
+import { Edit, Download, Clock, Plus, X, Eye, Layout, Copy, Printer } from './icons/lucide-shim';
+
+function printToPDF(fileName: string, html: string): void {
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) return;
+  printWindow.document.write(`<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>${fileName}</title>
+<style>
+  body { max-width: 800px; margin: 0 auto; padding: 2em; font-family: system-ui, sans-serif; color: #000; line-height: 1.6; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #ccc; padding: 0.4em 0.6em; text-align: left; }
+  th { background: #f5f5f5; }
+  pre { background: #f5f5f5; padding: 1em; border-radius: 4px; overflow-x: auto; }
+  code { background: #f5f5f5; padding: 0.15em 0.4em; border-radius: 3px; font-size: 0.88em; }
+  img { max-width: 100%; }
+  @media print { body { padding: 0; } }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.1/dist/katex.min.css">
+</head><body>${html}</body></html>`);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => printWindow.print(), 500);
+}
 
 interface Props {
   file: KBFile | null;
@@ -151,6 +173,7 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
           <button onClick={copyContent} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Copy"><Copy size={14} /></button>
           <button onClick={exportMarkdown} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Export .md"><Download size={14} /></button>
           <button onClick={exportHTML} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Export .html"><Download size={14} /></button>
+          <button onClick={() => printToPDF(file.name, renderedHTML)} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Print to PDF"><Printer size={14} /></button>
         </div>
       </div>
 

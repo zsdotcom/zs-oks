@@ -11,7 +11,7 @@ export interface AppUser {
   photoURL: string | null;
 }
 
-const CLIENT_ID: string = (import.meta as any).env?.VITE_GOOGLE_OAUTH_CLIENT_ID || '';
+const CLIENT_ID: string = (typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_GOOGLE_OAUTH_CLIENT_ID : '') || '';
 
 const SCOPES = [
   'openid', 'email', 'profile',

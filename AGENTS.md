@@ -111,9 +111,9 @@ src/
 
 ## ⚠️ Key gotchas
 
-- **Path alias `@/`** maps to *project root* in `vite.config.ts` (line: `'@': path.resolve(__dirname, '.')`) but tsconfig says `"./src/*"`. When using `@/` imports, resolve carefully — they are relative to root, not `src/`. E.g., `@/src/types` not `@/types`.
+- **Path alias `@/`** maps to `src/` in both `vite.config.ts` and `tsconfig.json`. Import from `@/types`, `@/components/...`, etc.
 - **Zero new runtime deps** policy. All icons, charts, markdown parsing, and syntax highlighting are custom inline implementations. No `lucide-react`, no charting library, no Markdown library, no syntax highlighter.
-- **API keys** are loaded via Vite's `define` from env vars (`process.env.GEMINI_API_KEY`, etc.) and also configurable at runtime through the Settings panel (stored in IndexedDB). The vite config uses `loadEnv` from the root `.` directory.
+- **API keys** are loaded from `import.meta.env.VITE_*` env vars (via Vite's built-in `VITE_` prefix convention) and also configurable at runtime through the Settings panel (stored in IndexedDB). The `.env.example` file documents all supported variables.
 - **Google OAuth** (`src/services/googleAuthService.ts`) loads GIS script from CDN dynamically. Set `VITE_GOOGLE_OAUTH_CLIENT_ID` in `.env`.
 - **The `docs/` directory** contains aspirational architecture docs that may be stale — trust the source code over them.
 - **Coverage thresholds** in vitest config: statements 80%, branches 75%, functions 85%, lines 80% — but no tests exist to satisfy them yet.

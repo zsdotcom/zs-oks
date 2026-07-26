@@ -218,7 +218,7 @@ export interface DocumentTemplate {
 }
 
 /* ─── App-wide State ─── */
-export type AppView = 'chat' | 'editor' | 'observability' | 'kanban' | 'templates' | 'search' | 'settings';
+export type AppView = 'chat' | 'editor' | 'observability' | 'kanban' | 'templates' | 'search' | 'settings' | 'mcp';
 
 export interface AppState {
   currentUser: AppUser | null;
