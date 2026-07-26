@@ -282,3 +282,142 @@ export async function getInitialSuggestions(config: ProviderConfig): Promise<str
     return [];
   }
 }
+
+/* ─── Feature 1: Orchestrated Workflow ─── */
+
+interface TaskDecomposition {
+  agentId: string;
+  subTask: string;
+  rationale: string;
+}
+
+async function decomposeTask(
+  topic: string,
+  agents: { id: string; name: string; role: string; systemPrompt: string; color: string; avatar: string }[],
+  config: ProviderConfig,
+  contextDocs?: string
+): Promise<TaskDecomposition[]> {
+  const agentDescriptions = agents
+    .filter((a) => a.id !== 'coord')
+    .map((a) => `- ${a.id}: ${a.name} — ${a.role}`)
+    .join('\n');
+
+  const prompt = `Analyze the following user request and decompose it into sub-tasks for specialized agents.
+
+Available agents:
+${agentDescriptions}
+
+User request: "${topic}"
+
+For each sub-task, specify which agent should handle it and what exactly they should do. 
+Return ONLY a JSON array of objects with fields: agentId, subTask, rationale.
+Example: [{"agentId":"research","subTask":"Find the latest R0 values for measles","rationale":"The researcher specializes in finding and synthesizing information"}]`;
+
+  const decompositionText = await queryLLM(
+    [{ id: 'decomp', text: prompt, sender: 0, timestamp: new Date() } as any],
+    config,
+    contextDocs,
+    'You are a workflow orchestrator. Decompose tasks precisely. Return ONLY valid JSON arrays.'
+  );
+
+  try {
+    const parsed = JSON.parse(decompositionText.replace(/```json|```/g, '').trim());
+    return Array.isArray(parsed) ? parsed.slice(0, 6) : [];
+  } catch {
+    return agents
+      .filter((a) => a.id !== 'coord')
+      .slice(0, 3)
+      .map((a) => ({ agentId: a.id, subTask: topic, rationale: 'Auto-assigned' }));
+  }
+}
+
+export async function runOrchestratedWorkflow(
+  topic: string,
+  agents: { id: string; name: string; role: string; systemPrompt: string; color: string; avatar: string }[],
+  config: ProviderConfig,
+  contextDocs?: string,
+  onAgentResponse?: (agentName: string, response: string, latency: number) => void
+): Promise<string> {
+  const agentMap = new Map(agents.map((a) => [a.id, a]));
+  const coordinator = agents.find((a) => a.id === 'coord');
+
+  // Step 1: Coordinator decomposes the task
+  const decomposition = await decomposeTask(topic, agents, config, contextDocs);
+  if (!decomposition.length) {
+    const responses = await runA2ADebate(topic, agents, config, contextDocs, onAgentResponse);
+    return responses.join('\n\n');
+  }
+
+  // Step 2: Execute sub-tasks sequentially
+  const subResults: { agentId: string; name: string; response: string }[] = [];
+  for (const step of decomposition) {
+    const agent = agentMap.get(step.agentId);
+    if (!agent) continue;
+
+    const start = Date.now();
+    const agentPrompt = `You are assigned the following sub-task:\n${step.subTask}\n\nRationale: ${step.rationale}\n\nOriginal request: ${topic}`;
+
+    try {
+      const response = await queryLLM(
+        [{ id: step.agentId, text: agentPrompt, sender: 0, timestamp: new Date() } as any],
+        config,
+        contextDocs,
+        agent.systemPrompt
+      );
+      const latency = Date.now() - start;
+      subResults.push({ agentId: step.agentId, name: agent.name, response });
+      onAgentResponse?.(agent.name, response, latency);
+    } catch (err) {
+      subResults.push({ agentId: step.agentId, name: agent.name, response: `[Error: ${(err as Error).message}]` });
+    }
+  }
+
+  // Step 3: Coordinator synthesizes
+  if (!coordinator) return subResults.map((r) => `### ${r.name}\n${r.response}`).join('\n\n');
+
+  const synthesisPrompt = `Original request: "${topic}"\n\nAgent results:\n${subResults.map((r) => `### ${r.name}\n${r.response}`).join('\n\n')}\n\nSynthesize these findings into a comprehensive, well-structured final response. Integrate all contributions, resolve contradictions, and provide a cohesive answer.`;
+
+  const finalResponse = await queryLLM(
+    [{ id: 'synth', text: synthesisPrompt, sender: 0 as any, timestamp: new Date() }],
+    config,
+    contextDocs,
+    coordinator.systemPrompt
+  );
+
+  return `## Orchestrated Workflow: ${topic}\n\n${subResults.map((r) => `### ${r.name}\n${r.response}`).join('\n\n')}\n\n## Synthesis\n${finalResponse}`;
+}
+
+/* ─── Feature 2: Sequential A2A Workflow ─── */
+
+export async function runSequentialWorkflow(
+  topic: string,
+  chain: { agentId: string; name: string; systemPrompt: string }[],
+  config: ProviderConfig,
+  contextDocs?: string,
+  onStepComplete?: (agentName: string, response: string, latency: number) => void
+): Promise<string> {
+  let accumulatedContext = topic;
+  const stepResults: { name: string; response: string }[] = [];
+
+  for (const step of chain) {
+    const start = Date.now();
+    const prompt = `Previous context:\n${accumulatedContext}\n\nContinue the workflow. Build upon what the previous agents have produced.`;
+
+    try {
+      const response = await queryLLM(
+        [{ id: step.agentId, text: prompt, sender: 0 as any, timestamp: new Date() }],
+        config,
+        contextDocs,
+        step.systemPrompt
+      );
+      const latency = Date.now() - start;
+      stepResults.push({ name: step.name, response });
+      onStepComplete?.(step.name, response, latency);
+      accumulatedContext += `\n\n### ${step.name} Output:\n${response}`;
+    } catch (err) {
+      stepResults.push({ name: step.name, response: `[Error: ${(err as Error).message}]` });
+    }
+  }
+
+  return `## Sequential Workflow: ${topic}\n\n${stepResults.map((r) => `### ${r.name}\n${r.response}`).join('\n\n')}`;
+}

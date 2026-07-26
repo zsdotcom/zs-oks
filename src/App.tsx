@@ -5,7 +5,7 @@ import {
   DocumentVersion, KanbanBoard, DocumentTemplate, DocumentTag,
   AppView, AppUser, SearchResult, TaskColumn, TaskCard, MCPServer, MCPTool,
 } from './types';
-import { queryLLM, getInitialSuggestions, runA2ADebate } from './services/geminiService';
+import { queryLLM, getInitialSuggestions, runA2ADebate, runOrchestratedWorkflow, runSequentialWorkflow } from './services/geminiService';
 import { signInWithGoogle, logoutUser, subscribeAuth, updateUserDoc } from './services/googleAuthService';
 import { search } from './services/searchService';
 import { dbGetAll, dbPut, dbDelete, dbGetKey, dbSetKey, migrateLocalStorage, exportAllData, importAllData } from './db/indexedDB';
@@ -85,7 +85,7 @@ const INITIAL_URL_GROUPS: URLGroup[] = [
 const DEFAULT_A2A_AGENTS: A2AAgent[] = [
   { id: 'coord', name: 'Coordinator', role: 'Orchestrates workflows and delegates tasks', avatar: '🎯', systemPrompt: `You are the Coordinator Agent of Open Knowledge Studio. Your role is to receive user requests and analyze their complexity. If the task is simple, handle it directly. If the task is complex, decompose it into sub-tasks and delegate to the appropriate specialized agents. Monitor progress and validate outputs before presenting to the user.`, color: '#8B5CF6', isActive: true },
   { id: 'research', name: 'Researcher', role: 'Searches and synthesizes information', avatar: '🔬', systemPrompt: `You are the Research Agent of Open Knowledge Studio. Your role is to identify research queries, synthesize findings from available information, and generate structured summaries with proper citations. Tag all findings with confidence levels.`, color: '#06B6D4', isActive: true },
-  { id: 'data', name: 'Data Analyst', role: 'Processes data and generates statistics', avatar: '📊', systemPrompt: `You are the Data Analyst Agent of Open Knowledge Studio. Your role is to process datasets, perform statistical analysis, generate visualizations, and compute metrics. Always sanitize inputs, handle missing data gracefully, and provide confidence intervals.`, color: '#F59E0B', isActive: true },
+  { id: 'data', name: 'Data Analyst', role: 'Processes data and generates statistics', avatar: '📊', systemPrompt: `You are the Data Analyst Agent of Open Knowledge Studio. Your role is to process datasets, perform statistical analysis, generate visualizations, and compute metrics. Always sanitize inputs, handle missing data gracefully, and provide confidence intervals. When presenting data, generate diagrams using Mermaid syntax (flowcharts, bar charts, pie charts, xy charts) inside \`\`\`mermaid code fences. Use KaTeX $$inline math$$ for statistical formulas.`, color: '#F59E0B', isActive: true },
   { id: 'writer', name: 'Writer', role: 'Drafts documents and formats outputs', avatar: '✍️', systemPrompt: `You are the Writer Agent of Open Knowledge Studio. Your role is to draft documents from structured data, apply templates, format outputs, and maintain consistent formatting. Ensure all claims are backed by evidence.`, color: '#10B981', isActive: true },
   { id: 'review', name: 'Reviewer', role: 'Quality checks and peer review', avatar: '🔍', systemPrompt: `You are the Reviewer Agent of Open Knowledge Studio. Your role is to perform quality checks, audit citations, validate compliance, and identify contradictory claims. Be specific and constructive in feedback.`, color: '#EF4444', isActive: true },
   { id: 'librarian', name: 'Librarian', role: 'Maintains memory and manages knowledge', avatar: '📚', systemPrompt: `You are the Librarian Agent of Open Knowledge Studio. Your role is to maintain memory, organize knowledge, manage references, and ensure information is properly indexed and retrievable.`, color: '#8B5CF6', isActive: true },
@@ -94,7 +94,7 @@ const DEFAULT_A2A_AGENTS: A2AAgent[] = [
 const INITIAL_SAVED_PROMPTS: SavedPrompt[] = [
   { id: 'p1', title: 'Coordinator Agent', description: 'Orchestrates workflows and delegates tasks', content: 'You are the Coordinator Agent of Open Knowledge Studio. Your role is to receive user requests and analyze their complexity. If the task is simple, handle it directly. If the task is complex, decompose it into sub-tasks and delegate to the appropriate specialized agents. Monitor progress and validate outputs before presenting to the user.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
   { id: 'p2', title: 'Researcher Agent', description: 'Searches and synthesizes information', content: 'You are the Research Agent of Open Knowledge Studio. Your role is to identify research queries, synthesize findings from available information, and generate structured summaries with proper citations. Tag all findings with confidence levels.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
-  { id: 'p3', title: 'Data Analyst Agent', description: 'Processes data and generates statistics', content: 'You are the Data Analyst Agent of Open Knowledge Studio. Your role is to process datasets, perform statistical analysis, generate visualizations, and compute metrics. Always sanitize inputs, handle missing data gracefully, and provide confidence intervals.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
+  { id: 'p3', title: 'Data Analyst Agent', description: 'Processes data and generates statistics', content: 'You are the Data Analyst Agent of Open Knowledge Studio. Your role is to process datasets, perform statistical analysis, generate visualizations, and compute metrics. Always sanitize inputs, handle missing data gracefully, and provide confidence intervals. When presenting data, generate diagrams using Mermaid syntax (flowcharts, bar charts, pie charts, xy charts) inside ```mermaid code fences. Use KaTeX $$inline math$$ for statistical formulas.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
   { id: 'p4', title: 'Writer Agent', description: 'Drafts documents and formats outputs', content: 'You are the Writer Agent of Open Knowledge Studio. Your role is to draft documents from structured data, apply templates, format outputs, and maintain consistent formatting. Ensure all claims are backed by evidence.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
   { id: 'p5', title: 'Reviewer Agent', description: 'Quality checks and peer review', content: 'You are the Reviewer Agent of Open Knowledge Studio. Your role is to perform quality checks, audit citations, validate compliance, and identify contradictory claims. Be specific and constructive in feedback.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
   { id: 'p6', title: 'Librarian Agent', description: 'Maintains memory and manages knowledge', content: 'You are the Librarian Agent of Open Knowledge Studio. Your role is to maintain memory, organize knowledge, manage references, and ensure information is properly indexed and retrievable.', category: 'A2A Workflow', createdAt: new Date().toISOString() },
@@ -245,6 +245,60 @@ const App: React.FC = () => {
       text: `## A2A Debate Results\n\n${a2aAgents.map((a, i) => `### ${a.name}\n${responses[i]}`).join('\n\n')}\n\n### Consensus\n${responses[responses.length - 1]}`,
       sender: MessageSender.MODEL,
       timestamp: new Date(),
+    };
+    setMessages([...messages, summaryMsg]);
+  };
+
+  const handleOrchestratedDebate = async () => {
+    const topic = `Design a comprehensive knowledge management strategy for field researchers`;
+    setIsA2ALoading(true);
+    const contextDocs = files.filter((f) => f.isActive).map((f) => `### ${f.name}\n${f.content}`).join('\n\n') || undefined;
+    const response = await runOrchestratedWorkflow(topic, a2aAgents, providerConfig, contextDocs, (agentName, response, latency) => {
+      const metric: A2AMetric = {
+        id: `m-${Date.now()}-${agentName}`,
+        timestamp: new Date().toISOString(), topic,
+        agentId: a2aAgents.find((a) => a.name === agentName)?.id || '',
+        agentName, latencyMs: latency,
+        tokensEstimated: Math.round(response.length / 4),
+        status: 'success',
+      };
+      setA2aMetrics((prev) => [...prev, metric]);
+    });
+    setIsA2ALoading(false);
+    const summaryMsg: ChatMessage = {
+      id: `orch-${Date.now()}`, text: response,
+      sender: MessageSender.MODEL, timestamp: new Date(),
+    };
+    setMessages([...messages, summaryMsg]);
+  };
+
+  const handleSequentialDebate = async () => {
+    const topic = `Draft a research report on epidemiological trends in emerging infectious diseases`;
+    setIsA2ALoading(true);
+    const contextDocs = files.filter((f) => f.isActive).map((f) => `### ${f.name}\n${f.content}`).join('\n\n') || undefined;
+    const rawChain = [
+      a2aAgents.find((a) => a.id === 'research')!,
+      a2aAgents.find((a) => a.id === 'writer')!,
+      a2aAgents.find((a) => a.id === 'review')!,
+      a2aAgents.find((a) => a.id === 'coord')!,
+    ].filter(Boolean);
+    const workflowChain = rawChain.map((a) => ({ agentId: a.id, name: a.name, systemPrompt: a.systemPrompt }));
+    if (workflowChain.length < 2) { setIsA2ALoading(false); return; }
+    const response = await runSequentialWorkflow(topic, workflowChain, providerConfig, contextDocs, (agentName, response, latency) => {
+      const metric: A2AMetric = {
+        id: `m-seq-${Date.now()}-${agentName}`,
+        timestamp: new Date().toISOString(), topic,
+        agentId: a2aAgents.find((a) => a.name === agentName)?.id || '',
+        agentName, latencyMs: latency,
+        tokensEstimated: Math.round(response.length / 4),
+        status: 'success',
+      };
+      setA2aMetrics((prev) => [...prev, metric]);
+    });
+    setIsA2ALoading(false);
+    const summaryMsg: ChatMessage = {
+      id: `seq-${Date.now()}`, text: response,
+      sender: MessageSender.MODEL, timestamp: new Date(),
     };
     setMessages([...messages, summaryMsg]);
   };

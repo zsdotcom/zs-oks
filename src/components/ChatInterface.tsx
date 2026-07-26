@@ -5,6 +5,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChatMessage, MessageSender, ProviderConfig, KBFile } from '../types';
 import { queryLLM, getInitialSuggestions } from '../services/geminiService';
+import { parse } from '../utils/markdown';
 import { Search, Send, Mic, MicOff, Sparkles, Loader2, Download } from './icons/lucide-shim';
 
 interface Props {
@@ -33,6 +34,43 @@ const ChatInterface: React.FC<Props> = ({
   // Auto-scroll to bottom
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Render KaTeX and Mermaid in chat messages
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const chatContainer = chatEndRef.current?.parentElement;
+      if (!chatContainer) return;
+      chatContainer.querySelectorAll('.katex-math').forEach((el) => {
+        const math = el.getAttribute('data-math');
+        if (math && (window as any).katex) {
+          try { (window as any).katex.render(math, el as HTMLElement, { displayMode: true, throwOnError: false }); }
+          catch { /* ignore KaTeX errors */ }
+        }
+      });
+      chatContainer.querySelectorAll('.katex-inline').forEach((el) => {
+        const math = el.getAttribute('data-math');
+        if (math && (window as any).katex) {
+          try { (window as any).katex.render(math, el as HTMLElement, { displayMode: false, throwOnError: false }); }
+          catch { /* ignore KaTeX errors */ }
+        }
+      });
+      chatContainer.querySelectorAll('.language-mermaid').forEach((el) => {
+        const pre = el.closest('pre');
+        if (pre && (window as any).mermaid) {
+          try {
+            const uid = 'mermaid-' + Math.random().toString(36).slice(2, 8);
+            const svg = document.createElement('div');
+            svg.id = uid;
+            svg.className = 'mermaid';
+            svg.textContent = el.textContent || '';
+            pre.replaceWith(svg);
+            (window as any).mermaid.run({ nodes: [svg] });
+          } catch { /* ignore Mermaid errors */ }
+        }
+      });
+    }, 100);
+    return () => clearTimeout(timer);
   }, [messages]);
 
   // Load initial suggestions
@@ -174,7 +212,14 @@ const ChatInterface: React.FC<Props> = ({
                   Thinking...
                 </div>
               ) : (
-                <div className="text-sm whitespace-pre-wrap">{msg.text}</div>
+                <div
+                  className="text-sm prose prose-invert max-w-none"
+                  dangerouslySetInnerHTML={{
+                    __html: msg.sender === MessageSender.MODEL && !msg.isLoading
+                      ? parse(msg.text)
+                      : msg.text.replace(/\n/g, '<br>')
+                  }}
+                />
               )}
               {msg.modelName && !msg.isLoading && (
                 <div className="text-[10px] text-gray-500 mt-1">{msg.modelName}</div>
