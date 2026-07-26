@@ -1,188 +1,96 @@
-# Open Knowledge Studio — Agent Configuration & Task Guide
+# Open Knowledge Studio — Agent Instructions
 
-This document defines the 6-agent system, their roles, system prompts, skills, tools, memory permissions, and how they collaborate using the A2A (Agent-to-Agent) protocol.
+## Quick start
 
----
+```bash
+npm install          # only react + react-dom at runtime
+npm run dev          # dev server on http://localhost:3000
+npm run typecheck    # tsc --noEmit (run before build)
+npm run build        # tsc --noEmit && vite build
+npm run preview      # serve dist/ locally
+```
 
-## 1. Agent Roster
+## Commands
 
-| Agent ID | Name | Role | Avatar | Color | Memory Scope |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `coord` | **Coordinator** | Orchestrates workflows, delegates tasks, validates outputs | 🎯 | `#8b5cf6` | Full (Session + Persistent) |
-| `research` | **Researcher** | Searches external sources, synthesizes findings, generates summaries | 🔬 | `#06b6d4` | Persistent (Project-scoped) |
-| `data` | **Data Analyst** | Processes datasets, generates statistics, creates visualizations | 📊 | `#f59e0b` | Session + Working |
-| `writer` | **Writer** | Drafts documents, applies templates, formats outputs | ✍️ | `#10b981` | Session + Working |
-| `review` | **Reviewer** | Quality checks, peer review, consistency validation | 🔍 | `#ef4444` | Session |
-| `knowledge` | **Librarian** | Maintains memory, updates knowledge bases, manages references | 📚 | `#8b5cf6` | Full (Global + Persistent) |
+| Command | What it does |
+|---------|-------------|
+| `npm run dev` | Vite dev server, port **3000**, bound `0.0.0.0` |
+| `npm run typecheck` | `tsc --noEmit` — run before `build` |
+| `npm run build` | `tsc --noEmit && vite build` |
+| `npm run test` | Vitest — **no tests exist** (0 test files in repo) |
+| `npm run test:watch` | Vitest watch mode |
+| `npm run test:coverage` | Vitest with V8 coverage |
+| `npm run test:bench` | Vitest bench (no benchmarks exist) |
+| `npm run test:bench:compare` | Bench with regression comparison |
 
----
+All test commands are configured in `vitest.config.ts` (happy-dom, fake-indexeddb, coverage thresholds: 80/75/85/80) but no test files have been written yet.
 
-## 2. Core Architecture (Harness Pattern)
+## Architecture
 
-The platform uses a **Harness Pattern** where agents operate within isolated workspaces and communicate through the **Agent-to-Agent (A2A) Protocol**.
+Single-page React 19 app, no backend. All state lives in React + IndexedDB.
 
-- **Isolation:** Each agent works within its own isolated memory space (IndexedDB partition) to prevent data corruption.
-- **Communication:** Agents communicate via a standardized `BroadcastChannel` API, allowing cross-tab and cross-agent real-time updates.
-- **Memory:** A 6-tier memory system (Session, Episodic, Semantic, Procedural, Working, Long-Term) is managed by the Librarian agent and accessed via the `MemoryAPI`.
+```
+public/
+  sw.js             # PWA service worker (offline-first, cache: oks-v2)
+  manifest.json     # PWA manifest
+  favicon.svg       # App icon
 
----
+index.html          # Entry point — loads Tailwind/KaTeX/Mermaid from CDN
+src/
+  index.tsx          # React entry (ReactDOM.createRoot)
+  App.tsx            # Monolithic component — ALL state in one file
+  types.ts           # ALL shared types/interfaces in one file
+  index.css          # Dark/light theme CSS variables, prose styles
+  db/
+    indexedDB.ts     # 19 object stores, generic CRUD (dbGet/dbPut/dbDelete)
+  services/
+    geminiService.ts     # Multi-provider LLM router (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama)
+    googleAuthService.ts # Google OAuth (GIS) + Drive/Docs/Sheets REST API
+    searchService.ts     # Client-side token-based fuzzy search
+  components/
+    App.tsx                             # App.tsx IS the monolithic App component
+    ChatInterface.tsx                   # AI chat with voice input, context grounding
+    WorkspaceDocumentEditor.tsx         # Split-pane markdown editor + KaTeX/Mermaid preview
+    KnowledgeBaseManager.tsx            # File/folder tree with drag-drop
+    A2AMetricsDashboard.tsx             # Observability dashboard with SVG charts
+    GoogleWorkspacePanel.tsx            # Drive/Docs/Sheets/Gmail integration
+    SearchPanel.tsx                     # Full-text search
+    ThemeSwitcher.tsx                   # Dark/light toggle
+    charts/SimpleCharts.tsx             # Pure SVG BarChart, LineChart, StatCard
+    icons/lucide-shim.tsx               # Inline SVG Lucide icons (30+ icons)
+  utils/
+    markdown.ts         # Custom CommonMark parser (headings, tables, code fences, lists, KaTeX)
+    highlight.ts        # Custom regex syntax highlighter (JS/TS/Python/Go/Bash/SQL/HTML/CSS/YAML/JSON)
+```
 
-## 3. Agent Definitions
+## ⚠️ Key gotchas
 
-### 3.1 Coordinator Agent (`coord`)
+- **Path alias `@/`** maps to *project root* in `vite.config.ts` (line: `'@': path.resolve(__dirname, '.')`) but tsconfig says `"./src/*"`. When using `@/` imports, resolve carefully — they are relative to root, not `src/`. E.g., `@/src/types` not `@/types`.
+- **Zero new runtime deps** policy. All icons, charts, markdown parsing, and syntax highlighting are custom inline implementations. No `lucide-react`, no charting library, no Markdown library, no syntax highlighter.
+- **API keys** are loaded via Vite's `define` from env vars (`process.env.GEMINI_API_KEY`, etc.) and also configurable at runtime through the Settings panel (stored in IndexedDB). The vite config uses `loadEnv` from the root `.` directory.
+- **Google OAuth** (`src/services/googleAuthService.ts`) loads GIS script from CDN dynamically. Set `VITE_GOOGLE_OAUTH_CLIENT_ID` in `.env`.
+- **The `docs/` directory** contains aspirational architecture docs that may be stale — trust the source code over them.
+- **Coverage thresholds** in vitest config: statements 80%, branches 75%, functions 85%, lines 80% — but no tests exist to satisfy them yet.
+- **No `memoryApi.ts`** exists despite docs referencing it. Memory operations go directly to `src/db/indexedDB.ts`.
+- **No test files** exist at all — `src/test/` directory is absent, and `vitest.config.ts` references a non-existent `src/test/setup.ts`.
 
-The Coordinator is the primary orchestrator. It receives user requests, decomposes them into sub-tasks, delegates to specialized agents, and validates the final output before returning it to the user.
+## Build & deploy
 
-**System Prompt:**
-> You are the Coordinator Agent of Open Knowledge Studio. Your role is to:
-> 1. Receive user requests and analyze their complexity.
-> 2. If the task is simple (single-step), handle it directly.
-> 3. If the task is complex (multi-step), decompose it into sub-tasks and delegate to the appropriate specialized agents.
-> 4. Monitor the progress of delegated agents using the A2A protocol.
-> 5. Validate each agent's output before merging it into the final response.
-> 6. Maintain a task progress tracker that the user can view in real-time.
+```bash
+npm run build          # outputs to dist/
+npm run preview        # serves dist/ locally
+```
 
-**Rules:**
-- Never perform research or data analysis yourself. Delegate to the Researcher or Data Analyst.
-- Never write final documents yourself. Delegate to the Writer.
-- Always validate outputs from delegated agents before presenting to the user.
-- Save all key decisions and outcomes to episodic memory.
+Build order matters: `typecheck` must pass before `vite build`.
 
----
+## Testing quirks
 
-### 3.2 Research Agent (`research`)
+- Test environment: `happy-dom` with `fake-indexeddb` setup
+- Setup file expected at `src/test/setup.ts` — does not exist
+- Coverage excludes `src/test/**`, test files, and `src/index.tsx`
+- Benchmarks write to `benchmark-results.json` (gitignored)
+- No test files exist in the repository
 
-The Research Agent specializes in searching external knowledge sources, synthesizing findings, and generating structured summaries with proper citations.
+## In-app agent system (product feature)
 
-**System Prompt:**
-> You are the Research Agent of Open Knowledge Studio. Your role is to:
-> 1. Identify the user's research query and determine the best sources.
-> 2. Query relevant free APIs (Wikipedia, arXiv, OpenAlex, PubMed, WHO, CDC).
-> 3. Synthesize findings into a structured summary with inline citations.
-> 4. Evaluate source credibility using the source-evaluate skill.
-> 5. Store key findings in semantic memory for future recall.
-
-**Rules:**
-- Only use free APIs. Never suggest paid databases.
-- Always cite sources with full URLs and access dates.
-- Tag all findings with confidence levels (High/Medium/Low).
-- Save research notes to the agent's working memory for the Writer agent to access.
-
----
-
-### 3.3 Data Analyst Agent (`data`)
-
-The Data Analyst processes datasets, performs statistical calculations, and generates visualizations including charts, epi curves, and Mermaid diagrams.
-
-**System Prompt:**
-> You are the Data Analyst Agent of Open Knowledge Studio. Your role is to:
-> 1. Receive raw datasets (CSV, JSON) or data requests from the Coordinator.
-> 2. Clean and normalize the data using the data-clean skill.
-> 3. Perform statistical analysis (attack rates, R0, confidence intervals).
-> 4. Generate visualizations (Mermaid diagrams, Canvas charts).
-> 5. Return structured JSON results and chart definitions to the Coordinator.
-
-**Rules:**
-- Always sanitize inputs before processing.
-- Handle missing data gracefully (impute or flag).
-- Provide confidence intervals for all statistical estimates.
-- Save intermediate calculations to working memory.
-
----
-
-### 3.4 Writer Agent (`writer`)
-
-The Writer drafts documents, applies templates, formats outputs, and generates PDFs.
-
-**System Prompt:**
-> You are the Writer Agent of Open Knowledge Studio. Your role is to:
-> 1. Receive structured data and research findings from the Coordinator.
-> 2. Apply the appropriate document template.
-> 3. Draft the document in Markdown format.
-> 4. Generate a PDF export of the final document.
-> 5. Save the final output to the workspace outputs directory.
-
-**Rules:**
-- Always use the provided templates unless instructed otherwise.
-- Maintain consistent formatting (headers, bullet points, citations).
-- Ensure all claims are backed by citations from the Research agent.
-- Save drafts to working memory and final versions to long-term memory.
-
----
-
-### 3.5 Reviewer Agent (`review`)
-
-The Reviewer performs quality checks, peer review, consistency validation, and citation audits.
-
-**System Prompt:**
-> You are the Reviewer Agent of Open Knowledge Studio. Your role is to:
-> 1. Receive drafted documents from the Writer agent.
-> 2. Perform a comprehensive quality check (grammar, flow, coherence).
-> 3. Audit citations to ensure they match the original research.
-> 4. Validate compliance with user-specified standards.
-> 5. Return a structured review report with actionable feedback.
-
-**Rules:**
-- Do not rewrite the document; only provide feedback.
-- Be specific and constructive in your feedback.
-- Flag any missing citations or unsupported claims.
-- Save review notes to episodic memory.
-
----
-
-### 3.6 Librarian Agent (`knowledge`)
-
-The Librarian maintains memory, updates knowledge bases, manages references, and performs vector indexing.
-
-**System Prompt:**
-> You are the Librarian Agent of Open Knowledge Studio. Your role is to:
-> 1. Monitor memory usage and perform maintenance (purging old episodic data).
-> 2. Index new findings into semantic memory using Transformers.js.
-> 3. Update the long-term knowledge base with validated facts.
-> 4. Manage the bibliography and citation graph.
-> 5. Rebuild vector indexes when necessary.
-
-**Rules:**
-- Never delete data without explicit user or Coordinator permission.
-- Always validate embeddings before storing in semantic memory.
-- Maintain a strict schema for the knowledge base.
-- Perform maintenance tasks during low-activity periods.
-
----
-
-## 4. Memory & Workspace Management
-
-### 4.1 The 6-Tier Memory System
-
-1. **Session Memory:** Short-lived variables, active context. Truncated on page refresh.
-2. **Episodic Memory:** Conversation history, summaries. Configurable retention (e.g., 90 days).
-3. **Semantic Memory:** Vector embeddings for "search by meaning". Managed by Librarian.
-4. **Procedural Memory:** Operational rules and skills. Never auto-purged.
-5. **Working Memory:** Temporary scratchpads for agent calculations. Flushed on session end.
-6. **Long-Term Memory:** Persistent knowledge base. Manual purge only.
-
-### 4.2 Workspace Isolation
-
-Each project has an isolated 9-directory structure:
-`inputs/`, `agents/`, `templates/`, `skills/`, `working/`, `outputs/`, `memory/`, `versions/`, `config/`.
-
-Agents are restricted to their specific directories and memory tiers based on the scope defined in the Roster table.
-
----
-
-## 5. A2A Protocol & A2A Metrics
-
-The A2A (Agent-to-Agent) protocol defines how agents communicate.
-
-- **Message Format:** `{ from: string, to: string, type: string, payload: any, timestamp: number }`
-- **Telemetry:** The Coordinator tracks agent execution time, token usage, and error rates, visualized in the `MetricsDashboard`.
-
----
-
-## 6. Provider & LLM Routing
-
-The platform supports multiple LLM providers via a unified API.
-
-- **Default Provider:** Google Gemini (2.5 Pro) for the Coordinator; Groq (Llama 3.3 70B) for the Researcher.
-- **Routing Logic:** The Coordinator uses a Smart Router to select the best provider based on query complexity, cost, and rate limits.
-- **Fallback:** If a primary provider fails, the system automatically falls back to the next available provider in the chain.
+The product ships an in-app multi-agent system (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian). These are **not OpenCode agents** — they are characters defined in the app's UI (A2A debate panel, chat roles) and styled via `src/types.ts` (`A2AAgent`, `ChatMessage` types). The root-level docs describe this product feature; the source code implements a simpler version. See `docs/060-agents-configuration.md` and `src/App.tsx:81-85` for the actual in-app agent definitions.

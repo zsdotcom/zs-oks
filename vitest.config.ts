@@ -6,13 +6,16 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     globals: true,
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    exclude: ['node_modules', 'dist'],
+    css: false,
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       include: ['src/**/*.{ts,tsx}'],
       exclude: [
         'src/test/**',
         'src/**/*.{test,spec}.{ts,tsx}',
+        'src/**/*.{bench,benchmark}.{ts,tsx}',
         'src/index.tsx',
       ],
       thresholds: {
