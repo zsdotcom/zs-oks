@@ -6,6 +6,7 @@
  */
 
 import { highlight, getLanguage } from './highlight';
+import { sanitizeURL } from './sanitize';
 
 function escapeHtml(str: string): string {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -13,9 +14,15 @@ function escapeHtml(str: string): string {
 
 function renderInline(text: string): string {
   // Images ![alt](url)
-  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:6px;margin:0.4em 0;">');
+  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, url) => {
+    const safe = sanitizeURL(url);
+    return safe ? `<img src="${safe}" alt="${alt}" style="max-width:100%;border-radius:6px;margin:0.4em 0;">` : alt;
+  });
   // Links [text](url)
-  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) => {
+    const safe = sanitizeURL(url);
+    return safe ? `<a href="${safe}" target="_blank" rel="noopener">${text}</a>` : text;
+  });
   // Inline code `code`
   text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
   // Bold **text** or __text__

@@ -64,19 +64,19 @@ export const GmailCompose: React.FC<Props> = ({ currentFile, userEmail, onClose 
       </div>
       <div className="flex-1 p-3 space-y-3 overflow-y-auto">
         <div>
-          <label className="text-[10px] text-gray-500 uppercase">To</label>
-          <input value={to} onChange={(e) => setTo(e.target.value)} placeholder="recipient@example.com" className="w-full bg-[#0f0f1a] border border-[#2a2a3e] rounded px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-500/50 mt-1" />
+          <label className="text-[10px] text-gray-500 uppercase" htmlFor="gmail-to">To</label>
+          <input id="gmail-to" value={to} onChange={(e) => setTo(e.target.value)} placeholder="recipient@example.com" className="w-full bg-[#0f0f1a] border border-[#2a2a3e] rounded px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-500/50 mt-1" aria-label="Recipient email" aria-required="true" />
         </div>
         <div>
-          <label className="text-[10px] text-gray-500 uppercase">Subject</label>
-          <input value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full bg-[#0f0f1a] border border-[#2a2a3e] rounded px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-500/50 mt-1" />
+          <label className="text-[10px] text-gray-500 uppercase" htmlFor="gmail-subject">Subject</label>
+          <input id="gmail-subject" value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full bg-[#0f0f1a] border border-[#2a2a3e] rounded px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-500/50 mt-1" aria-label="Email subject" />
         </div>
         <div className="flex-1">
-          <label className="text-[10px] text-gray-500 uppercase">Body</label>
-          <textarea value={body} onChange={(e) => setBody(e.target.value)} className="w-full bg-[#0f0f1a] border border-[#2a2a3e] rounded px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-500/50 mt-1 resize-none font-mono" rows={15} />
+          <label className="text-[10px] text-gray-500 uppercase" htmlFor="gmail-body">Body</label>
+          <textarea id="gmail-body" value={body} onChange={(e) => setBody(e.target.value)} className="w-full bg-[#0f0f1a] border border-[#2a2a3e] rounded px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-500/50 mt-1 resize-none font-mono" rows={15} aria-label="Email body" />
         </div>
         {status && (
-          <div className={`text-xs px-3 py-2 rounded ${status.startsWith('Error') ? 'bg-red-500/10 text-red-400' : status.includes('Sent') ? 'bg-green-500/10 text-green-400' : 'bg-indigo-500/10 text-indigo-400'}`}>
+          <div className={`text-xs px-3 py-2 rounded ${status.startsWith('Error') ? 'bg-red-500/10 text-red-400' : status.includes('Sent') ? 'bg-green-500/10 text-green-400' : 'bg-indigo-500/10 text-indigo-400'}`} role="alert" aria-live="polite">
             {status}
           </div>
         )}

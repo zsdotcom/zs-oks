@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { searchICD11, getAllICD11Codes, ICD11Entry } from '../services/icd11Service';
-import { X, Search, ChevronDown, ChevronRight } from './icons/lucide-shim';
+import { searchICD11, getAllICD11Codes, icd11ToFHIR, ICD11Entry, FHIRCondition } from '../services/icd11Service';
+import { X, Search, ChevronDown, ChevronRight, Copy } from './icons/lucide-shim';
 
 interface ICD11LookupProps {
   onSelect?: (entry: ICD11Entry) => void;
@@ -13,6 +13,8 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
   const [results, setResults] = useState<ICD11Entry[]>([]);
   const [showAll, setShowAll] = useState(false);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
+  const [selectedEntry, setSelectedEntry] = useState<ICD11Entry | null>(null);
+  const [fhirCopied, setFhirCopied] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -41,9 +43,25 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
 
   const handleSelect = (entry: ICD11Entry) => {
     onSelect?.(entry);
+    setSelectedEntry(entry);
     setQuery(`${entry.code} — ${entry.title}`);
     setResults([]);
     setShowAll(false);
+    setFhirCopied(false);
+  };
+
+  const handleFHIRExport = () => {
+    if (!selectedEntry) return;
+    const fhir = icd11ToFHIR(selectedEntry);
+    navigator.clipboard.writeText(JSON.stringify(fhir, null, 2)).then(() => {
+      setFhirCopied(true);
+      setTimeout(() => setFhirCopied(false), 2000);
+    }).catch(() => {});
+  };
+
+  const clearSelection = () => {
+    setSelectedEntry(null);
+    clear();
   };
 
   const clear = () => {
@@ -63,7 +81,7 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#1a1a2e]">
+    <div className="flex flex-col h-full bg-[#1a1a2e]" role="dialog" aria-label="ICD-11 code lookup">
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#2a2a3e] shrink-0">
         <h2 className="text-xs font-semibold flex items-center gap-1.5">
           <span className="text-indigo-400">
@@ -108,7 +126,31 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      {selectedEntry && (
+        <div className="p-2 border-b border-[#2a2a3e] shrink-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-mono text-indigo-400 font-medium text-[10px]">{selectedEntry.code}</span>
+            <span className="text-xs text-gray-200 font-medium truncate">{selectedEntry.title}</span>
+          </div>
+          <div className="flex items-center gap-2 mt-1">
+            <button
+              onClick={handleFHIRExport}
+              className="flex items-center gap-1 text-[10px] px-2 py-1 rounded bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600/30 transition-colors"
+            >
+              <Copy size={10} />
+              {fhirCopied ? 'Copied!' : 'FHIR Export'}
+            </button>
+            <button
+              onClick={clearSelection}
+              className="text-[10px] px-2 py-1 rounded text-gray-500 hover:text-gray-300 hover:bg-[#2a2a3e] transition-colors"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="flex-1 overflow-y-auto" aria-live="polite" aria-label="ICD-11 search results">
         {showAll && (
           <div className="p-2 space-y-1">
             {chapters.map((chapter) => {

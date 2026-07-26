@@ -12,13 +12,18 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:bench": "vitest bench",
-    "test:bench:compare": "vitest bench --compare benchmark-results.json"
+    "test:bench:compare": "vitest bench --compare benchmark-results.json",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "analyze": "ANALYZE=true npm run build"
   },
   "dependencies": {
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
@@ -27,6 +32,7 @@
     "@vitest/coverage-v8": "^4.1.9",
     "fake-indexeddb": "^6.2.5",
     "happy-dom": "^20.10.6",
+    "rollup-plugin-visualizer": "^7.0.1",
     "tailwindcss": "^4.3.3",
     "typescript": "~7.0.2",
     "vitest": "^4.1.10"

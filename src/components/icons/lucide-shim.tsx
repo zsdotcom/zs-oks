@@ -390,3 +390,34 @@ export const MapPin = make('map-pin', [
   <path key="1" d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />,
   <circle key="2" cx="12" cy="10" r="3" />,
 ]);
+
+export const Bold = make('bold', [
+  <path key="1" d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />,
+  <path key="2" d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />,
+]);
+
+export const Italic = make('italic', [
+  <line key="1" x1="19" y1="4" x2="10" y2="4" />,
+  <line key="2" x1="14" y1="20" x2="5" y2="20" />,
+  <line key="3" x1="15" y1="4" x2="9" y2="20" />,
+]);
+
+export const Link = make('link', [
+  <path key="1" d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />,
+  <path key="2" d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />,
+]);
+
+export const List = make('list', [
+  <line key="1" x1="8" y1="6" x2="21" y2="6" />,
+  <line key="2" x1="8" y1="12" x2="21" y2="12" />,
+  <line key="3" x1="8" y1="18" x2="21" y2="18" />,
+  <line key="4" x1="3" y1="6" x2="3.01" y2="6" />,
+  <line key="5" x1="3" y1="12" x2="3.01" y2="12" />,
+  <line key="6" x1="3" y1="18" x2="3.01" y2="18" />,
+]);
+
+export const Heading = make('heading', [
+  <path key="1" d="M6 4v16" />,
+  <path key="2" d="M18 4v16" />,
+  <path key="3" d="M6 12h12" />,
+]);

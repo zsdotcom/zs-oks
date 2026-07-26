@@ -100,9 +100,9 @@ export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
           <span className="text-sm font-medium">Google Workspace</span>
         </div>
         {user ? (
-          <button onClick={handleSignOut} className="flex items-center gap-1 text-xs text-gray-400 hover:text-red-400"><LogOut size={12} /> Sign out</button>
+          <button onClick={handleSignOut} className="flex items-center gap-1 text-xs text-gray-400 hover:text-red-400" aria-label={`Sign out ${user.email}`}><LogOut size={12} /> Sign out</button>
         ) : (
-          <button onClick={handleSignIn} className="flex items-center gap-1 text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700"><LogIn size={12} /> Sign in</button>
+          <button onClick={handleSignIn} className="flex items-center gap-1 text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700" aria-label="Sign in with Google"><LogIn size={12} /> Sign in</button>
         )}
       </div>
 
@@ -115,12 +115,14 @@ export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-0 border-b border-[#2a2a3e]">
+      <div className="flex gap-0 border-b border-[#2a2a3e]" role="tablist" aria-label="Google workspace sections">
         {(['overview', 'drive', 'sheets', 'docs', 'gmail'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-3 py-1.5 text-xs capitalize ${activeTab === tab ? 'border-b-2 border-indigo-500 text-indigo-400' : 'text-gray-500 hover:text-gray-300'}`}
+            role="tab"
+            aria-selected={activeTab === tab}
           >
             {tab}
           </button>
@@ -129,8 +131,8 @@ export const GoogleWorkspacePanel: React.FC<Props> = ({ currentFile }) => {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-3">
-        {error && <div className="text-xs text-red-400 bg-red-500/10 p-2 rounded mb-2">{error}</div>}
-        {toast && <div className="text-xs text-green-400 bg-green-500/10 p-2 rounded mb-2">{toast}</div>}
+        {error && <div className="text-xs text-red-400 bg-red-500/10 p-2 rounded mb-2" role="alert">{error}</div>}
+        {toast && <div className="text-xs text-green-400 bg-green-500/10 p-2 rounded mb-2" aria-live="polite">{toast}</div>}
 
         {activeTab === 'overview' && (
           <div className="space-y-3">

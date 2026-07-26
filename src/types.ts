@@ -178,6 +178,7 @@ export interface TaskCard {
   priority: 'low' | 'medium' | 'high' | 'critical';
   dueDate?: string;
   tags: string[];
+  assignee?: string;
   createdAt: Date;
 }
 

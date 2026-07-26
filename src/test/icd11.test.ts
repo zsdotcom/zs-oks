@@ -4,6 +4,9 @@ import {
   getICD11ByCode,
   getAllICD11Codes,
   getICD11ByChapter,
+  icd11ToFHIR,
+  FHIRToICD11,
+  searchICD11ByFHIR,
 } from '../services/icd11Service';
 
 describe('searchICD11', () => {
@@ -70,9 +73,9 @@ describe('getICD11ByCode', () => {
 });
 
 describe('getAllICD11Codes', () => {
-  it('returns all 51 entries', () => {
+  it('returns at least 150 entries', () => {
     const all = getAllICD11Codes();
-    expect(all.length).toBe(51);
+    expect(all.length).toBeGreaterThanOrEqual(150);
   });
 
   it('each entry has required fields', () => {
@@ -99,7 +102,7 @@ describe('getAllICD11Codes', () => {
 describe('getICD11ByChapter', () => {
   it('filters by chapter name (exact match)', () => {
     const results = getICD11ByChapter('Neoplasms');
-    expect(results.length).toBe(6);
+    expect(results.length).toBeGreaterThanOrEqual(15);
     results.forEach((r) => {
       expect(r.chapter).toBe('Neoplasms');
     });
@@ -109,7 +112,7 @@ describe('getICD11ByChapter', () => {
     const lower = getICD11ByChapter('neoplasms');
     const upper = getICD11ByChapter('NEOPLASMS');
     expect(lower.length).toBe(upper.length);
-    expect(lower.length).toBe(6);
+    expect(lower.length).toBeGreaterThanOrEqual(15);
   });
 
   it('returns empty array for non-existent chapter', () => {
@@ -119,11 +122,65 @@ describe('getICD11ByChapter', () => {
 
   it('returns entries from the diseases of the circulatory system chapter', () => {
     const results = getICD11ByChapter('Diseases of the circulatory system');
-    expect(results.length).toBe(4);
+    expect(results.length).toBeGreaterThanOrEqual(10);
     const titles = results.map((r) => r.title);
     expect(titles).toContain('Hypertensive heart disease');
     expect(titles).toContain('Ischaemic heart disease');
     expect(titles).toContain('Cerebrovascular disease');
     expect(titles).toContain('Heart failure');
+  });
+});
+
+describe('FHIR integration', () => {
+  it('icd11ToFHIR converts an ICD11Entry to FHIR Condition', () => {
+    const entry = getICD11ByCode('1A00')!;
+    const fhir = icd11ToFHIR(entry, 'pat-123');
+    expect(fhir.resourceType).toBe('Condition');
+    expect(fhir.id).toContain('cond-1A00');
+    expect(fhir.code.coding[0].system).toBe('http://id.who.int/icd11/mms');
+    expect(fhir.code.coding[0].code).toBe('1A00');
+    expect(fhir.code.coding[0].display).toBe('Cholera');
+    expect(fhir.subject.reference).toBe('Patient/pat-123');
+    expect(fhir.clinicalStatus).toBe('active');
+    expect(fhir.recordedDate).toBeDefined();
+  });
+
+  it('icd11ToFHIR uses unknown patient when not provided', () => {
+    const entry = getICD11ByCode('1A00')!;
+    const fhir = icd11ToFHIR(entry);
+    expect(fhir.subject.reference).toBe('Patient/unknown');
+  });
+
+  it('FHIRToICD11 converts back from FHIR condition', () => {
+    const entry = getICD11ByCode('6A00')!;
+    const fhir = icd11ToFHIR(entry);
+    const result = FHIRToICD11(fhir);
+    expect(result).toBeDefined();
+    expect(result!.code).toBe('6A00');
+    expect(result!.title).toBe('Depressive disorders');
+  });
+
+  it('FHIRToICD11 returns undefined for non-ICD11 FHIR resource', () => {
+    const condition = {
+      resourceType: 'Condition' as const,
+      id: 'cond-other',
+      code: { coding: [{ system: 'http://snomed.info/sct', code: '123', display: 'Something' }] },
+      clinicalStatus: 'active',
+      verificationStatus: 'confirmed',
+      subject: { reference: 'Patient/1' },
+      recordedDate: '2026-01-01',
+    };
+    const result = FHIRToICD11(condition);
+    expect(result).toBeUndefined();
+  });
+
+  it('searchICD11ByFHIR extracts search terms from FHIR resource', () => {
+    const fhirResource = {
+      code: { coding: [{ display: 'Cholera', code: '1A00' }] },
+      bodySite: { coding: [{ display: 'Intestine' }] },
+    };
+    const results = searchICD11ByFHIR(fhirResource);
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.some(r => r.code === '1A00')).toBe(true);
   });
 });

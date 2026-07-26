@@ -53,5 +53,7 @@ yarn-error.log*
 # Generated / ejected
 public/models/
 
-# Session Files
-session-ses_0161e.md
+# Playwright E2E
+/e2e-results/
+/playwright-report/
+

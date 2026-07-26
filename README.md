@@ -149,6 +149,19 @@ npm run test:bench     # Performance benchmarks (5 cases)
 
 ---
 
+## Deploy
+
+| Platform | Docs | Quick command |
+| :--- | :--- | :--- |
+| GitHub Actions (CI/CD) | [`docs/098-cicd-pipeline.md`](docs/098-cicd-pipeline.md) | `npm run typecheck && npm test && npm run build` |
+| Docker | [`docs/099-deployment.md`](docs/099-deployment.md) | `docker build -t oks . && docker run -p 8080:80 oks` |
+| Vercel | [`docs/099-deployment.md`](docs/099-deployment.md) | Import repo, preset Vite, deploy |
+| Netlify | [`docs/099-deployment.md`](docs/099-deployment.md) | Import repo, build `npm run build`, publish `dist` |
+
+For credentials and API key setup see [`docs/100-reference.md`](docs/100-reference.md).
+
+---
+
 ## License
 
 MIT License. See `LICENSE` for details.

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 
 interface EpiDataPoint {
   id: string;
@@ -12,10 +12,18 @@ interface EpiDataPoint {
   status: 'active' | 'contained' | 'resolved';
 }
 
+interface TimelineFrame {
+  date: string;
+  activePoints: string[];
+}
+
 interface EpiMapProps {
   dataPoints: EpiDataPoint[];
   onPointClick?: (point: EpiDataPoint) => void;
   height?: string;
+  timelineData?: TimelineFrame[];
+  onTimeChange?: (date: string) => void;
+  playSpeed?: number;
 }
 
 const SEVERITY_COLORS: Record<EpiDataPoint['severity'], string> = {
@@ -33,9 +41,22 @@ function severityRadius(cases: number): number {
   return min + normalized * (max - min);
 }
 
-function EpiMap({ dataPoints, onPointClick, height = '400px' }: EpiMapProps) {
+function EpiMap({ dataPoints, onPointClick, height = '400px', timelineData, onTimeChange, playSpeed = 1000 }: EpiMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<ReturnType<typeof L.map> | null>(null);
+  const markersRef = useRef<Map<string, ReturnType<typeof L.circleMarker>>>(new Map());
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [speedMultiplier, setSpeedMultiplier] = useState(1);
+
+  const hasTimeline = !!(timelineData && timelineData.length > 0);
+
+  const currentDate = useMemo(() => {
+    if (hasTimeline && timelineData![currentIndex]) {
+      return timelineData![currentIndex].date;
+    }
+    return '';
+  }, [hasTimeline, timelineData, currentIndex]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -49,6 +70,7 @@ function EpiMap({ dataPoints, onPointClick, height = '400px' }: EpiMapProps) {
     }).addTo(map);
 
     const markers: ReturnType<typeof L.circleMarker>[] = [];
+    markersRef.current.clear();
 
     for (const point of dataPoints) {
       const marker = L.circleMarker([point.lat, point.lng], {
@@ -77,6 +99,7 @@ function EpiMap({ dataPoints, onPointClick, height = '400px' }: EpiMapProps) {
 
       marker.addTo(map);
       markers.push(marker);
+      markersRef.current.set(point.id, marker);
     }
 
     if (markers.length > 0) {
@@ -87,17 +110,110 @@ function EpiMap({ dataPoints, onPointClick, height = '400px' }: EpiMapProps) {
     return () => {
       map.remove();
       mapRef.current = null;
+      markersRef.current.clear();
     };
   }, [dataPoints, onPointClick]);
 
-  return (
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const activeIds = new Set(hasTimeline ? timelineData![currentIndex]?.activePoints || [] : dataPoints.map(p => p.id));
+    markersRef.current.forEach((marker, id) => {
+      if (activeIds.has(id)) {
+        if (!mapRef.current!.hasLayer(marker)) marker.addTo(mapRef.current!);
+      } else {
+        if (mapRef.current!.hasLayer(marker)) marker.removeFrom(mapRef.current!);
+      }
+    });
+  }, [currentIndex, timelineData, dataPoints, hasTimeline]);
+
+  useEffect(() => {
+    if (hasTimeline && currentDate) {
+      onTimeChange?.(currentDate);
+    }
+  }, [currentDate, hasTimeline, onTimeChange]);
+
+  useEffect(() => {
+    if (!isPlaying || !hasTimeline) return;
+    const interval = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % (timelineData?.length || 1));
+    }, playSpeed / speedMultiplier);
+    return () => clearInterval(interval);
+  }, [isPlaying, hasTimeline, timelineData, playSpeed, speedMultiplier]);
+
+  const handleSliderChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const idx = parseInt(e.target.value, 10);
+    setCurrentIndex(idx);
+    setIsPlaying(false);
+  }, []);
+
+  const togglePlay = useCallback(() => {
+    setIsPlaying(prev => !prev);
+  }, []);
+
+  if (!hasTimeline) {
+    return (
     <div
       ref={containerRef}
       className="epi-map-container"
       style={{ height, borderRadius: 8, border: '1px solid var(--border-color, #d1d5db)' }}
+      role="application"
+      aria-label="Epidemiological map"
     />
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-full">
+      <div
+        ref={containerRef}
+        className="epi-map-container"
+        style={{ flex: 1, borderRadius: 8, border: '1px solid var(--border-color, #d1d5db)' }}
+      />
+      <div className="p-2 border-t border-[#2a2a3e] space-y-2">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={togglePlay}
+            className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400"
+            title={isPlaying ? 'Pause' : 'Play'}
+          >
+            {isPlaying ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1" /><rect x="14" y="4" width="4" height="16" rx="1" /></svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+            )}
+          </button>
+          {currentDate && (
+            <span className="text-[10px] text-indigo-400 font-mono">{currentDate}</span>
+          )}
+          <div className="flex items-center gap-1 ml-auto">
+            {[0.5, 1, 2].map(speed => (
+              <button
+                key={speed}
+                onClick={() => setSpeedMultiplier(speed)}
+                className={`text-[10px] px-1.5 py-0.5 rounded transition-colors ${
+                  speedMultiplier === speed
+                    ? 'bg-indigo-600/20 text-indigo-400'
+                    : 'text-gray-500 hover:text-gray-300'
+                }`}
+              >
+                {speed}x
+              </button>
+            ))}
+          </div>
+        </div>
+        <input
+          type="range"
+          min={0}
+          max={Math.max(0, (timelineData?.length || 1) - 1)}
+          value={currentIndex}
+          onChange={handleSliderChange}
+          className="w-full h-1 appearance-none bg-[#2a2a3e] rounded cursor-pointer"
+          style={{ accentColor: '#4f46e5' }}
+        />
+      </div>
+    </div>
   );
 }
 
-export type { EpiDataPoint };
+export type { EpiDataPoint, EpiMapProps, TimelineFrame };
 export { EpiMap };

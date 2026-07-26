@@ -33,7 +33,7 @@ export const A2AMetricsDashboard: React.FC<Props> = ({ metrics, agents }) => {
   }));
 
   return (
-    <div className="p-4 space-y-4 overflow-y-auto h-full">
+    <div className="p-4 space-y-4 overflow-y-auto h-full" role="region" aria-label="Agent metrics dashboard">
       <div className="flex items-center gap-2 mb-2">
         <Activity size={18} className="text-indigo-400" />
         <h2 className="text-sm font-semibold">A2A Observability Dashboard</h2>
@@ -49,7 +49,7 @@ export const A2AMetricsDashboard: React.FC<Props> = ({ metrics, agents }) => {
 
       {/* Agent performance bar chart */}
       {agentLatencies.some((a) => a.value > 0) && (
-        <div className="bg-[#1a1a2e] rounded-lg border border-[#2a2a3e] p-4">
+        <div className="bg-[#1a1a2e] rounded-lg border border-[#2a2a3e] p-4" role="region" aria-label="Agent average latency bar chart">
           <h3 className="text-xs font-medium mb-2 text-gray-400">Agent Average Latency (ms)</h3>
           <BarChart data={agentLatencies.filter((a) => a.value > 0)} width={400} height={200} />
         </div>
@@ -57,7 +57,7 @@ export const A2AMetricsDashboard: React.FC<Props> = ({ metrics, agents }) => {
 
       {/* Latency timeline */}
       {timeSeries.length > 0 && (
-        <div className="bg-[#1a1a2e] rounded-lg border border-[#2a2a3e] p-4">
+        <div className="bg-[#1a1a2e] rounded-lg border border-[#2a2a3e] p-4" role="region" aria-label="Recent latency timeline chart">
           <h3 className="text-xs font-medium mb-2 text-gray-400">Recent Latency Timeline</h3>
           <LineChart
             data={[{ label: 'Latency', values: timeSeries, color: '#4f46e5' }]}
@@ -68,7 +68,7 @@ export const A2AMetricsDashboard: React.FC<Props> = ({ metrics, agents }) => {
       )}
 
       {/* Recent metrics table */}
-      <div className="bg-[#1a1a2e] rounded-lg border border-[#2a2a3e] p-4">
+      <div className="bg-[#1a1a2e] rounded-lg border border-[#2a2a3e] p-4" role="region" aria-label="Recent runs table">
         <h3 className="text-xs font-medium mb-2 text-gray-400">Recent Runs</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">

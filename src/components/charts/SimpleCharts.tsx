@@ -140,3 +140,234 @@ export const StatCard: React.FC<{
     </div>
   </div>
 );
+
+/* ─── Heatmap ─── */
+interface HeatmapDataPoint {
+  x: string;
+  y: string;
+  value: number;
+}
+
+export const Heatmap: React.FC<{
+  data: HeatmapDataPoint[];
+  width?: number;
+  height?: number;
+  title?: string;
+}> = ({ data, width = 400, height = 300, title }) => {
+  const padding = { top: 30, right: 20, bottom: 60, left: 70 };
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+
+  const xLabels = [...new Set(data.map(d => d.x))];
+  const yLabels = [...new Set(data.map(d => d.y))];
+  const maxVal = Math.max(...data.map(d => d.value), 1);
+
+  const cellW = chartW / xLabels.length;
+  const cellH = chartH / yLabels.length;
+
+  const dataMap = new Map(data.map(d => [`${d.x}:${d.y}`, d.value]));
+
+  return (
+    <svg width={width} height={height} className="w-full h-auto">
+      {title && <text x={width / 2} y={18} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">{title}</text>}
+      {yLabels.map((y, yi) => (
+        <text key={y} x={padding.left - 8} y={padding.top + yi * cellH + cellH / 2 + 4} textAnchor="end" fill="#888" fontSize="9">{y}</text>
+      ))}
+      {xLabels.map((x, xi) => (
+        <text key={x} x={padding.left + xi * cellW + cellW / 2} y={height - padding.bottom + 16} textAnchor="end" fill="#888" fontSize="9" transform={`rotate(-35, ${padding.left + xi * cellW + cellW / 2}, ${height - padding.bottom + 16})`}>{x}</text>
+      ))}
+      {yLabels.map((y, yi) =>
+        xLabels.map((x, xi) => {
+          const val = dataMap.get(`${x}:${y}`) || 0;
+          const intensity = val / maxVal;
+          const r = Math.round(30 + 200 * intensity);
+          const g = Math.round(50 + 50 * (1 - intensity));
+          const b = Math.round(200 * (1 - intensity));
+          return (
+            <g key={`${x}:${y}`}>
+              <rect
+                x={padding.left + xi * cellW}
+                y={padding.top + yi * cellH}
+                width={cellW - 2}
+                height={cellH - 2}
+                fill={`rgb(${r},${g},${b})`}
+                rx="2"
+                opacity="0.85"
+              />
+              <text
+                x={padding.left + xi * cellW + (cellW - 2) / 2}
+                y={padding.top + yi * cellH + (cellH - 2) / 2 + 3}
+                textAnchor="middle"
+                fill={intensity > 0.5 ? '#fff' : '#aaa'}
+                fontSize="8"
+              >{val}</text>
+            </g>
+          );
+        })
+      )}
+    </svg>
+  );
+};
+
+/* ─── Scatter ─── */
+interface ScatterPoint {
+  x: number;
+  y: number;
+  label?: string;
+  color?: string;
+  size?: number;
+}
+
+export const Scatter: React.FC<{
+  points: ScatterPoint[];
+  width?: number;
+  height?: number;
+  xLabel?: string;
+  yLabel?: string;
+  title?: string;
+  trendLine?: boolean;
+}> = ({ points, width = 400, height = 300, xLabel, yLabel, title, trendLine }) => {
+  const padding = { top: 30, right: 20, bottom: 50, left: 60 };
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+
+  const xMin = Math.min(...points.map(p => p.x), 0);
+  const xMax = Math.max(...points.map(p => p.x), 1);
+  const yMin = Math.min(...points.map(p => p.y), 0);
+  const yMax = Math.max(...points.map(p => p.y), 1);
+
+  const xScale = (v: number) => padding.left + ((v - xMin) / (xMax - xMin)) * chartW;
+  const yScale = (v: number) => padding.top + chartH * (1 - (v - yMin) / (yMax - yMin));
+
+  const [hovered, setHovered] = React.useState<number | null>(null);
+
+  let trendLineEl = null;
+  if (trendLine && points.length > 1) {
+    const n = points.length;
+    const sumX = points.reduce((s, p) => s + p.x, 0);
+    const sumY = points.reduce((s, p) => s + p.y, 0);
+    const sumXY = points.reduce((s, p) => s + p.x * p.y, 0);
+    const sumX2 = points.reduce((s, p) => s + p.x * p.x, 0);
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+    const x1 = xMin;
+    const y1 = slope * x1 + intercept;
+    const x2 = xMax;
+    const y2 = slope * x2 + intercept;
+    trendLineEl = <line x1={xScale(x1)} y1={yScale(y1)} x2={xScale(x2)} y2={yScale(y2)} stroke="#4f46e5" strokeWidth="1.5" strokeDasharray="4 2" opacity="0.6" />;
+  }
+
+  return (
+    <svg width={width} height={height} className="w-full h-auto">
+      {title && <text x={width / 2} y={18} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">{title}</text>}
+      {[0, 0.25, 0.5, 0.75, 1].map(pct => {
+        const y = padding.top + chartH * (1 - pct);
+        const val = Math.round(yMin + (yMax - yMin) * pct);
+        return (
+          <g key={pct}>
+            <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#3a3a3a" strokeWidth="0.5" />
+            <text x={padding.left - 8} y={y + 4} textAnchor="end" fill="#888" fontSize="9">{val}</text>
+          </g>
+        );
+      })}
+      {xLabel && <text x={width / 2} y={height - 6} textAnchor="middle" fill="#888" fontSize="10">{xLabel}</text>}
+      {yLabel && <text x={12} y={height / 2} textAnchor="middle" fill="#888" fontSize="10" transform={`rotate(-90, 12, ${height / 2})`}>{yLabel}</text>}
+      {trendLineEl}
+      {points.map((p, i) => {
+        const cx = xScale(p.x);
+        const cy = yScale(p.y);
+        const isHovered = hovered === i;
+        return (
+          <g key={i}>
+            {isHovered && p.label && (
+              <rect x={cx + 8} y={cy - 20} width={p.label.length * 7 + 12} height="18" rx="3" fill="#1a1a2e" stroke="#4f46e5" strokeWidth="0.5" />
+            )}
+            {isHovered && p.label && (
+              <text x={cx + 14} y={cy - 8} fill="#e2e8f0" fontSize="9">{p.label}</text>
+            )}
+            <circle
+              cx={cx} cy={cy} r={p.size || 5}
+              fill={p.color || '#4f46e5'}
+              opacity={isHovered ? 1 : 0.7}
+              stroke={isHovered ? '#fff' : 'none'}
+              strokeWidth="1.5"
+              style={{ cursor: 'pointer' }}
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+            />
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
+
+/* ─── Timeline ─── */
+interface TimelineEvent {
+  date: string;
+  label: string;
+  description?: string;
+  category?: string;
+  importance?: 'low' | 'medium' | 'high';
+}
+
+export const Timeline: React.FC<{
+  events: TimelineEvent[];
+  width?: number;
+  title?: string;
+}> = ({ events, width = 600, title }) => {
+  const height = Math.max(120, events.length * 60 + 60);
+
+  const categoryColors: Record<string, string> = {
+    default: '#4f46e5',
+    disease: '#ef4444',
+    intervention: '#22c55e',
+    research: '#3b82f6',
+    policy: '#f59e0b',
+  };
+
+  const importanceRadius: Record<string, number> = {
+    low: 4,
+    medium: 6,
+    high: 8,
+  };
+
+  const [hovered, setHovered] = React.useState<number | null>(null);
+
+  const lineX = 100;
+  const nodeStartY = 40;
+
+  return (
+    <svg width={width} height={height} className="w-full h-auto">
+      {title && <text x={width / 2} y={18} textAnchor="middle" fill="currentColor" fontSize="14" fontWeight="bold">{title}</text>}
+      <line x1={lineX} y1={nodeStartY} x2={lineX} y2={nodeStartY + events.length * 60} stroke="#3a3a3a" strokeWidth="2" />
+      {events.map((ev, i) => {
+        const y = nodeStartY + i * 60;
+        const color = ev.category ? (categoryColors[ev.category] || categoryColors.default) : categoryColors.default;
+        const r = ev.importance ? importanceRadius[ev.importance] : 6;
+        const isHovered = hovered === i;
+        return (
+          <g key={i}>
+            <circle cx={lineX} cy={y} r={r} fill={color} stroke="#1a1a2e" strokeWidth="2" style={{ cursor: 'pointer' }}
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+            />
+            {isHovered && ev.description && (
+              <rect x={lineX + 15} y={y - 20} width={Math.max(ev.description.length * 6.5 + 16, ev.label.length * 7 + 16)} height="36" rx="4" fill="#1a1a2e" stroke={color} strokeWidth="0.5" />
+            )}
+            {isHovered && ev.description && (
+              <>
+                <text x={lineX + 23} y={y - 8} fill="#e2e8f0" fontSize="9" fontWeight="bold">{ev.label}</text>
+                <text x={lineX + 23} y={y + 6} fill="#94a3b8" fontSize="8">{ev.description}</text>
+              </>
+            )}
+            {!isHovered && (
+              <text x={lineX + 15} y={y + 4} fill="#e2e8f0" fontSize="10">{ev.label}</text>
+            )}
+            <text x={lineX - 10} y={y + 3} textAnchor="end" fill="#888" fontSize="8">{ev.date}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+};

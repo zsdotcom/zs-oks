@@ -31,7 +31,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="h-screen flex items-center justify-center bg-[#0f0f1a] text-gray-200">
+        <div className="h-screen flex items-center justify-center bg-[#0f0f1a] text-gray-200" role="alert">
           <div className="text-center max-w-md p-8">
             <AlertTriangle size={48} className="mx-auto mb-4 text-red-400" />
             <h1 className="text-lg font-semibold mb-2">Something went wrong</h1>

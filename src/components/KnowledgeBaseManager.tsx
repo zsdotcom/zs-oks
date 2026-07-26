@@ -141,16 +141,17 @@ const KnowledgeBaseManager: React.FC<Props> = ({ files, folders, setFiles, setFo
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search files..."
             className="w-full bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg pl-7 pr-3 py-1.5 text-xs focus:outline-none focus:border-indigo-500/50 placeholder-gray-500"
+            aria-label="Search files"
           />
         </div>
       </div>
 
       {/* Actions */}
       <div className="flex items-center gap-1 px-3 py-2 border-b border-[#2a2a3e]">
-        <button onClick={() => setShowNewFolder(!showNewFolder)} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="New folder">
+        <button onClick={() => setShowNewFolder(!showNewFolder)} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="New folder" aria-label="New folder" aria-expanded={showNewFolder}>
           <Folder size={14} className="text-gray-400" />
         </button>
-        <button onClick={() => setShowNewFile(!showNewFile)} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="New file">
+        <button onClick={() => setShowNewFile(!showNewFile)} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="New file" aria-label="New file" aria-expanded={showNewFile}>
           <Plus size={14} className="text-gray-400" />
         </button>
       </div>
@@ -167,7 +168,7 @@ const KnowledgeBaseManager: React.FC<Props> = ({ files, folders, setFiles, setFo
             className="flex-1 bg-[#1a1a2e] border border-[#2a2a3e] rounded px-2 py-1 text-xs focus:outline-none focus:border-indigo-500/50"
             autoFocus
           />
-          <button onClick={createFolder} className="px-2 py-1 text-xs bg-indigo-600 rounded text-white">Create</button>
+          <button onClick={createFolder} className="px-2 py-1 text-xs bg-indigo-600 rounded text-white" aria-label="Create folder">Create</button>
         </div>
       )}
 
@@ -183,7 +184,7 @@ const KnowledgeBaseManager: React.FC<Props> = ({ files, folders, setFiles, setFo
             className="flex-1 bg-[#1a1a2e] border border-[#2a2a3e] rounded px-2 py-1 text-xs focus:outline-none focus:border-indigo-500/50"
             autoFocus
           />
-          <button onClick={() => createFile()} className="px-2 py-1 text-xs bg-indigo-600 rounded text-white">Create</button>
+          <button onClick={() => createFile()} className="px-2 py-1 text-xs bg-indigo-600 rounded text-white" aria-label="Create file">Create</button>
         </div>
       )}
 
@@ -193,6 +194,8 @@ const KnowledgeBaseManager: React.FC<Props> = ({ files, folders, setFiles, setFo
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
+        role="tree"
+        aria-label="File tree"
       >
         {/* Unsorted files */}
         {unsortedFiles.length > 0 && (
@@ -210,12 +213,12 @@ const KnowledgeBaseManager: React.FC<Props> = ({ files, folders, setFiles, setFo
           const isExpanded = expandedFolders.has(folder.id);
           return (
             <div key={folder.id} className="mb-1">
-              <div className="flex items-center gap-1 px-1 py-1 hover:bg-[#2a2a3e] rounded cursor-pointer" onClick={() => toggleExpand(folder.id)}>
+              <div className="flex items-center gap-1 px-1 py-1 hover:bg-[#2a2a3e] rounded cursor-pointer" onClick={() => toggleExpand(folder.id)} role="treeitem" aria-expanded={isExpanded}>
                 <span className="text-[10px] text-gray-500">{isExpanded ? '▼' : '▶'}</span>
                 <Folder size={12} className="text-yellow-500" />
                 <span className="text-xs flex-1 truncate">{folder.name}</span>
                 <span className="text-[10px] text-gray-600">{folderFiles.length}</span>
-                <button onClick={(e) => { e.stopPropagation(); deleteFolder(folder.id); }} className="p-0.5 hover:text-red-400"><Trash size={10} /></button>
+                <button onClick={(e) => { e.stopPropagation(); deleteFolder(folder.id); }} className="p-0.5 hover:text-red-400" aria-label={`Delete folder ${folder.name}`}><Trash size={10} /></button>
               </div>
               {isExpanded && (
                 <div className="ml-4">
@@ -255,12 +258,12 @@ const FileRow: React.FC<{
   onToggleActive: (id: string) => void;
   onExport: (f: KBFile) => void;
 }> = ({ file, isActive, onSelect, onDelete, onToggleActive, onExport }) => (
-  <div className={`flex items-center gap-1 px-2 py-1 rounded cursor-pointer group ${isActive ? 'bg-indigo-600/10 border-l-2 border-indigo-500' : 'hover:bg-[#2a2a3e]'}`}>
-    <input type="checkbox" checked={file.isActive} onChange={() => onToggleActive(file.id)} className="w-3 h-3 accent-indigo-500" title="Include in AI context" />
+  <div className={`flex items-center gap-1 px-2 py-1 rounded cursor-pointer group ${isActive ? 'bg-indigo-600/10 border-l-2 border-indigo-500' : 'hover:bg-[#2a2a3e]'}`} role="treeitem" aria-selected={isActive}>
+    <input type="checkbox" checked={file.isActive} onChange={() => onToggleActive(file.id)} className="w-3 h-3 accent-indigo-500" title="Include in AI context" aria-label={`Include ${file.name} in AI context`} />
     <FileText size={12} className="text-gray-400 shrink-0" />
     <span className="text-xs flex-1 truncate" onClick={() => onSelect(file)}>{file.name}</span>
-    <button onClick={(e) => { e.stopPropagation(); onExport(file); }} className="p-0.5 opacity-0 group-hover:opacity-100 hover:text-indigo-400" title="Export"><Download size={10} /></button>
-    <button onClick={(e) => { e.stopPropagation(); onDelete(file.id); }} className="p-0.5 opacity-0 group-hover:opacity-100 hover:text-red-400" title="Delete"><Trash size={10} /></button>
+    <button onClick={(e) => { e.stopPropagation(); onExport(file); }} className="p-0.5 opacity-0 group-hover:opacity-100 hover:text-indigo-400" title="Export" aria-label={`Export ${file.name}`}><Download size={10} /></button>
+    <button onClick={(e) => { e.stopPropagation(); onDelete(file.id); }} className="p-0.5 opacity-0 group-hover:opacity-100 hover:text-red-400" title="Delete" aria-label={`Delete ${file.name}`}><Trash size={10} /></button>
   </div>
 );
 

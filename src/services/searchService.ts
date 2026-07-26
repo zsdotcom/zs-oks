@@ -1,133 +1,144 @@
-/**
- * Client-Side Search Engine — Zero-dependency fuzzy full-text search.
- * Implements token-based scoring across file names, content, and tags.
- * No backend, no API key, no external library required.
- * @license SPDX-License-Identifier: Apache-2.0
- */
+import { dbGetAll } from '../db/indexedDB';
 
-import type { KBFile, DocumentTag, SearchResult } from '../types';
+export interface SearchResult {
+  id: string;
+  source: 'file' | 'memory' | 'chat' | 'code';
+  title: string;
+  snippet: string;
+  path: string;
+  relevance: number;
+  date: string;
+}
 
-interface SearchIndexEntry {
-  fileId: string;
-  fileName: string;
+interface SearchableItem {
+  id: string;
+  title: string;
   content: string;
-  tags: string[];
-  tokens: string[];
+  source: SearchResult['source'];
+  date: string;
+  metadata?: Record<string, any>;
 }
 
-let searchIndex: SearchIndexEntry[] = [];
-let isIndexed = false;
+let searchIndex: SearchableItem[] = [];
+let indexBuilt = false;
 
-function tokenize(text: string): string[] {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s]/g, ' ')
-    .split(/\s+/)
-    .filter((t) => t.length >= 2);
-}
+export async function buildSearchIndex(): Promise<void> {
+  const items: SearchableItem[] = [];
 
-export function buildSearchIndex(files: KBFile[], tags: DocumentTag[] = []): void {
-  const tagMap = new Map(tags.map((t) => [t.id, t.name.toLowerCase()]));
-
-  searchIndex = files.map((file) => {
-    const fileTags = (file as any).tagIds || [];
-    const tagNames = fileTags
-      .map((tid: string) => tagMap.get(tid) || '')
-      .filter(Boolean);
-
-    return {
-      fileId: file.id,
-      fileName: file.name.toLowerCase(),
-      content: file.content.toLowerCase(),
-      tags: tagNames,
-      tokens: tokenize(file.name + ' ' + file.content.substring(0, 5000) + ' ' + tagNames.join(' ')),
-    };
+  const files = await dbGetAll<any>('files');
+  files.forEach((f) => {
+    items.push({
+      id: f.id,
+      title: f.name,
+      content: f.content || '',
+      source: 'file',
+      date: f.createdAt,
+      metadata: { type: f.type, size: f.size },
+    });
   });
 
-  isIndexed = true;
+  const episodic = await dbGetAll<any>('episodic');
+  episodic.forEach((e) => {
+    items.push({
+      id: e.id,
+      title: `Memory: ${e.agentId || 'unknown'}`,
+      content: e.text || '',
+      source: 'memory',
+      date: e.createdAt,
+    });
+  });
+
+  const semantic = await dbGetAll<any>('semantic');
+  semantic.forEach((s) => {
+    items.push({
+      id: s.id,
+      title: s.topic || 'Semantic memory',
+      content: s.text || '',
+      source: 'memory',
+      date: s.createdAt,
+    });
+  });
+
+  const procedural = await dbGetAll<any>('procedural');
+  procedural.forEach((p) => {
+    items.push({
+      id: p.id,
+      title: `Skill: ${p.skillId || 'unknown'}`,
+      content: p.instructions || '',
+      source: 'code',
+      date: p.createdAt,
+    });
+  });
+
+  const sessions = await dbGetAll<any>('sessions');
+  sessions.forEach((s) => {
+    const msgs = typeof s.messages === 'string' ? JSON.parse(s.messages) : (s.messages || []);
+    const text = Array.isArray(msgs) ? msgs.map((m: any) => m.text || '').join(' ') : '';
+    items.push({
+      id: s.id,
+      title: `Chat: ${s.title || 'untitled'}`,
+      content: text,
+      source: 'chat',
+      date: s.createdAt,
+    });
+  });
+
+  searchIndex = items;
+  indexBuilt = true;
 }
 
-export function search(query: string, maxResults: number = 20): SearchResult[] {
-  if (!isIndexed || !query.trim()) return [];
+export function searchAll(query: string, maxResults: number = 20): SearchResult[] {
+  if (!query.trim()) return [];
+  if (!indexBuilt) { buildSearchIndex().catch(() => {}); return []; }
 
-  const queryTokens = tokenize(query);
-  if (queryTokens.length === 0) return [];
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (terms.length === 0) return [];
 
-  const results: SearchResult[] = [];
-
-  for (const entry of searchIndex) {
+  const scored = searchIndex.map((item) => {
+    const content = (item.title + ' ' + item.content).toLowerCase();
     let score = 0;
 
-    for (const qt of queryTokens) {
-      // Exact filename match (highest weight)
-      if (entry.fileName.includes(qt)) {
-        score += 10;
-      }
-
-      // Tag match (high weight)
-      if (entry.tags.some((t) => t.includes(qt))) {
-        score += 8;
-      }
-
-      // Content match (moderate weight)
-      if (entry.content.includes(qt)) {
-        score += 3;
-      }
-
-      // Fuzzy: prefix match in tokens
-      if (entry.tokens.some((t) => t.startsWith(qt))) {
+    for (const term of terms) {
+      if (content.includes(term)) {
         score += 1;
+        if (item.title.toLowerCase().includes(term)) score += 2;
+        if (content.includes(query.toLowerCase())) score += 3;
       }
     }
 
-    if (score > 0) {
-      // Generate snippet
-      const snippet = generateSnippet(entry.content, queryTokens, 120);
-      const matchedField = score >= 10 ? 'name' : entry.tags.some((t) => queryTokens.some((qt) => t.includes(qt))) ? 'tags' : 'content';
+    const age = Date.now() - new Date(item.date).getTime();
+    const daysOld = age / (1000 * 60 * 60 * 24);
+    if (daysOld < 7) score += 1;
+    else if (daysOld < 30) score += 0.5;
 
-      results.push({
-        fileId: entry.fileId,
-        fileName: entry.fileName,
-        score,
-        snippet,
-        matchedField,
-      });
-    }
-  }
+    return { item, score };
+  });
 
-  results.sort((a, b) => b.score - a.score);
-  return results.slice(0, maxResults);
+  return scored
+    .filter((s) => s.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, maxResults)
+    .map((s) => ({
+      id: s.item.id,
+      source: s.item.source,
+      title: s.item.title,
+      snippet: truncateAroundMatch(s.item.content, query, 120),
+      path: s.item.metadata?.type ? `file/${s.item.title}` : `memory/${s.item.id}`,
+      relevance: Math.round((s.score / terms.length) * 100),
+      date: s.item.date,
+    }));
 }
 
-function generateSnippet(content: string, queryTokens: string[], maxLength: number): string {
-  const lower = content.toLowerCase();
-  let bestStart = 0;
-  let bestScore = 0;
-
-  for (let i = 0; i < content.length - maxLength; i += 50) {
-    const chunk = lower.substring(i, i + maxLength);
-    let chunkScore = 0;
-    for (const qt of queryTokens) {
-      const idx = chunk.indexOf(qt);
-      if (idx !== -1) chunkScore += qt.length;
-    }
-    if (chunkScore > bestScore) {
-      bestScore = chunkScore;
-      bestStart = i;
-    }
-  }
-
-  const snippet = content.substring(bestStart, bestStart + maxLength);
-  // Highlight matches
-  let highlighted = snippet;
-  for (const qt of queryTokens) {
-    const regex = new RegExp(`(${qt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    highlighted = highlighted.replace(regex, '___HIGHLIGHT___$1___/HIGHLIGHT___');
-  }
-  return (bestStart > 0 ? '...' : '') + highlighted + (bestStart + maxLength < content.length ? '...' : '');
+function truncateAroundMatch(text: string, query: string, contextLen: number): string {
+  const lower = text.toLowerCase();
+  const idx = lower.indexOf(query.toLowerCase());
+  if (idx === -1) return text.slice(0, contextLen) + (text.length > contextLen ? '...' : '');
+  const start = Math.max(0, idx - Math.floor(contextLen / 2));
+  const end = Math.min(text.length, idx + query.length + Math.floor(contextLen / 2));
+  return (start > 0 ? '...' : '') + text.slice(start, end) + (end < text.length ? '...' : '');
 }
 
 export function clearSearchIndex(): void {
   searchIndex = [];
-  isIndexed = false;
+  indexBuilt = false;
 }

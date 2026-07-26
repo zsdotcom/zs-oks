@@ -86,7 +86,7 @@ const WorkspaceManager: React.FC<Props> = ({
       )}
 
       {/* Project List */}
-      <div className="space-y-1">
+      <div className="space-y-1" role="list" aria-label="Workspace list">
         {projects.map((project) => (
           <div
             key={project.id}
@@ -96,6 +96,7 @@ const WorkspaceManager: React.FC<Props> = ({
                 : 'hover:bg-[#2a2a3e] border border-transparent'
             }`}
             onClick={() => onSwitchProject(project.id)}
+            role="listitem"
           >
             <Folder size={14} className="text-gray-400 shrink-0" />
             <div className="flex-1 min-w-0">

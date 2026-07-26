@@ -1,20 +1,22 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   ChatMessage, MessageSender, KBFile, KBFolder, URLGroup,
   ProviderConfig, SavedPrompt, A2AAgent, A2AMetric, SandboxSettings,
   DocumentVersion, KanbanBoard, DocumentTemplate, DocumentTag,
-  AppView, AppUser, SearchResult, TaskColumn, TaskCard, MCPServer, MCPTool,
+  AppView, AppUser, TaskColumn, TaskCard, MCPServer, MCPTool,
 } from './types';
 import { queryLLM, getInitialSuggestions, runA2ADebate, runOrchestratedWorkflow, runSequentialWorkflow } from './services/geminiService';
 import { signInWithGoogle, logoutUser, subscribeAuth, updateUserDoc } from './services/googleAuthService';
-import { search } from './services/searchService';
 import { dbGetAll, dbPut, dbDelete, dbGetKey, dbSetKey, migrateLocalStorage, exportAllData, importAllData } from './db/indexedDB';
-import { useDarkMode } from './hooks/usePersistence';
 import { useFiles } from './hooks/useFiles';
 import { useChat } from './hooks/useChat';
+import { usePWAInstall } from './hooks/usePWAInstall';
+import { fireWebhooks, getAllWebhooks, addWebhook, removeWebhook as removeWebhookSvc, updateWebhook as updateWebhookSvc } from './services/webhookService';
+import type { WebhookConfig } from './services/webhookService';
 import KnowledgeBaseManager from './components/KnowledgeBaseManager';
 import ChatInterface from './components/ChatInterface';
 import ThemeSwitcher from './components/ThemeSwitcher';
+import { AgentBuilder } from './components/AgentBuilder';
 import SearchPanel from './components/SearchPanel';
 import WorkspaceManager from './components/WorkspaceManager';
 import { KanbanBoardView } from './components/KanbanBoardView';
@@ -36,6 +38,7 @@ import {
   Moon, Sun, Cloud, Wifi, WifiOff, Layout, Menu, Clock, Users, Zap,
   Globe, Layers, Template, Kanban, Plus, Trash, Mail,
   Target, Book, BarChart3, FileEdit, SearchCheck, Library, MapPin,
+  Download,
 } from './components/icons/lucide-shim';
 
 const INITIAL_FOLDERS: KBFolder[] = [
@@ -106,7 +109,8 @@ const INITIAL_SAVED_PROMPTS: SavedPrompt[] = [
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
-  const [isDarkMode, setIsDarkMode] = useDarkMode();
+  const [selectedTheme, setSelectedTheme] = useState<string>('dark');
+  const [accentColor, setAccentColor] = useState<string>('#8B5CF6');
   const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showChatSessions, setShowChatSessions] = useState(false);
@@ -118,13 +122,25 @@ const App: React.FC = () => {
   const [epiDataPoints] = useState<EpiDataPoint[]>([
     { id: 'epi-1', lat: -1.286, lng: 36.817, label: 'Nairobi', disease: 'Malaria', cases: 1240, severity: 'high', date: '2026-06-15', status: 'active' },
     { id: 'epi-2', lat: 6.524, lng: 3.379, label: 'Lagos', disease: 'Dengue fever', cases: 890, severity: 'medium', date: '2026-06-14', status: 'active' },
-    { id: 'epi-3', lat: 28.613, lng: 77.209, label: 'Delhi', disease: 'COVID-19', cases: 3200, severity: 'critical', date: '2026-06-13', status: 'active' },
-    { id: 'epi-4', lat: -23.550, lng: -46.633, label: 'São Paulo', disease: 'Dengue fever', cases: 2100, severity: 'high', date: '2026-06-12', status: 'active' },
+    { id: 'epi-3', lat: 28.613, lng: 77.209, label: 'Delhi', disease: 'COVID-19', cases: 3200, severity: 'critical', date: '2026-06-15', status: 'active' },
+    { id: 'epi-4', lat: -23.550, lng: -46.633, label: 'São Paulo', disease: 'Dengue fever', cases: 2100, severity: 'high', date: '2026-06-14', status: 'active' },
     { id: 'epi-5', lat: 40.712, lng: -74.006, label: 'New York', disease: 'Influenza', cases: 560, severity: 'low', date: '2026-06-10', status: 'contained' },
     { id: 'epi-6', lat: 48.856, lng: 2.352, label: 'Paris', disease: 'Measles', cases: 340, severity: 'medium', date: '2026-06-08', status: 'contained' },
     { id: 'epi-7', lat: 35.676, lng: 139.650, label: 'Tokyo', disease: 'COVID-19', cases: 780, severity: 'medium', date: '2026-06-07', status: 'active' },
     { id: 'epi-8', lat: -33.868, lng: 151.209, label: 'Sydney', disease: 'Influenza', cases: 190, severity: 'low', date: '2026-06-05', status: 'resolved' },
   ]);
+
+  const epiTimelineData = useMemo(() => {
+    const dates = [...new Set(epiDataPoints.map(p => p.date))].sort();
+    return dates.map(date => ({
+      date,
+      activePoints: epiDataPoints.filter(p => p.date === date).map(p => p.id),
+    }));
+  }, [epiDataPoints]);
+
+  const handleEpiTimeChange = useCallback((date: string) => {
+    console.log('EpiMap timeline date:', date);
+  }, []);
 
   const {
     files, setFiles, folders, setFolders,
@@ -168,9 +184,15 @@ const App: React.FC = () => {
     ], cards: [] },
   ]);
   const [activeBoardId, setActiveBoardId] = useState('board-1');
+  const { isInstallable, promptInstall } = usePWAInstall();
 
   // MCP state
   const [mcpServers, setMcpServers] = useState<MCPServer[]>([]);
+
+  // Agent builder & webhook state
+  const [showAgentBuilder, setShowAgentBuilder] = useState(false);
+  const [editingAgent, setEditingAgent] = useState<A2AAgent | undefined>();
+  const [webhooks, setWebhooks] = useState<WebhookConfig[]>([]);
 
   useEffect(() => {
     migrateLocalStorage();
@@ -183,6 +205,9 @@ const App: React.FC = () => {
     dbGetAll<MCPServer>('sandbox').then((loaded) => {
       if (loaded.length > 0) setMcpServers(loaded);
     }).catch(() => {});
+    dbGetKey('ui-theme').then((v) => { if (v) setSelectedTheme(v); }).catch(() => {});
+    dbGetKey('ui-accent').then((v) => { if (v) setAccentColor(v); }).catch(() => {});
+    setWebhooks(getAllWebhooks());
   }, []);
 
   useEffect(() => {
@@ -222,8 +247,27 @@ const App: React.FC = () => {
     return () => clearInterval(interval);
   }, [currentUser, files, folders, providerConfig, savedPrompts]);
 
+  useEffect(() => {
+    document.documentElement.classList.remove('dark', 'theme-light', 'theme-sepia', 'theme-forest', 'theme-ocean');
+    if (selectedTheme === 'light') {
+      document.documentElement.style.colorScheme = 'light';
+      document.documentElement.classList.add('theme-light');
+    } else {
+      document.documentElement.style.colorScheme = 'dark';
+      document.documentElement.classList.add('dark');
+      if (selectedTheme !== 'dark') document.documentElement.classList.add(`theme-${selectedTheme}`);
+    }
+    dbSetKey('ui-theme', selectedTheme).catch(() => {});
+  }, [selectedTheme]);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--accent', accentColor);
+    dbSetKey('ui-accent', accentColor).catch(() => {});
+  }, [accentColor]);
+
   const handleSaveFileWrapper = useCallback((updatedFile: KBFile) => {
     handleSaveFile(updatedFile);
+    fireWebhooks('file:created', { fileName: updatedFile.name, fileId: updatedFile.id });
   }, [handleSaveFile]);
 
   const handleSaveVersion = useCallback((docId: string, content: string, label?: string) => {
@@ -256,6 +300,7 @@ const App: React.FC = () => {
       setA2aMetrics((prev) => [...prev, metric]);
     });
     setIsA2ALoading(false);
+    fireWebhooks('a2a:complete', { topic, agentCount: a2aAgents.length });
     const summaryMsg: ChatMessage = {
       id: `debate-${Date.now()}`,
       text: `## A2A Debate Results\n\n${a2aAgents.map((a, i) => `### ${a.name}\n${responses[i]}`).join('\n\n')}\n\n### Consensus\n${responses[responses.length - 1]}`,
@@ -317,6 +362,35 @@ const App: React.FC = () => {
       sender: MessageSender.MODEL, timestamp: new Date(),
     };
     setMessages([...messages, summaryMsg]);
+  };
+
+  const handleSaveAgent = (agent: A2AAgent) => {
+    setA2aAgents((prev) => {
+      const exists = prev.some((a) => a.id === agent.id);
+      return exists ? prev.map((a) => a.id === agent.id ? agent : a) : [...prev, agent];
+    });
+    setShowAgentBuilder(false);
+    setEditingAgent(undefined);
+  };
+
+  const handleDeleteAgent = (id: string) => {
+    setA2aAgents((prev) => prev.filter((a) => a.id !== id));
+  };
+
+  const handleAddWebhook = (config: Omit<WebhookConfig, 'id' | 'createdAt'>) => {
+    const hook = addWebhook(config);
+    setWebhooks(getAllWebhooks());
+    return hook;
+  };
+
+  const handleRemoveWebhook = (id: string) => {
+    removeWebhookSvc(id);
+    setWebhooks(getAllWebhooks());
+  };
+
+  const handleUpdateWebhook = (id: string, updates: Partial<WebhookConfig>) => {
+    updateWebhookSvc(id, updates);
+    setWebhooks(getAllWebhooks());
   };
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -426,7 +500,7 @@ const App: React.FC = () => {
               <span className="text-sm font-semibold hidden sm:inline">Open Knowledge Studio</span>
               <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400">v2.0</span>
             </div>
-            <nav className="flex items-center gap-0.5 ml-4 overflow-x-auto">
+            <nav className="flex items-center gap-0.5 ml-4 overflow-x-auto" aria-label="Main navigation">
               {navItems.map(({ view, icon, label }) => (
                 <button
                   key={view}
@@ -447,20 +521,25 @@ const App: React.FC = () => {
               <span className={`hidden sm:inline ${isOnline ? 'text-green-400' : 'text-red-400'}`}>{isOnline ? 'Online' : 'Offline'}</span>
             </div>
             {currentUser && <Cloud size={14} className="text-indigo-400" />}
-            <button onClick={() => { setShowGooglePanel(!showGooglePanel); setShowGmailCompose(false); }} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Google Workspace">
+            {isInstallable && (
+              <button onClick={promptInstall} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Install App">
+                <Download size={14} className="text-gray-400" />
+              </button>
+            )}
+            <button onClick={() => { setShowGooglePanel(!showGooglePanel); setShowGmailCompose(false); }} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Google Workspace" aria-label="Toggle Google Workspace panel">
               <Globe size={14} className="text-gray-400" />
             </button>
-            <button onClick={() => { setShowGmailCompose(!showGmailCompose); setShowGooglePanel(false); }} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Compose Email" disabled={!currentUser}>
+            <button onClick={() => { setShowGmailCompose(!showGmailCompose); setShowGooglePanel(false); }} className="p-1.5 rounded hover:bg-[#2a2a3e]" title="Compose Email" disabled={!currentUser} aria-label="Compose email">
               <Mail size={14} className="text-gray-400" />
             </button>
-            <button onClick={() => { setShowICD11(!showICD11); setShowEpiMap(false); }} className={`p-1.5 rounded hover:bg-[#2a2a3e] ${showICD11 ? 'bg-indigo-600/20' : ''}`} title="ICD-11 Code Lookup">
+            <button onClick={() => { setShowICD11(!showICD11); setShowEpiMap(false); }} className={`p-1.5 rounded hover:bg-[#2a2a3e] ${showICD11 ? 'bg-indigo-600/20' : ''}`} title="ICD-11 Code Lookup" aria-label="Toggle ICD-11 code lookup">
               <Book size={14} className="text-gray-400" />
             </button>
-            <button onClick={() => { setShowEpiMap(!showEpiMap); setShowICD11(false); }} className={`p-1.5 rounded hover:bg-[#2a2a3e] ${showEpiMap ? 'bg-indigo-600/20' : ''}`} title="Epidemiology Map">
+            <button onClick={() => { setShowEpiMap(!showEpiMap); setShowICD11(false); }} className={`p-1.5 rounded hover:bg-[#2a2a3e] ${showEpiMap ? 'bg-indigo-600/20' : ''}`} title="Epidemiology Map" aria-label="Toggle epidemiology map">
               <MapPin size={14} className="text-gray-400" />
             </button>
-            <ThemeSwitcher isDark={isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} />
-            <button onClick={() => setShowSettings(!showSettings)} className="p-1.5 rounded hover:bg-[#2a2a3e]">
+            <ThemeSwitcher theme={selectedTheme} onThemeChange={setSelectedTheme} accentColor={accentColor} onAccentColorChange={setAccentColor} />
+            <button onClick={() => setShowSettings(!showSettings)} className="p-1.5 rounded hover:bg-[#2a2a3e]" aria-label="Open settings">
               <Settings size={14} className="text-gray-400" />
             </button>
             {currentUser ? (
@@ -468,14 +547,14 @@ const App: React.FC = () => {
                 {currentUser.photoURL && <img src={currentUser.photoURL} alt="" className="w-5 h-5 rounded-full" />}
               </button>
             ) : (
-              <button onClick={signInWithGoogle} className="text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700">Sign in</button>
+              <button onClick={signInWithGoogle} className="text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700" aria-label="Sign in with Google">Sign in</button>
             )}
           </div>
         </header>
 
         <div className="flex-1 flex overflow-hidden">
           {isSidebarOpen && (
-            <aside className="w-72 border-r border-[#2a2a3e] bg-[#1a1a2e]/50 flex flex-col shrink-0 overflow-hidden hidden md:flex">
+            <aside className="w-72 border-r border-[#2a2a3e] bg-[#1a1a2e]/50 flex flex-col shrink-0 overflow-hidden hidden md:flex" aria-label="Workspace sidebar">
               <div className="flex-1 overflow-y-auto">
                 <WorkspaceManager
                   files={files}
@@ -510,7 +589,7 @@ const App: React.FC = () => {
             </aside>
           )}
 
-          <main className="flex-1 flex min-w-0 overflow-hidden">
+          <main className="flex-1 flex min-w-0 overflow-hidden" aria-label="Main content">
             {activeView === 'chat' && (
               <div className="flex flex-1">
                 {showChatSessions && (
@@ -523,13 +602,13 @@ const App: React.FC = () => {
                     onClose={() => setShowChatSessions(false)}
                   />
                 )}
-                <div className="flex-1 flex flex-col min-w-0">
+                <div className="flex-1 flex flex-col min-w-0" aria-live="polite">
                   <div className="flex items-center gap-2 px-3 py-1 border-b border-[#2a2a3e] shrink-0">
-                    <button onClick={() => setShowChatSessions(!showChatSessions)} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400" title="Chat sessions">
+                    <button onClick={() => setShowChatSessions(!showChatSessions)} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400" title="Chat sessions" aria-label="Toggle chat sessions">
                       <MessageSquare size={12} />
                     </button>
                     <span className="text-[10px] text-gray-500">{sessions.length} sessions</span>
-                    <button onClick={createSession} className="ml-auto p-1 rounded hover:bg-[#2a2a3e] text-gray-400" title="New chat"><Plus size={12} /></button>
+                    <button onClick={createSession} className="ml-auto p-1 rounded hover:bg-[#2a2a3e] text-gray-400" title="New chat" aria-label="New chat"><Plus size={12} /></button>
                   </div>
                   <ChatInterface
                     messages={messages}
@@ -542,6 +621,7 @@ const App: React.FC = () => {
                     isFetchingSuggestions={isFetchingSuggestions}
                     setIsFetchingSuggestions={setIsFetchingSuggestions}
                     setInitialSuggestions={setInitialSuggestions}
+                    onMessageSent={(text) => fireWebhooks('chat:message', { text, sender: 'user' })}
                   />
                 </div>
               </div>
@@ -619,6 +699,7 @@ const App: React.FC = () => {
                           setActiveView('editor');
                         }}
                         className="text-[10px] bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700"
+                        aria-label={`Use template: ${t.name}`}
                       >
                         Use Template
                       </button>
@@ -664,17 +745,25 @@ const App: React.FC = () => {
                     <MapPin size={12} className="text-indigo-400" />
                     Epidemiology Map
                   </h2>
-                  <button onClick={() => setShowEpiMap(false)} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400">
-                    <X size={12} />
-                  </button>
+              <button onClick={() => setShowEpiMap(false)} className="p-1 rounded hover:bg-[#2a2a3e] text-gray-400" aria-label="Close epidemiology map">
+                <X size={12} />
+              </button>
                 </div>
                 <div className="flex-1 overflow-hidden p-2">
-                  <EpiMap dataPoints={epiDataPoints} height="100%" />
+                  <EpiMap dataPoints={epiDataPoints} height="100%" timelineData={epiTimelineData} onTimeChange={handleEpiTimeChange} />
                 </div>
               </div>
             </aside>
           )}
         </div>
+
+        {showAgentBuilder && (
+          <AgentBuilder
+            onSave={handleSaveAgent}
+            onClose={() => { setShowAgentBuilder(false); setEditingAgent(undefined); }}
+            editAgent={editingAgent}
+          />
+        )}
 
         <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-[200px] text-gray-500 text-xs">Loading...</div>}>
           <SettingsPanel
@@ -689,6 +778,13 @@ const App: React.FC = () => {
             onImport={handleImport}
             sandboxSettings={sandboxSettings}
             onSandboxChange={setSandboxSettings}
+            onEditAgent={(agent) => { setEditingAgent(agent); setShowAgentBuilder(true); }}
+            onCreateAgent={() => { setEditingAgent(undefined); setShowAgentBuilder(true); }}
+            onDeleteAgent={handleDeleteAgent}
+            webhooks={webhooks}
+            onAddWebhook={handleAddWebhook}
+            onRemoveWebhook={handleRemoveWebhook}
+            onUpdateWebhook={handleUpdateWebhook}
           />
         </React.Suspense>
 

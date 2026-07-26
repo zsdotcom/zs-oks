@@ -15,7 +15,7 @@ export const ChatSessionSidebar: React.FC<Props> = ({
   sessions, activeSessionId, onSwitch, onCreate, onDelete, onClose,
 }) => {
   return (
-    <div className="w-56 border-r border-[#2a2a3e] bg-[#1a1a2e]/50 flex flex-col shrink-0">
+    <div className="w-56 border-r border-[#2a2a3e] bg-[#1a1a2e]/50 flex flex-col shrink-0" role="navigation" aria-label="Chat sessions">
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#2a2a3e]">
         <span className="text-xs font-medium text-gray-400">Chats</span>
         <div className="flex gap-1">
@@ -31,6 +31,7 @@ export const ChatSessionSidebar: React.FC<Props> = ({
               activeSessionId === s.id ? 'bg-indigo-600/10 text-indigo-400' : 'hover:bg-[#2a2a3e] text-gray-300'
             }`}
             onClick={() => onSwitch(s.id)}
+            aria-current={activeSessionId === s.id ? 'page' : undefined}
           >
             <MessageSquare size={12} className="shrink-0" />
             <span className="flex-1 truncate">{s.title}</span>

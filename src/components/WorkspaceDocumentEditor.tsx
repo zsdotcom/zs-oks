@@ -211,15 +211,15 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
           <span className="text-sm font-medium">{file.name}</span>
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={() => setShowTOC(!showTOC)} className={`p-1.5 rounded ${showTOC ? 'bg-indigo-600/20 text-indigo-400' : 'hover:bg-[#2a2a3e] text-gray-400'}`} title="Table of Contents"><Layout size={14} /></button>
-          <button onClick={() => setShowTemplates(!showTemplates)} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Templates"><Plus size={14} /></button>
-          <button onClick={() => setShowVersions(!showVersions)} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Versions"><Clock size={14} /></button>
-          <button onClick={saveVersion} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Save version"><Eye size={14} /></button>
-          <button onClick={copyContent} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Copy"><Copy size={14} /></button>
-          <button onClick={exportMarkdown} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Export .md"><Download size={14} /></button>
-          <button onClick={exportHTML} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Export .html"><Download size={14} /></button>
-          <button onClick={() => exportToPDF(file.name, renderedHTML, false)} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Print to PDF"><Printer size={14} /></button>
-          <button onClick={() => exportToPDF(file.name, renderedHTML, true)} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Export PDF"><Download size={14} /></button>
+          <button onClick={() => setShowTOC(!showTOC)} className={`p-1.5 rounded ${showTOC ? 'bg-indigo-600/20 text-indigo-400' : 'hover:bg-[#2a2a3e] text-gray-400'}`} title="Table of Contents" aria-label="Toggle table of contents" aria-expanded={showTOC} aria-controls="toc-panel"><Layout size={14} /></button>
+          <button onClick={() => setShowTemplates(!showTemplates)} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Templates" aria-label="Toggle templates" aria-expanded={showTemplates} aria-controls="templates-panel"><Plus size={14} /></button>
+          <button onClick={() => setShowVersions(!showVersions)} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Versions" aria-label="Toggle version history" aria-expanded={showVersions} aria-controls="versions-panel"><Clock size={14} /></button>
+          <button onClick={saveVersion} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Save version" aria-label="Save version"><Eye size={14} /></button>
+          <button onClick={copyContent} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Copy" aria-label="Copy content"><Copy size={14} /></button>
+          <button onClick={exportMarkdown} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Export .md" aria-label="Export markdown"><Download size={14} /></button>
+          <button onClick={exportHTML} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Export .html" aria-label="Export HTML"><Download size={14} /></button>
+          <button onClick={() => exportToPDF(file.name, renderedHTML, false)} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Print to PDF" aria-label="Print to PDF"><Printer size={14} /></button>
+          <button onClick={() => exportToPDF(file.name, renderedHTML, true)} className="p-1.5 rounded hover:bg-[#2a2a3e] text-gray-400" title="Export PDF" aria-label="Download PDF"><Download size={14} /></button>
         </div>
       </div>
 
@@ -230,7 +230,7 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
 
       {/* Templates panel */}
       {showTemplates && (
-        <div className="absolute top-12 right-4 z-40 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg shadow-xl p-3 w-72 max-h-96 overflow-y-auto">
+        <div id="templates-panel" className="absolute top-12 right-4 z-40 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg shadow-xl p-3 w-72 max-h-96 overflow-y-auto">
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs font-medium">Templates</span>
             <button onClick={() => setShowTemplates(false)}><X size={12} /></button>
@@ -247,7 +247,7 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
 
       {/* Versions panel */}
       {showVersions && (
-        <div className="absolute top-12 right-4 z-40 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg shadow-xl p-3 w-72 max-h-96 overflow-y-auto">
+        <div id="versions-panel" className="absolute top-12 right-4 z-40 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg shadow-xl p-3 w-72 max-h-96 overflow-y-auto">
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs font-medium">Version History</span>
             <button onClick={() => setShowVersions(false)}><X size={12} /></button>
@@ -270,7 +270,7 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
       <div className="flex-1 flex overflow-hidden">
         {/* TOC sidebar */}
         {showTOC && toc.length > 0 && (
-          <div className="w-48 border-r border-[#2a2a3e] overflow-y-auto p-2 shrink-0">
+          <div id="toc-panel" className="w-48 border-r border-[#2a2a3e] overflow-y-auto p-2 shrink-0" role="region" aria-label="Table of contents">
             <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-2">Contents</div>
             {toc.map((item) => (
               <button
@@ -294,11 +294,12 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
             className="w-full h-full bg-[#0f0f1a] text-gray-200 p-4 font-mono text-sm resize-none focus:outline-none leading-relaxed"
             placeholder="Start writing in Markdown..."
             spellCheck={false}
+            aria-label="Document editor"
           />
         </div>
 
         {/* Preview (right) */}
-        <div className="flex-1 min-w-0 border-l border-[#2a2a3e] overflow-y-auto">
+        <div className="flex-1 min-w-0 border-l border-[#2a2a3e] overflow-y-auto" aria-label="Preview" role="region">
           <div ref={previewRef} className="prose p-4" dangerouslySetInnerHTML={{ __html: renderedHTML }} />
         </div>
       </div>

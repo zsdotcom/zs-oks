@@ -60,7 +60,7 @@ export const MCPServerPanel: React.FC<Props> = ({ servers, onAddServer, onRemove
           <Database size={16} className="text-indigo-400" />
           <h2 className="text-sm font-semibold">MCP Servers</h2>
         </div>
-        <button onClick={() => setShowAdd(!showAdd)} className="p-1 rounded hover:bg-[#2a2a3e]"><Plus size={14} /></button>
+        <button onClick={() => setShowAdd(!showAdd)} className="p-1 rounded hover:bg-[#2a2a3e]" aria-label="Add MCP server" aria-expanded={showAdd}><Plus size={14} /></button>
       </div>
 
       {showAdd && (
@@ -81,11 +81,11 @@ export const MCPServerPanel: React.FC<Props> = ({ servers, onAddServer, onRemove
         <div className="space-y-2">
           {servers.map((server) => (
             <div key={server.id} className="bg-[#1a1a2e] rounded-lg border border-[#2a2a3e] overflow-hidden">
-              <div className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-[#2a2a3e]" onClick={() => setExpandedServer(expandedServer === server.id ? null : server.id)}>
+              <div className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-[#2a2a3e]" onClick={() => setExpandedServer(expandedServer === server.id ? null : server.id)} role="button" tabIndex={0} aria-expanded={expandedServer === server.id} aria-label={`${server.name} server`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpandedServer(expandedServer === server.id ? null : server.id); } }}>
                 {server.status === 'connected' ? <Wifi size={12} className="text-green-400" /> : <WifiOff size={12} className="text-gray-500" />}
                 <span className="text-xs font-medium flex-1">{server.name}</span>
                 <span className="text-[10px] text-gray-500">{server.tools.length} tools</span>
-                <button onClick={(e) => { e.stopPropagation(); onRemoveServer(server.id); }} className="p-0.5 hover:text-red-400"><Trash size={10} /></button>
+                <button onClick={(e) => { e.stopPropagation(); onRemoveServer(server.id); }} className="p-0.5 hover:text-red-400" aria-label={`Remove ${server.name}`}><Trash size={10} /></button>
               </div>
               {expandedServer === server.id && (
                 <div className="px-3 py-2 border-t border-[#2a2a3e] space-y-1">
