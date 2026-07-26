@@ -19,8 +19,8 @@
 When running tasks or validating code, use the following standard scripts:
 - **Install Dependencies**: `npm install`
 - **Development Server**: `npm run dev`
-- **Production Build**: `npm run build` (`tsc --noEmit && vite build`)
-- **Type Checking**: `npm run typecheck` (`tsc --noEmit`)
+- **Production Build**: `npm run build` (`tsc -b --noEmit && vite build`)
+- **Type Checking**: `npm run typecheck` (`tsc -b --noEmit`)
 - **Run Tests**: `npm run test`
 - **Watch Tests**: `npm run test:watch`
 - **Coverage**: `npm run test:coverage`
@@ -55,8 +55,8 @@ The application utilizes IndexedDB (`open-knowledge-studio` DB, v1) for persiste
 ```bash
 npm install          # only react + react-dom at runtime
 npm run dev          # dev server on http://localhost:3000
-npm run typecheck    # tsc --noEmit (run before build)
-npm run build        # tsc --noEmit && vite build
+npm run typecheck    # tsc -b --noEmit (run before build)
+npm run build        # tsc -b --noEmit && vite build
 npm run preview      # serve dist/ locally
 ```
 
@@ -65,8 +65,8 @@ npm run preview      # serve dist/ locally
 | Command | What it does |
 |---------|-------------|
 | `npm run dev` | Vite dev server, port **3000**, bound `0.0.0.0` |
-| `npm run typecheck` | `tsc --noEmit` — run before `build` |
-| `npm run build` | `tsc --noEmit && vite build` |
+| `npm run typecheck` | `tsc -b --noEmit` — run before `build` |
+| `npm run build` | `tsc -b --noEmit && vite build` |
 | `npm run test` | Vitest — 5 test files, 69 tests (memory, gemini, ICD-11, sandbox) |
 | `npm run test:watch` | Vitest watch mode |
 | `npm run test:coverage` | Vitest with V8 coverage |
