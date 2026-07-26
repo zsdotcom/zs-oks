@@ -60,8 +60,8 @@ For agent-specific implementation details, see `AGENTS.md` at the root of the re
 
 ### Prerequisites
 
-- Node.js v22+
-- npm v10+
+- Node.js v22+ (tested with v26)
+- npm v10+ (tested with v11)
 
 ### Installation
 

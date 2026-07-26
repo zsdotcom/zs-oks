@@ -10,8 +10,8 @@ Before you begin, ensure you have the following installed on your machine:
 
 | Requirement | Version | Description |
 | :--- | :--- | :--- |
-| **Node.js** | v22.0.0+ | JavaScript runtime |
-| **npm** | v10.0.0+ | Package manager |
+| **Node.js** | v22.0.0+ (tested v26) | JavaScript runtime |
+| **npm** | v10.0.0+ (tested v11) | Package manager |
 | **Git** | v2.0.0+ | Version control |
 
 ---
