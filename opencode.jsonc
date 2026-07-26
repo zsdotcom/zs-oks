@@ -1,100 +1,51 @@
 {
-  // ─── Open Knowledge Studio — OpenCode Configuration ───
-  // This file defines how OpenCode agents interact with this repository.
+  "$schema": "https://opencode.ai/config.json",
 
-  "name": "open-knowledge-studio",
-  "version": "1.0.0",
-
-  // ─── Project Paths ───
-  "paths": {
-    "root": ".",
-    "source": "src",
-    "components": "src/components",
-    "services": "src/services",
-    "db": "src/db",
-    "utils": "src/utils",
-    "docs": "docs",
-    "public": "public",
-    "test": "src/test"
-  },
-
-  // ─── Developer Commands ───
-  "commands": {
-    "install": "npm install",
-    "dev": "npm run dev",
-    "build": "npm run build",
-    "typecheck": "npm run typecheck",
-    "test": "npm run test",
-    "test:watch": "npm run test:watch",
-    "test:coverage": "npm run test:coverage",
-    "test:bench": "npm run test:bench",
-    "preview": "npm run preview",
-    "lint": ""
-  },
-
-  // ─── Build & Execution ───
-  "build": {
-    "command": "tsc --noEmit && vite build",
-    "output": "dist/",
-    "devCommand": "vite",
-    "devPort": 3000,
-    "typecheckCommand": "tsc --noEmit"
-  },
-
-  // ─── Memory Configuration ───
-  // Uses IndexedDB for persistent memory (browser-native, GB-scale)
-  // Filesystem context stored in project root
-  "memory": {
-    "type": "indexeddb",
-    "dbName": "open-knowledge-studio",
-    "dbVersion": 1,
-    "stores": [
-      "episodic", "semantic", "procedural", "working", "long_term",
-      "files", "folders", "providers", "urlGroups", "prompts",
-      "a2aAgents", "metrics", "sandbox", "sessions", "versions",
-      "kanban", "templates", "tags", "appState"
-    ],
-    "contextFiles": [
-      "AGENTS.md",
-      "docs/040-development.md"
-    ]
-  },
-
-  // ─── Remote Connections ───
-  "remote": {
-    "origin": "https://generativelanguage.googleapis.com",
-    "providers": [
-      { "name": "gemini", "baseUrl": "https://generativelanguage.googleapis.com/v1beta", "envKey": "VITE_GEMINI_API_KEY" },
-      { "name": "groq", "baseUrl": "https://api.groq.com/openai/v1", "envKey": "VITE_GROQ_API_KEY" },
-      { "name": "openai", "baseUrl": "https://api.openai.com/v1", "envKey": "VITE_OPENAI_API_KEY" },
-      { "name": "anthropic", "baseUrl": "https://api.anthropic.com/v1", "envKey": "VITE_ANTHROPIC_API_KEY" },
-      { "name": "deepseek", "baseUrl": "https://api.deepseek.com/v1", "envKey": "VITE_DEEPSEEK_API_KEY" },
-      { "name": "cerebras", "baseUrl": "https://api.cerebras.ai/v1", "envKey": "VITE_CEREBRAS_API_KEY" },
-      { "name": "openrouter", "baseUrl": "https://openrouter.ai/api/v1", "envKey": "VITE_OPENROUTER_API_KEY" },
-      { "name": "ollama", "baseUrl": "http://localhost:11434", "envKey": "" }
-    ],
-    "googleOAuth": {
-      "clientIdEnvKey": "VITE_GOOGLE_OAUTH_CLIENT_ID",
-      "scopes": [
-        "openid", "email", "profile",
-        "https://www.googleapis.com/auth/drive.appdata",
-        "https://www.googleapis.com/auth/drive.file",
-        "https://www.googleapis.com/auth/drive.readonly"
-      ]
-    }
-  },
-
-  // ─── Agent Instructions ───
+  // ─── System Instructions ───
+  // OpenCode loads these markdown files into the LLM system prompt on launch
   "instructions": [
     "AGENTS.md"
   ],
 
-  // ─── Environment ───
-  "env": {
-    "requiredKeys": ["VITE_GEMINI_API_KEY"],
-    "optionalKeys": [
-      "VITE_GROQ_API_KEY", "VITE_CEREBRAS_API_KEY", "VITE_DEEPSEEK_API_KEY",
-      "VITE_GOOGLE_OAUTH_CLIENT_ID", "VITE_OPENROUTER_API_KEY", "VITE_GITHUB_TOKEN"
-    ]
+  // ─── Subagent Settings ───
+  // Maximum nesting depth for subagent delegation
+  "subagent_depth": 3,
+
+  // ─── Tool & Execution Permissions ───
+  // Governs what the AI agent can execute automatically vs. requiring manual approval
+  "permission": {
+    // Basic file inspection tools
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow",
+    "lsp": "allow",
+    "skill": "allow",
+
+    // File editing permissions
+    "edit": "allow",
+
+    // Terminal / Bash permissions
+    "bash": {
+      "*": "ask",
+      "npm *": "allow",
+      "npx *": "allow",
+      "git status": "allow",
+      "git diff *": "allow",
+      "git log *": "allow",
+      "git add *": "allow",
+      "git commit *": "ask",
+      "git push *": "ask"
+    },
+
+    // Web capabilities
+    "webfetch": "allow",
+    "websearch": "allow",
+
+    // Strictly lock filesystem interaction to this repository root
+    "external_directory": {
+      "/home/codeandbrain/open-knowledge-studio/**": "allow",
+      "*": "deny"
+    }
   }
 }

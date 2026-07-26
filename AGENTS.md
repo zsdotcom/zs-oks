@@ -1,5 +1,35 @@
 # Open Knowledge Studio — Agent Instructions
 
+## 🚀 Repository & Workspace Constraints
+- **Local Project Folder Root**: `/home/codeandbrain/open-knowledge-studio`
+- **GitHub Repository**: `https://github.com/codeandbrain/open-knowledge-studio`
+- **Strict Boundary**: All code modifications, tests, and file searches MUST remain inside the project root.
+
+## 📂 Project Structure & Paths
+- **Source Code**: `src/`
+- **Components**: `src/components/`
+- **Services**: `src/services/`
+- **Database Layer**: `src/db/`
+- **Utilities**: `src/utils/`
+- **Documentation**: `docs/`
+- **Public Assets**: `public/`
+- **Test Suite**: `src/test/`
+
+## 🛠️ Execution & Build Commands
+When running tasks or validating code, use the following standard scripts:
+- **Install Dependencies**: `npm install`
+- **Development Server**: `npm run dev`
+- **Production Build**: `npm run build` (`tsc --noEmit && vite build`)
+- **Type Checking**: `npm run typecheck` (`tsc --noEmit`)
+- **Run Tests**: `npm run test`
+- **Watch Tests**: `npm run test:watch`
+- **Coverage**: `npm run test:coverage`
+- **Benchmarks**: `npm run test:bench`
+
+
+## 🧠 Memory Architecture Context
+The application utilizes IndexedDB (`open-knowledge-studio` DB, v1) for persistent state across store modules (`episodic`, `semantic`, `procedural`, `working`, `long_term`, `files`, `sandbox`, `sessions`).
+
 ## Tech stack
 
 | Dependency | Version |
