@@ -10,7 +10,7 @@
 | `npm install` | Install deps (only react + react-dom at runtime) |
 | `npm run dev` | Vite dev server on `http://localhost:3000`, bound `0.0.0.0` |
 | `npm run typecheck` | `tsc -b --noEmit` — run before build |
-| `npm test` | Vitest — 74 tests across 6 files in `src/test/` |
+| `npm test` | Vitest — 117 tests across 7 files in `src/test/` |
 | `npm run test:e2e` | Playwright (7 spec files in `e2e/`) |
 | `npm run test:coverage` | Vitest with V8 coverage (thresholds: 80/75/85/80) |
 | `npm run build` | `tsc -b --noEmit && vite build` (outputs to `dist/`) |
@@ -31,8 +31,8 @@ CI order (`ci.yml`): `typecheck` → `test` → `build`. E2E runs only on PRs. D
 - Transformers.js and Orama JS are dynamically loaded from jsdelivr CDN in Workers/lazy imports — never installed via npm.
 - Several panels are `React.lazy()` loaded: `A2AMetricsDashboard`, `GoogleWorkspacePanel`, `SettingsPanel`, `MCPServerPanel`, `WorkspaceDocumentEditor`.
 - 25 components (13 direct + 5 lazy + 2 re-export aliases + 1 chart dir + 1 icon shim).
-- 13 services: `connectorService`, `embeddingWorker`, `geminiService`, `githubAuthService`, `googleAuthService`, `icd11Service`, `memoryApi`, `oramaService`, `publicApiService`, `sandboxService`, `searchService`, `skillService`, `webhookService`.
-- 84 documentation files across 12 sections in `docs/` (see `docs/index.md` for full index).
+- 16 services: `connectorService`, `embeddingWorker`, `geminiService`, `githubAuthService`, `googleAuthService`, `icd11Service`, `icfService`, `ichiService`, `whoFicIndex`, `memoryApi`, `oramaService`, `publicApiService`, `sandboxService`, `searchService`, `skillService`, `webhookService`.
+- 120 documentation files across 12 sections in `docs/` (see `docs/index.md` for full index).
 
 ## Key gotchas
 - **Path alias `@/`** maps to `src/`. Import from `@/types`, `@/components/...`, etc.
@@ -47,7 +47,7 @@ CI order (`ci.yml`): `typecheck` → `test` → `build`. E2E runs only on PRs. D
 - Test environment: `happy-dom` with `fake-indexeddb/auto`
 - Setup file `src/test/setup.ts` mocks `BroadcastChannel`, `Worker` (returns random 384-dim vectors), `crypto.randomUUID` (returns `test-uuid-N`), and `navigator.storage.estimate`
 - Coverage excludes `src/test/**`, test/spec/bench files, and `src/index.tsx`
-- 6 test files: `memory.unit.test.ts` (25), `memory.integration.test.ts` (10), `memory.benchmark.ts` (5 bench), `gemini.test.ts` (8), `sandbox.test.ts` (9), `icd11.test.ts` (22)
+- 7 test files: `memory.unit.test.ts` (25), `memory.integration.test.ts` (10), `memory.benchmark.ts` (5 bench), `gemini.test.ts` (8), `sandbox.test.ts` (9), `icd11.test.ts` (22), `icf.test.ts` (22), `ichi.test.ts` (22)
 - E2E: requires `npx playwright install chromium` first; Playwright config auto-starts dev server; uses Chromium only
 
 ## In-app agent system (product feature, not OpenCode)
@@ -55,7 +55,7 @@ CI order (`ci.yml`): `typecheck` → `test` → `build`. E2E runs only on PRs. D
 
 ## Documentation reference
 Full documentation is in `docs/`. Key entry points:
-- `docs/index.md` — Master table of contents (83 files, 12 sections)
+- `docs/index.md` — Master table of contents (120 files, 12 sections)
 - `docs/project/000-overview.md` — Project overview
 - `docs/developers/000-quickstart.md` — 5-minute developer quickstart
 - `docs/developers/003-non-coder-guide.md` — Click-by-click setup for non-developers

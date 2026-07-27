@@ -39,6 +39,7 @@ const GoogleWorkspacePanel = React.lazy(() => import('./components/GoogleWorkspa
 const SettingsPanel = React.lazy(() => import('./components/SettingsPanel'));
 const MCPServerPanel = React.lazy(() => import('./components/MCPServerPanel').then(m => ({ default: m.MCPServerPanel })));
 import { ICD11Lookup } from './components/ICD11Lookup';
+import { BdCorePanel } from './components/BdCorePanel';
 import { EpiMap } from './components/EpiMap';
 import type { EpiDataPoint } from './components/EpiMap';
 import { DocumentationViewer } from './components/DocumentationViewer';
@@ -50,7 +51,7 @@ import {
   Moon, Sun, Cloud, Wifi, WifiOff, Layout, Menu, Clock, Users, Zap,
   Globe, Layers, Template, Kanban, Plus, Trash, Mail, Wrench,
   Target, Book, BarChart3, FileEdit, SearchCheck, Library, MapPin,
-  Download,
+  Download, FlaskConical,
 } from './components/icons/lucide-shim';
 
 const INITIAL_FOLDERS: KBFolder[] = [
@@ -179,6 +180,7 @@ const App: React.FC = () => {
   const [showGooglePanel, setShowGooglePanel] = useState(false);
   const [showGmailCompose, setShowGmailCompose] = useState(false);
   const [showICD11, setShowICD11] = useState(false);
+  const [showBdCore, setShowBdCore] = useState(false);
   const [toolsTab, setToolsTab] = useState<'tools' | 'connectors'>('tools');
   const [showEpiMap, setShowEpiMap] = useState(false);
   const [epiDataPoints] = useState<EpiDataPoint[]>([
@@ -719,10 +721,13 @@ const App: React.FC = () => {
             <button onClick={() => { setShowGmailCompose(!showGmailCompose); setShowGooglePanel(false); }} className="p-1.5 rounded hover:bg-(--bg-hover)" title="Compose Email" disabled={!currentUser} aria-label="Compose email">
               <Mail size={14} className="text-(--text-secondary)" />
             </button>
-            <button onClick={() => { setShowICD11(!showICD11); setShowEpiMap(false); }} className={`p-1.5 rounded hover:bg-(--bg-hover) ${showICD11 ? 'bg-(--accent-subtle)' : ''}`} title="ICD-11 Code Lookup" aria-label="Toggle ICD-11 code lookup">
+            <button onClick={() => { setShowICD11(!showICD11); setShowEpiMap(false); setShowBdCore(false); }} className={`p-1.5 rounded hover:bg-(--bg-hover) ${showICD11 ? 'bg-(--accent-subtle)' : ''}`} title="ICD-11 Code Lookup" aria-label="Toggle ICD-11 code lookup">
               <Book size={14} className="text-(--text-secondary)" />
             </button>
-            <button onClick={() => { setShowEpiMap(!showEpiMap); setShowICD11(false); }} className={`p-1.5 rounded hover:bg-(--bg-hover) ${showEpiMap ? 'bg-(--accent-subtle)' : ''}`} title="Epidemiology Map" aria-label="Toggle epidemiology map">
+            <button onClick={() => { setShowBdCore(!showBdCore); setShowICD11(false); setShowEpiMap(false); }} className={`p-1.5 rounded hover:bg-(--bg-hover) ${showBdCore ? 'bg-(--accent-subtle)' : ''}`} title="BD Core FHIR IG" aria-label="Toggle BD Core FHIR IG panel">
+              <FlaskConical size={14} className="text-(--text-secondary)" />
+            </button>
+            <button onClick={() => { setShowEpiMap(!showEpiMap); setShowICD11(false); setShowBdCore(false); }} className={`p-1.5 rounded hover:bg-(--bg-hover) ${showEpiMap ? 'bg-(--accent-subtle)' : ''}`} title="Epidemiology Map" aria-label="Toggle epidemiology map">
               <MapPin size={14} className="text-(--text-secondary)" />
             </button>
             <ThemeSwitcher theme={selectedTheme} onThemeChange={setSelectedTheme} accentColor={accentColor} onAccentColorChange={setAccentColor} />
@@ -1074,6 +1079,12 @@ const App: React.FC = () => {
                 onSelect={(entry) => console.log('ICD-11 Selected:', entry)}
                 onClose={() => setShowICD11(false)}
               />
+            </aside>
+          )}
+
+          {showBdCore && (
+            <aside className="w-80 border-l border-(--border) shrink-0 hidden md:block">
+              <BdCorePanel onClose={() => setShowBdCore(false)} />
             </aside>
           )}
 

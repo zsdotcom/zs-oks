@@ -9,7 +9,7 @@
 [![Vite](https://img.shields.io/badge/Vite-8.1-646CFF?style=flat&logo=vite&logoColor=white)](https://vite.dev)
 [![Tailwind](https://img.shields.io/badge/Tailwind-4.x-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-MIT-10B981?style=flat)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-74-8B5CF6?style=flat)]()
+[![Tests](https://img.shields.io/badge/Tests-117-8B5CF6?style=flat)]()
 [![Build](https://img.shields.io/badge/Build-~90KB_gzip-4CD7F6?style=flat)]()
 
 A private AI research laboratory in your browser — 6 specialized agents collaborate on your work, all data stays local, zero backend required.
@@ -27,11 +27,11 @@ A private AI research laboratory in your browser — 6 specialized agents collab
 | Metric | Value |
 |:-------|:------|
 | ⚡ Runtime deps | 2 (`react`, `react-dom`) |
-| 🧪 Tests | 74 across 6 files |
+| 🧪 Tests | 117 across 7 files |
 | 📦 Build size | ~90 KB gzip |
 | 🗄️ IndexedDB stores | 22 |
 | 🧩 Components | 25 (5 lazy-loaded) |
-| 🔧 Services | 13 |
+| 🔧 Services | 16 |
 | 🤖 Built-in agents | 6 + custom |
 | 🌐 AI providers | 6 |
 
@@ -143,7 +143,7 @@ npm run build      # → dist/
 npm run preview
 
 # Tests
-npm test           # 74 tests across 6 files
+npm test           # 117 tests across 7 files
 npm run test:bench # Performance benchmarks
 ```
 
@@ -156,7 +156,7 @@ npm run test:bench # Performance benchmarks
 
 ## ✦ Documentation
 
-Comprehensive documentation is available in the [`docs/`](docs/index.md) directory with **84 files across 12 sections**:
+Comprehensive documentation is available in the [`docs/`](docs/index.md) directory with **120 files across 12 sections**:
 
 ```
 docs/
@@ -206,16 +206,13 @@ docs/
 ├── i18n/                                 # Internationalization (1 file)
 ├── a11y/                                 # Accessibility (1 file)
 ├── ops/                                  # Docs operations (2 files)
-└── agents/                               # Agent docs (30 files)
-    ├── SKILL.md                          # Agent system overview
-    ├── references/                       # System reference guide
-    ├── coordinator/                      # 🎯 Coordinator (SKILL + refs + workflows)
-    ├── researcher/                       # 🔬 Researcher (SKILL + refs + workflows)
-    ├── data-analyst/                     # 📊 Data Analyst (SKILL + refs + workflows)
-    ├── writer/                           # ✍️ Writer (SKILL + refs + workflows)
-    ├── reviewer/                         # 🔍 Reviewer (SKILL + refs + workflows)
-    ├── librarian/                        # 📚 Librarian (SKILL + refs + workflows)
-    └── _template/                        # ❓ Custom agent template
+└── agents/                               # Agent docs (66 files)
+    ├── SKILL.md / references/            # Agent system overview
+    ├── Built-in (6): coordinator, researcher, data-analyst, writer, reviewer, librarian
+    ├── Persona guides (9): epistemologist, bioinformatician, field-epidemiologist,
+    │                      clinical-trialist, data-journalist, genomic-analyst,
+    │                      environmental-epidemiologist, health-economist, vaccinologist
+    └── _template/                        # Custom agent template
 ```
 
 > **Start here:** [`docs/index.md`](docs/index.md) → [`docs/project/000-overview.md`](docs/project/000-overview.md) → [`docs/developers/000-quickstart.md`](docs/developers/000-quickstart.md)
@@ -227,15 +224,15 @@ docs/
 ```
 open-knowledge-studio/
 ├── .github/workflows/         # CI + Deploy GitHub Actions
-├── docs/                      # 83 files, 12 sections (see above)
+├── docs/                      # 120 files, 12 sections (see above)
 ├── e2e/                       # Playwright E2E tests (7 spec files)
 ├── public/                    # Static assets (favicon, manifest, sw)
 ├── src/
 │   ├── components/            # 25 React components (5 lazy-loaded)
-│   ├── services/              # 13 application services
+│   ├── services/              # 16 application services
 │   ├── db/                    # IndexedDB: 22 object stores
 │   ├── hooks/                 # useChat, useFiles, usePWAInstall
-│   ├── test/                  # 74 tests across 6 files
+│   ├── test/                  # 117 tests across 7 files
 │   └── utils/                 # markdown parser, syntax highlighter
 ├── opencode.jsonc             # OpenCode agent configuration
 ├── AGENTS.md                  # Agent workspace instructions

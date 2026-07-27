@@ -1,5 +1,16 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 
+interface GeoHierarchyInfo {
+  level: string;
+  country?: string;
+  region?: string;
+  district?: string;
+  subDistrict?: string;
+  community?: string;
+  plusCode?: string;
+  pCode?: string;
+}
+
 interface EpiDataPoint {
   id: string;
   lat: number;
@@ -10,6 +21,7 @@ interface EpiDataPoint {
   severity: 'low' | 'medium' | 'high' | 'critical';
   date: string;
   status: 'active' | 'contained' | 'resolved';
+  geoHierarchy?: GeoHierarchyInfo;
 }
 
 interface TimelineFrame {
@@ -82,13 +94,23 @@ function EpiMap({ dataPoints, onPointClick, height = '400px', timelineData, onTi
         fillOpacity: 0.7,
       });
 
+      let geoHtml = '';
+      if (point.geoHierarchy) {
+        const g = point.geoHierarchy;
+        const parts = [g.country, g.region, g.district, g.subDistrict, g.community].filter(Boolean);
+        if (parts.length) geoHtml = `<b>Location:</b> ${parts.join(' › ')}<br/>`;
+        if (g.plusCode) geoHtml += `<b>Plus Code:</b> ${g.plusCode}<br/>`;
+        if (g.pCode) geoHtml += `<b>P-Code:</b> ${g.pCode}<br/>`;
+        geoHtml += `<b>Level:</b> ${g.level}<br/>`;
+      }
       const popupContent = `
         <strong>${point.label}</strong><br/>
         <b>Disease:</b> ${point.disease}<br/>
         <b>Cases:</b> ${point.cases.toLocaleString()}<br/>
         <b>Severity:</b> ${point.severity}<br/>
         <b>Status:</b> ${point.status}<br/>
-        <b>Date:</b> ${point.date}
+        <b>Date:</b> ${point.date}<br/>
+        ${geoHtml}
       `;
 
       marker.bindPopup(popupContent);
@@ -215,5 +237,5 @@ function EpiMap({ dataPoints, onPointClick, height = '400px', timelineData, onTi
   );
 }
 
-export type { EpiDataPoint, EpiMapProps, TimelineFrame };
+export type { EpiDataPoint, EpiMapProps, TimelineFrame, GeoHierarchyInfo };
 export { EpiMap };

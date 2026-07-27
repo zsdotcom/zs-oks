@@ -83,6 +83,8 @@ const DOCS_MAP: Record<string, DocsEntry> = {
   'security/001-threat-model': { title: 'Threat Model', category: 'Security' },
   'security/002-data-privacy': { title: 'Data Privacy & Trust', category: 'Security' },
   'security/003-api-key-management': { title: 'API Key Management', category: 'Security' },
+  'guides/011-bd-health-system': { title: 'Bangladesh Health Ecosystem', category: 'Guides' },
+  'guides/012-bd-core-fhir': { title: 'BD Core FHIR IG Integration', category: 'Guides' },
 };
 
 const CATEGORIES = [

@@ -1,22 +1,68 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { searchICD11, getAllICD11Codes, icd11ToFHIR, ICD11Entry, FHIRCondition } from '../services/icd11Service';
+import { searchICD11, getAllICD11Codes, icd11ToFHIR, type ICD11Entry } from '../services/icd11Service';
+import { searchICF, getAllICFCodes, getICFByComponent, type ICFEntry } from '../services/icfService';
+import { searchICHI, getAllICHICodes, getICHIBySection, type ICHIEntry } from '../services/ichiService';
+import type { WhoFicType } from '../services/whoFicIndex';
 import { X, Search, ChevronDown, ChevronRight, Copy } from './icons/lucide-shim';
+
+type ClassificationType = WhoFicType;
+
+const CLASSIFICATION_LABELS: Record<ClassificationType, string> = {
+  icd11: 'ICD-11',
+  icf: 'ICF',
+  ichi: 'ICHI',
+};
+
+interface ClassificationInfo {
+  title: string;
+  searchPlaceholder: string;
+}
+
+const CLASSIFICATION_INFO: Record<ClassificationType, ClassificationInfo> = {
+  icd11: { title: 'ICD-11 Code Lookup', searchPlaceholder: 'Search by code, title, chapter...' },
+  icf: { title: 'ICF Code Lookup', searchPlaceholder: 'Search by code, title, component...' },
+  ichi: { title: 'ICHI Code Lookup', searchPlaceholder: 'Search by code, title, section...' },
+};
 
 interface ICD11LookupProps {
   onSelect?: (entry: ICD11Entry) => void;
   initialQuery?: string;
   onClose?: () => void;
+  classificationType?: ClassificationType;
+  onClassificationChange?: (type: ClassificationType) => void;
 }
 
-export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery = '', onClose }) => {
+const icd11Chapters = [...new Set(getAllICD11Codes().map((c) => c.chapter))];
+const icfComponents = [...new Set(getAllICFCodes().map((c) => c.chapter))] as string[];
+const ichiSections = [...new Set(getAllICHICodes().map((c) => c.chapter))] as string[];
+
+export const ICD11Lookup: React.FC<ICD11LookupProps> = ({
+  onSelect,
+  initialQuery = '',
+  onClose,
+  classificationType: externalType,
+  onClassificationChange,
+}) => {
+  const [internalType, setInternalType] = useState<ClassificationType>('icd11');
+  const classificationType = externalType ?? internalType;
   const [query, setQuery] = useState(initialQuery);
-  const [results, setResults] = useState<ICD11Entry[]>([]);
+  const [results, setResults] = useState<(ICD11Entry | ICFEntry | ICHIEntry)[]>([]);
   const [showAll, setShowAll] = useState(false);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
   const [selectedEntry, setSelectedEntry] = useState<ICD11Entry | null>(null);
   const [fhirCopied, setFhirCopied] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleTypeChange = (type: ClassificationType) => {
+    setInternalType(type);
+    onClassificationChange?.(type);
+    setQuery('');
+    setResults([]);
+    setShowAll(false);
+    setSelectedEntry(null);
+    setFhirCopied(false);
+  };
 
   const handleSearch = useCallback((value: string) => {
     setQuery(value);
@@ -26,9 +72,13 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
         setResults([]);
         return;
       }
-      setResults(searchICD11(value));
+      let res: (ICD11Entry | ICFEntry | ICHIEntry)[] = [];
+      if (classificationType === 'icd11') res = searchICD11(value);
+      else if (classificationType === 'icf') res = searchICF(value);
+      else if (classificationType === 'ichi') res = searchICHI(value);
+      setResults(res);
     }, 300);
-  }, []);
+  }, [classificationType]);
 
   useEffect(() => {
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
@@ -36,12 +86,21 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
 
   useEffect(() => {
     inputRef.current?.focus();
-  }, []);
+  }, [classificationType]);
 
-  const allCodes = getAllICD11Codes();
-  const chapters = [...new Set(allCodes.map((c) => c.chapter))];
+  const allCodes =
+    classificationType === 'icd11' ? getAllICD11Codes() :
+    classificationType === 'icf' ? getAllICFCodes() :
+    classificationType === 'ichi' ? getAllICHICodes() :
+    [];
 
-  const handleSelect = (entry: ICD11Entry) => {
+  const chapters =
+    classificationType === 'icd11' ? icd11Chapters :
+    classificationType === 'icf' ? icfComponents :
+    classificationType === 'ichi' ? ichiSections :
+    [];
+
+  const handleSelect = (entry: ICD11Entry | ICFEntry | ICHIEntry) => {
     onSelect?.(entry);
     setSelectedEntry(entry);
     setQuery(`${entry.code} — ${entry.title}`);
@@ -80,20 +139,38 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
     });
   };
 
+  const info = CLASSIFICATION_INFO[classificationType];
+
   return (
-    <div className="flex flex-col h-full bg-[var(--bg-secondary)]" role="dialog" aria-label="ICD-11 code lookup">
+    <div className="flex flex-col h-full bg-[var(--bg-secondary)]" role="dialog" aria-label={`${info.title} code lookup`}>
       <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--border)] shrink-0">
         <h2 className="text-xs font-semibold flex items-center gap-1.5">
           <span className="text-[var(--accent)]">
             <Search size={12} />
           </span>
-          ICD-11 Code Lookup
+          {info.title}
         </h2>
         {onClose && (
           <button onClick={onClose} className="p-1 rounded hover:bg-[var(--bg-hover)] text-[var(--text-secondary)]">
             <X size={12} />
           </button>
         )}
+      </div>
+
+      <div className="flex border-b border-[var(--border)] shrink-0">
+        {(Object.keys(CLASSIFICATION_LABELS) as ClassificationType[]).map((type) => (
+          <button
+            key={type}
+            onClick={() => handleTypeChange(type)}
+            className={`flex-1 text-[10px] py-1.5 font-medium transition-colors ${
+              classificationType === type
+                ? 'text-[var(--accent)] border-b-2 border-[var(--accent)]'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            {CLASSIFICATION_LABELS[type]}
+          </button>
+        ))}
       </div>
 
       <div className="p-2 border-b border-[var(--border)] shrink-0">
@@ -104,7 +181,7 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
             type="text"
             value={query}
             onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Search by code, title, chapter..."
+            placeholder={info.searchPlaceholder}
             className="w-full pl-7 pr-7 py-1.5 text-xs bg-[var(--bg-primary)] border border-[var(--border)] rounded text-[var(--text-primary)] placeholder-gray-500 focus:outline-none focus:border-[var(--accent)]/50"
           />
           {query && (
@@ -150,11 +227,16 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto" aria-live="polite" aria-label="ICD-11 search results">
+      <div className="flex-1 overflow-y-auto" aria-live="polite" aria-label={`${info.title} search results`}>
         {showAll && (
           <div className="p-2 space-y-1">
             {chapters.map((chapter) => {
-              const chapterCodes = allCodes.filter((c) => c.chapter === chapter);
+              const chapterCodes = classificationType === 'icd11'
+                ? getAllICD11Codes().filter((c) => c.chapter === chapter)
+                : classificationType === 'icf'
+                ? getAllICFCodes().filter((c) => c.chapter === chapter)
+                : getAllICHICodes().filter((c) => c.chapter === chapter);
+
               const isExpanded = expandedChapters.has(chapter);
               return (
                 <div key={chapter} className="rounded border border-[var(--border)] overflow-hidden">
@@ -168,7 +250,7 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
                   </button>
                   {isExpanded && (
                     <div className="border-t border-[var(--border)]">
-                      {chapterCodes.map((entry) => (
+                      {chapterCodes.map((entry: any) => (
                         <button
                           key={entry.code}
                           onClick={() => handleSelect(entry)}
@@ -191,7 +273,7 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
 
         {results.length > 0 && !showAll && (
           <div className="divide-y divide-[var(--border)]/50">
-            {results.map((entry) => (
+            {results.map((entry: any) => (
               <button
                 key={entry.code}
                 onClick={() => handleSelect(entry)}
@@ -217,11 +299,13 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({ onSelect, initialQuery
 
         {!showAll && results.length === 0 && !query && (
           <div className="flex flex-col items-center justify-center h-full text-[var(--text-muted)] text-xs px-4 text-center">
-            <p className="mb-1">Search ICD-11 codes by entering a code, disease name, or chapter.</p>
-            <p className="text-[10px] text-[var(--text-muted)]">Or click "Show all codes" to browse by chapter.</p>
+            <p className="mb-1">Search {CLASSIFICATION_LABELS[classificationType]} codes by entering a code, name, or {classificationType === 'icf' ? 'component' : 'chapter'}.</p>
+            <p className="text-[10px] text-[var(--text-muted)]">Or click "Show all codes" to browse by {classificationType === 'icf' ? 'component' : 'chapter'}.</p>
           </div>
         )}
       </div>
     </div>
   );
 };
+
+export type { ClassificationType };
