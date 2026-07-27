@@ -1,64 +1,87 @@
----
-title: "000 — Project Overview"
-category: "project"
-order: 0
-tags: ["overview", "vision", "features", "architecture"]
-last_updated: "2026-07-26"
----
-
 # 000 — Project Overview
 
-**Open Knowledge Studio v2.0** is a zero-dependency, browser-native, 6-agent AI platform for offline-first research, writing, and data analysis. It operates entirely within your browser using IndexedDB for persistent memory, Transformers.js for vector embeddings, and Orama JS for semantic search — all loaded dynamically from CDN with no npm runtime dependencies.
+**Open Knowledge Studio v2.0** is a zero-npm-dependency, browser-native, 6-agent A2A platform for offline-first research, writing, and data analysis. It operates entirely within the browser using IndexedDB for persistent memory, Transformers.js for vector embeddings, and Orama JS for semantic search — all loaded dynamically from CDN with only two build-time dependencies: `react` and `react-dom`.
 
-## 1. Vision & Mission
+---
 
-Democratize access to powerful AI tooling for research and knowledge management without requiring users to rely on expensive cloud services.
+## 1. Mission
 
-**Open Knowledge Studio** achieves this by:
-- Running entirely in the browser (zero backend costs).
-- Leveraging free LLM APIs (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama).
-- 6-agent A2A workflow system (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian).
-- 384-dim vector embeddings via Transformers.js (all-MiniLM-L6-v2) in a Web Worker.
-- Hybrid vector + keyword semantic search via Orama JS (CDN-loaded).
-- Robust 6-tier memory architecture using IndexedDB.
+Democratize access to powerful AI tooling for research and knowledge management without requiring users to rely on expensive cloud services or complex infrastructure.
 
-## 2. Core Features
+## 2. Core Philosophy
 
-- **6-Agent A2A Workflow:** Coordinator orchestrates Researcher, Data Analyst, Writer, Reviewer, and Librarian agents in a real-time debate panel.
-- **Vector Embeddings:** Transformers.js running in a Web Worker generates 384-dimensional embeddings for all semantic memory entries.
-- **Vector Search:** Orama JS provides hybrid (vector + keyword) search across the semantic memory store, with fallback to keyword matching.
-- **6-Tier Memory:** Session (in-memory), Episodic, Semantic (vector-indexed), Procedural, Working, Long-Term.
-- **Multi-Provider LLM Router:** Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama via a unified API.
-- **Chat, Editor, Kanban, Search, Google Workspace, MCP Server** — all in a single-page app.
+| Principle | Implementation |
+| :--- | :--- |
+| **Zero Backend** | Entire application runs client-side. No servers, no databases to manage. |
+| **Local-First** | All data persists in IndexedDB. Works offline. Privacy-preserving by design. |
+| **Zero Deps** | Only `react` + `react-dom` at build time. ML, search, math, and diagram libraries load dynamically from CDN. |
+| **Multi-Provider AI** | Unified router for Gemini, OpenAI, Anthropic, DeepSeek, Groq, and local Ollama. |
+| **Multi-Agent A2A** | 6 debate agents with distinct roles, colors, and system prompts for collaborative analysis. |
+| **Vector-Native Memory** | 384-dim embeddings via Transformers.js (Web Worker) for semantic search across a 6-tier memory architecture. |
 
-## 3. Agent Color-Coding
+## 3. Key Capabilities
 
-| Agent | Color | Avatar |
-| :--- | :--- | :--- |
-| Coordinator | `#8B5CF6` (Purple) | 🎯 |
-| Researcher | `#06B6D4` (Cyan) | 🔬 |
-| Data Analyst | `#F59E0B` (Amber) | 📊 |
-| Writer | `#10B981` (Emerald) | ✍️ |
-| Reviewer | `#EF4444` (Red) | 🔍 |
-| Librarian | `#8B5CF6` (Purple) | 📚 |
+| Capability | Description |
+| :--- | :--- |
+| **6-Agent A2A Debate** | Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian — all respond independently to user prompts. |
+| **Vector Embeddings** | Transformers.js (`all-MiniLM-L6-v2`) in a Web Worker generates 384-dim vectors. |
+| **Hybrid Semantic Search** | Orama JS provides vector + keyword search with fallback to token matching. |
+| **6-Tier Memory** | Session, Episodic, Semantic (vector-indexed), Procedural, Working, Long-Term. |
+| **Chat + Editor + Kanban** | Collaborative AI chat, split-pane markdown editor, drag-drop task board. |
+| **Google Workspace** | OAuth-based Drive, Docs, Sheets, and Gmail integration. |
+| **MCP Server** | Model Context Protocol server configuration for external tool integration. |
+| **ICD-11 Lookup** | 50 curated medical codes across 23 chapters, with FHIR integration. |
+| **Epi Map** | Leaflet.js epidemiological map with severity-coded markers. |
+| **Sandboxed Execution** | Secure iframe-based JavaScript sandbox for agent code execution. |
+| **PWA Offline-First** | Service Worker caches all assets for offline use. Installable as standalone app. |
+| **Code Splitting** | React.lazy for heavy panels (A2A Metrics, Editor, Settings, MCP, Google). |
+| **Diagrams + Math** | Mermaid diagrams and KaTeX math rendering in chat. |
+| **PDF Export** | Client-side PDF generation with print styles and KaTeX support. |
+| **Skills + Connectors** | Extensible skill registry for agents; GitHub, Slack, RSS, webhook connectors. |
 
-## 4. Zero Dependency Architecture
+## 4. Quick Start
 
-Runtime npm deps: **only `react` + `react-dom`**. All heavy lifting:
-- **Transformers.js** loaded dynamically from CDN (`cdn.jsdelivr.net/npm/@huggingface/transformers`)
-- **Orama JS** loaded dynamically from CDN (`cdn.jsdelivr.net/npm/@orama/orama`)
-- Vector computation runs in a **Web Worker** (background thread)
-- All icons, charts, markdown parsing, and highlighting are custom inline implementations
+```bash
+git clone https://github.com/codeandbrain/open-knowledge-studio.git
+cd open-knowledge-studio
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+## 5. Production Build
+
+```bash
+npm run build      # tsc --noEmit && vite build → dist/
+npm run preview    # serve dist/ locally
+```
+
+## 6. Quick Stats
+
+| Metric | Value |
+| :--- | :--- |
+| Runtime dependencies | 2 (`react`, `react-dom`) |
+| Test count | 74 across 6 files |
+| Test coverage | >80% statements, >75% branches, >85% functions, >80% lines |
+| Build size | ~90 KB gzip |
+| IndexedDB stores | 22 |
+| Components | 25 |
+| Services | 12 |
+| Agents | 6 (built-in) + custom |
+| AI providers | 6 (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama) |
 
 ---
 
 ## See Also
 
-- [User Guide: A2A Agents](../guides/060-agents.md) — Detailed agent configuration and management
-- [Developer Guide: Memory Architecture](../developers/070-memory-architecture.md) — 6-tier memory with vector embeddings
-- [Developer Guide: Zero Dependency Architecture](../developers/100-dependency-removal.md) — CDN dynamic loading strategy
-- [Feature Status](090-feature-status.md) — Implementation status and gap analysis
+- [001 — Concept & Vision](001-concept.md) — User personas, value proposition, glossary
+- [002 — Technical Specification](002-specification.md) — Features, capabilities, requirements
+- [003 — Blueprint](003-blueprint.md) — Tech stack, metrics, roadmap
+- [004 — Architecture](004-architecture.md) — System architecture, directory structure, data model
+- [005 — Design](005-design.md) — UI/UX design system and visual language
+- [Index](index.md) — Full documentation index
 
 ---
 
-*Back to [Documentation Home](../index.md) | [Developer Docs](../developers/040-development.md) | [User Guides](../guides/060-agents.md)*
+*Last updated: July 27, 2026*

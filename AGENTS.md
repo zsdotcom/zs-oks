@@ -26,12 +26,13 @@ CI order (`ci.yml`): `typecheck` → `test` → `build`. E2E runs only on PRs. D
 
 ## Architecture facts
 - Single-page React 19 app, zero backend. All state in React + IndexedDB.
-- `src/services/memoryApi.ts` wraps `src/db/indexedDB.ts` (19 object stores) with 6-tier memory API. `computeEmbedding()` uses Transformers.js in a Web Worker.
-- CDN deps loaded from `index.html`: KaTeX 0.18.1, Mermaid 11.16.0 (jsdelivr), Leaflet 1.9.4 (unpkg — not mentioned elsewhere).
+- `src/services/memoryApi.ts` wraps `src/db/indexedDB.ts` (22 object stores, v2) with 6-tier memory API. `computeEmbedding()` uses Transformers.js in a Web Worker.
+- CDN deps loaded from `index.html`: KaTeX 0.18.1, Mermaid 11.16.0 (jsdelivr), Leaflet 1.9.4 (unpkg).
 - Transformers.js and Orama JS are dynamically loaded from jsdelivr CDN in Workers/lazy imports — never installed via npm.
 - Several panels are `React.lazy()` loaded: `A2AMetricsDashboard`, `GoogleWorkspacePanel`, `SettingsPanel`, `MCPServerPanel`, `WorkspaceDocumentEditor`.
-- Additional components not listed elsewhere: `AgentBuilder`, `ICD11Lookup`, `EpiMap`, `DocumentEditor`, `MetricsDashboard`, `WebhookManager`, `WebhookManager`.
-- Additional services: `embeddingWorker.ts`, `oramaService.ts`, `webhookService.ts`, `skillService.ts`, `connectorService.ts`, `sandboxService.ts`, `toolService.ts`, `icd11Service.ts`, `knowledgeSourceService.ts`.
+- 25 components (13 direct + 5 lazy + 2 re-export aliases + 1 chart dir + 1 icon shim).
+- 12 services: `connectorService`, `embeddingWorker`, `geminiService`, `googleAuthService`, `icd11Service`, `memoryApi`, `oramaService`, `publicApiService`, `sandboxService`, `searchService`, `skillService`, `webhookService`.
+- 82 documentation files across 12 sections in `docs/` (see `docs/index.md` for full index).
 
 ## Key gotchas
 - **Path alias `@/`** maps to `src/`. Import from `@/types`, `@/components/...`, etc.
@@ -45,8 +46,19 @@ CI order (`ci.yml`): `typecheck` → `test` → `build`. E2E runs only on PRs. D
 - Test environment: `happy-dom` with `fake-indexeddb/auto`
 - Setup file `src/test/setup.ts` mocks `BroadcastChannel`, `Worker` (returns random 384-dim vectors), `crypto.randomUUID` (returns `test-uuid-N`), and `navigator.storage.estimate`
 - Coverage excludes `src/test/**`, test/spec/bench files, and `src/index.tsx`
-- 6 test files: `memory.unit.test.ts` (15), `memory.integration.test.ts` (6), `memory.benchmark.ts` (4 bench), `gemini.test.ts` (18), `sandbox.test.ts` (9), `icd11.test.ts` (18)
+- 6 test files: `memory.unit.test.ts` (25), `memory.integration.test.ts` (10), `memory.benchmark.ts` (5 bench), `gemini.test.ts` (8), `sandbox.test.ts` (9), `icd11.test.ts` (22)
 - E2E: requires `npx playwright install chromium` first; Playwright config auto-starts dev server; uses Chromium only
 
 ## In-app agent system (product feature, not OpenCode)
-6 A2A debate agents (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian) defined in `src/App.tsx:97-104`. These are UI characters, not OpenCode agents. See `docs/guides/060-agents-configuration.md`.
+6 A2A debate agents (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian) defined in `src/App.tsx`. These are UI characters, not OpenCode agents. See `docs/guides/001-agents.md` and `docs/agents/SKILL.md`.
+
+## Documentation reference
+Full documentation is in `docs/`. Key entry points:
+- `docs/index.md` — Master table of contents (83 files, 12 sections)
+- `docs/project/000-overview.md` — Project overview
+- `docs/developers/000-quickstart.md` — 5-minute developer quickstart
+- `docs/developers/003-non-coder-guide.md` — Click-by-click setup for non-developers
+- `docs/developers/002-environment.md` — API keys & environment variables
+- `docs/architecture/000-index.md` — Architecture Decision Records (6 ADRs)
+- `docs/api/000-index.md` — API reference (Memory, IndexedDB, LLM, Sandbox)
+- `docs/agents/SKILL.md` — In-app agent system overview
