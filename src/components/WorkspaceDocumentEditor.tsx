@@ -294,41 +294,39 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
         </div>
       )}
 
-      {/* Split Pane */}
+      {/* Split Pane — editor (left half) | preview (right half) */}
       <div className="flex-1 flex overflow-hidden">
-        {/* TOC sidebar */}
-        {showTOC && toc.length > 0 && (
-          <div id="toc-panel" className="w-48 border-r border-[var(--border)] overflow-y-auto p-2 shrink-0" role="region" aria-label="Table of contents">
-            <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-2">Contents</div>
-            {toc.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleTOCLinkClick(item.id)}
-                className="block w-full text-left text-xs py-0.5 hover:text-[var(--accent)] truncate"
-                style={{ paddingLeft: `${(item.level - 1) * 12}px` }}
-              >
-                {item.text}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Editor (left) */}
-        <div className="flex-1 min-w-0">
+        {/* Left half: TOC sidebar + Editor (TOC doesn't shift the center split) */}
+        <div className="flex-1 min-w-0 flex overflow-hidden">
+          {showTOC && toc.length > 0 && (
+            <div id="toc-panel" className="w-48 border-r border-[var(--border)] overflow-y-auto p-2 shrink-0" role="region" aria-label="Table of contents">
+              <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-2">Contents</div>
+              {toc.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleTOCLinkClick(item.id)}
+                  className="block w-full text-left text-xs py-0.5 hover:text-[var(--accent)] truncate"
+                  style={{ paddingLeft: `${(item.level - 1) * 12}px` }}
+                >
+                  {item.text}
+                </button>
+              ))}
+            </div>
+          )}
           <textarea
             ref={textareaRef}
             value={content}
             onChange={handleContentChange}
-            className="w-full h-full bg-[var(--bg-primary)] text-[var(--text-primary)] p-4 font-mono text-sm resize-none focus:outline-none leading-relaxed mx-auto max-w-[800px]"
+            className="flex-1 h-full bg-[var(--bg-primary)] text-[var(--text-primary)] px-5 py-4 font-mono text-sm resize-none focus:outline-none leading-relaxed"
             placeholder="Start writing in Markdown..."
             spellCheck={false}
             aria-label="Document editor"
           />
         </div>
 
-        {/* Preview (right) */}
+        {/* Right half: Preview */}
         <div className="flex-1 min-w-0 border-l border-[var(--border)] overflow-y-auto" aria-label="Preview" role="region">
-          <div ref={previewRef} className="prose p-4 mx-auto max-w-[800px]" dangerouslySetInnerHTML={{ __html: renderedHTML }} />
+          <div ref={previewRef} className="prose px-5 py-4" dangerouslySetInnerHTML={{ __html: renderedHTML }} />
         </div>
       </div>
     </div>
