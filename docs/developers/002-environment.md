@@ -25,6 +25,8 @@ Complete reference for all environment variables used by Open Knowledge Studio.
 | `VITE_OPENROUTER_API_KEY` | No | — | OpenRouter unified API key (multi-model access) |
 | `VITE_GOOGLE_OAUTH_CLIENT_ID` | No | — | Google OAuth 2.0 Client ID (Drive/Docs integration) |
 | `VITE_GITHUB_TOKEN` | No | — | GitHub personal access token (repository integration) |
+| `VITE_GITHUB_OAUTH_CLIENT_ID` | No | — | GitHub OAuth App Client ID (device-flow auth) |
+| `VITE_BRAVE_API_KEY` | No | — | Brave Search API key (web search MCP tool) |
 
 > **All variables are optional.** The app works with any combination of providers.
 
@@ -120,13 +122,24 @@ Used by `githubAuthService.ts` for device-flow authentication in the app.
 3. Set **Authorization callback URL** to `http://localhost:3000`
 4. Copy the **Client ID**
 
+### 2.11 Brave Search API Key
+
+**Free tier:** 2,000 queries/month
+
+1. Go to [brave.com/search/api/](https://brave.com/search/api/)
+2. Sign up for an account
+3. Choose the **Free** plan
+4. Copy the API key
+
+Required for the `web_search` and `local_search` MCP tools.
+
 ---
 
 ## 3. CSP (Content Security Policy)
 
 The dev server CSP in `vite.config.ts` `connect-src` controls which API domains the app can reach. If enabling a new external API, add its domain to the `connect-src` directive.
 
-Currently allowed: OpenStreetMap tiles, LLM provider APIs (Gemini, OpenAI, Anthropic, DeepSeek, Groq, OpenRouter, Cerebras, GitHub, Cloudflare), jsDelivr CDN, BD FHIR endpoints (`tr.ocl.dghs.gov.bd`, `icd11.dghs.gov.bd`, `fhir.dghs.gov.bd`, `sandbox.fhir.dghs.gov.bd`), GitHub API, WHO GHO/data.who.int, CDC Socrata, Delphi CMU, Open-Meteo, HDX.
+Currently allowed: OpenStreetMap tiles, LLM provider APIs (Gemini, OpenAI, Anthropic, DeepSeek, Groq, OpenRouter, Cerebras, GitHub, Cloudflare), jsDelivr CDN, CDNjs, BD FHIR endpoints (`tr.ocl.dghs.gov.bd`, `icd11.dghs.gov.bd`, `fhir.dghs.gov.bd`, `sandbox.fhir.dghs.gov.bd`), GitHub API, WHO GHO/data.who.int, CDC Socrata, Delphi CMU, Open-Meteo, HDX, ReliefWeb, Google Fonts.
 
 ---
 

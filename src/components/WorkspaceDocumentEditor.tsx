@@ -309,7 +309,7 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
             ref={textareaRef}
             value={content}
             onChange={handleContentChange}
-            className="w-full h-full bg-[var(--bg-primary)] text-[var(--text-primary)] p-4 font-mono text-sm resize-none focus:outline-none leading-relaxed"
+            className="w-full h-full bg-[var(--bg-primary)] text-[var(--text-primary)] p-4 font-mono text-sm resize-none focus:outline-none leading-relaxed mx-auto max-w-[800px]"
             placeholder="Start writing in Markdown..."
             spellCheck={false}
             aria-label="Document editor"
@@ -318,7 +318,7 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
 
         {/* Preview (right) */}
         <div className="flex-1 min-w-0 border-l border-[var(--border)] overflow-y-auto" aria-label="Preview" role="region">
-          <div ref={previewRef} className="prose p-4" dangerouslySetInnerHTML={{ __html: renderedHTML }} />
+          <div ref={previewRef} className="prose p-4 mx-auto max-w-[800px]" dangerouslySetInnerHTML={{ __html: renderedHTML }} />
         </div>
       </div>
     </div>

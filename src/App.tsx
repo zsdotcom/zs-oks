@@ -827,7 +827,7 @@ const App: React.FC = () => {
 
         <div className="flex-1 flex overflow-hidden">
           {isSidebarOpen && (
-            <aside className="w-72 border-r border-(--border) bg-(--bg-secondary)/50 hidden md:flex flex-col shrink-0 overflow-hidden" aria-label="Workspace sidebar">
+            <aside className="w-60 border-r border-(--border) bg-(--bg-secondary)/50 hidden md:flex flex-col shrink-0 overflow-hidden" aria-label="Workspace sidebar">
               <div className="flex-1 overflow-y-auto">
                 <WorkspaceManager
                   files={files}

@@ -41,6 +41,9 @@ jobs:
         env:
           BASE_PATH: /open-knowledge-studio/
           VITE_GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+          VITE_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          VITE_GITHUB_OAUTH_CLIENT_ID: ${{ secrets.GITHUB_OAUTH_CLIENT_ID }}
+          VITE_BRAVE_API_KEY: ${{ secrets.BRAVE_API_KEY }}
       - name: Copy documentation for docs viewer
         run: |
           cp -r docs dist/docs

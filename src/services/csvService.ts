@@ -11,9 +11,7 @@ export function parseCSV(text: string): CSVParseResult {
   let inQuotes = false;
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
-    if (char === '"') {
-      inQuotes = !inQuotes;
-    } else if (char === '\n' && !inQuotes) {
+    if (char === '\n' && !inQuotes) {
       lines.push(current);
       current = '';
     } else {
