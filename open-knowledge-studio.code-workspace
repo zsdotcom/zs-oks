@@ -11,14 +11,31 @@
     },
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "explicit"
+    },
     "js/ts.tsdk.path": "node_modules/typescript/lib",
     "js/ts.tsdk.promptToUseWorkspaceVersion": true,
     "js/ts.preferences.importModuleSpecifier": "non-relative",
     "tailwindCSS.experimental.classRegex": [],
+    "tailwindCSS.validate": true,
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/node_modules/**": true,
+      "**/dist/**": true,
+      "**/coverage/**": true
+    },
     "files.exclude": {
       "**/.git": true,
       "**/node_modules": false,
       "**/dist": false
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/coverage": true
     }
   },
   "extensions": {
@@ -30,7 +47,13 @@
       "vitest.explorer",
       "github.vscode-github-actions",
       "ms-vscode-remote.remote-containers",
-      "ms-azuretools.vscode-docker"
+      "ms-azuretools.vscode-docker",
+      "biomejs.biome",
+      "yzhang.markdown-all-in-one",
+      "streetsidesoftware.code-spell-checker",
+      "EditorConfig.EditorConfig",
+      "tamasfe.even-better-toml",
+      "mikestead.dotenv"
     ]
   }
 }

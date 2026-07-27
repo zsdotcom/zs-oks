@@ -5,16 +5,40 @@
     "ghcr.io/devcontainers/features/node:1": {
       "version": "26"
     },
-    "ghcr.io/devcontainers/features/docker-in-docker:4.0.0.0.0": {}
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
-  "forwardPorts": [3000],
+  "forwardPorts": [3000, 9323, 5900],
   "portsAttributes": {
     "3000": {
       "label": "Vite Dev Server",
       "onAutoForward": "notify"
+    },
+    "9323": {
+      "label": "Playwright Report",
+      "onAutoForward": "openPreview"
+    },
+    "5900": {
+      "label": "VNC (Browser Debug)",
+      "onAutoForward": "silent"
     }
   },
-  "postCreateCommand": "npm install && npx playwright install chromium",
+  "remoteUser": "node",
+  "containerEnv": {
+    "NODE_ENV": "development",
+    "DISPLAY": ":99",
+    "PLAYWRIGHT_BROWSERS_PATH": "/home/node/.cache/ms-playwright"
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/open-knowledge-studio,type=bind,consistency=cached",
+  "workspaceFolder": "/workspaces/open-knowledge-studio",
+  "mounts": [
+    "source=oks-node-modules,target=/workspaces/open-knowledge-studio/node_modules,type=volume",
+    "source=oks-playwright-cache,target=/home/node/.cache/ms-playwright,type=volume",
+    "source=oks-bash-history,target=/home/node/.bash_history,type=volume"
+  ],
+  "onCreateCommand": "npm ci",
+  "postCreateCommand": "npx playwright install chromium --with-deps && bash -c 'Xvfb :99 -screen 0 1920x1080x24 &'",
+  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -24,7 +48,14 @@
         "ms-playwright.playwright",
         "vitest.explorer",
         "github.vscode-github-actions",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+        "biomejs.biome",
+        "yzhang.markdown-all-in-one",
+        "streetsidesoftware.code-spell-checker",
+        "EditorConfig.EditorConfig",
+        "tamasfe.even-better-toml",
+        "mikestead.dotenv"
       ],
       "settings": {
         "files.associations": {
@@ -32,10 +63,50 @@
         },
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit",
+          "source.organizeImports": "explicit"
+        },
         "js/ts.tsdk.path": "node_modules/typescript/lib",
         "js/ts.tsdk.promptToUseWorkspaceVersion": true,
         "js/ts.preferences.importModuleSpecifier": "non-relative",
-        "tailwindCSS.experimental.classRegex": []
+        "tailwindCSS.experimental.classRegex": [],
+        "tailwindCSS.validate": true,
+        "files.watcherExclude": {
+          "**/.git/objects/**": true,
+          "**/.git/subtree-cache/**": true,
+          "**/node_modules/**": true,
+          "**/dist/**": true,
+          "**/coverage/**": true
+        },
+        "files.exclude": {
+          "**/.git": true,
+          "**/node_modules": false,
+          "**/dist": false
+        },
+        "search.exclude": {
+          "**/node_modules": true,
+          "**/dist": true,
+          "**/coverage": true
+        }
+      },
+      "mcp": {
+        "servers": {
+          "playwright": {
+            "command": "npx",
+            "args": ["-y", "@microsoft/mcp-server-playwright"],
+            "env": {
+              "DISPLAY": ":99"
+            }
+          },
+          "github": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-github"],
+            "env": {
+              "GITHUB_TOKEN": "${input:github-token}"
+            }
+          }
+        }
       }
     }
   }

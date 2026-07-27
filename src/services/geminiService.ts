@@ -376,7 +376,7 @@ Return ONLY a JSON array of objects with fields: agentId, subTask, rationale.
 Example: [{"agentId":"research","subTask":"Find the latest R0 values for measles","rationale":"The researcher specializes in finding and synthesizing information"}]`;
 
   const decompositionText = await queryLLM(
-    [{ id: 'decomp', text: prompt, sender: 0, timestamp: new Date() } as any],
+    [{ id: 'decomp', text: prompt, sender: MessageSender.USER, timestamp: new Date() }],
     config,
     contextDocs,
     'You are a workflow orchestrator. Decompose tasks precisely. Return ONLY valid JSON arrays.'
@@ -422,7 +422,7 @@ export async function runOrchestratedWorkflow(
 
     try {
       const response = await queryLLM(
-        [{ id: step.agentId, text: agentPrompt, sender: 0, timestamp: new Date() } as any],
+        [{ id: step.agentId, text: agentPrompt, sender: MessageSender.USER, timestamp: new Date() }],
         agentCfg,
         contextDocs,
         agent.systemPrompt
@@ -442,7 +442,7 @@ export async function runOrchestratedWorkflow(
   const synthesisPrompt = `Original request: "${topic}"\n\nAgent results:\n${subResults.map((r) => `### ${r.name}\n${r.response}`).join('\n\n')}\n\nSynthesize these findings into a comprehensive, well-structured final response. Integrate all contributions, resolve contradictions, and provide a cohesive answer.`;
 
   const finalResponse = await queryLLM(
-    [{ id: 'synth', text: synthesisPrompt, sender: 0 as any, timestamp: new Date() }],
+    [{ id: 'synth', text: synthesisPrompt, sender: MessageSender.USER, timestamp: new Date() }],
     coordCfg,
     contextDocs,
     coordinator.systemPrompt
@@ -470,7 +470,7 @@ export async function runSequentialWorkflow(
 
     try {
       const response = await queryLLM(
-        [{ id: step.agentId, text: prompt, sender: 0 as any, timestamp: new Date() }],
+        [{ id: step.agentId, text: prompt, sender: MessageSender.USER, timestamp: new Date() }],
         stepCfg,
         contextDocs,
         step.systemPrompt

@@ -5,6 +5,14 @@
     "esbenp.prettier-vscode",
     "ms-playwright.playwright",
     "vitest.explorer",
-    "github.vscode-github-actions"
+    "github.vscode-github-actions",
+    "ms-azuretools.vscode-docker",
+    "ms-vscode-remote.remote-containers",
+    "biomejs.biome",
+    "yzhang.markdown-all-in-one",
+    "streetsidesoftware.code-spell-checker",
+    "EditorConfig.EditorConfig",
+    "tamasfe.even-better-toml",
+    "mikestead.dotenv"
   ]
 }
