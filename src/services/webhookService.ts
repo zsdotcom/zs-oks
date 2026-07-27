@@ -1,3 +1,5 @@
+import { dbGetKey, dbSetKey } from '../db/indexedDB';
+
 export interface WebhookConfig {
   id: string;
   name: string;
@@ -11,48 +13,50 @@ export interface WebhookConfig {
 
 const WEBHOOKS_KEY = 'oks-webhooks';
 
-function getWebhooks(): WebhookConfig[] {
+async function getWebhooks(): Promise<WebhookConfig[]> {
   try {
-    const raw = localStorage.getItem(WEBHOOKS_KEY);
+    const raw = await dbGetKey(WEBHOOKS_KEY);
     return raw ? JSON.parse(raw) : [];
   } catch { return []; }
 }
 
-function saveWebhooks(webhooks: WebhookConfig[]): void {
-  localStorage.setItem(WEBHOOKS_KEY, JSON.stringify(webhooks));
+async function saveWebhooks(webhooks: WebhookConfig[]): Promise<void> {
+  await dbSetKey(WEBHOOKS_KEY, JSON.stringify(webhooks));
 }
 
-export function addWebhook(config: Omit<WebhookConfig, 'id' | 'createdAt'>): WebhookConfig {
-  const webhooks = getWebhooks();
+export async function addWebhook(config: Omit<WebhookConfig, 'id' | 'createdAt'>): Promise<WebhookConfig> {
+  const webhooks = await getWebhooks();
   const newHook: WebhookConfig = {
     ...config,
     id: `wh-${Date.now()}`,
     createdAt: new Date().toISOString(),
   };
   webhooks.push(newHook);
-  saveWebhooks(webhooks);
+  await saveWebhooks(webhooks);
   return newHook;
 }
 
-export function removeWebhook(id: string): void {
-  saveWebhooks(getWebhooks().filter((w) => w.id !== id));
+export async function removeWebhook(id: string): Promise<void> {
+  const webhooks = await getWebhooks();
+  await saveWebhooks(webhooks.filter((w) => w.id !== id));
 }
 
-export function updateWebhook(id: string, updates: Partial<WebhookConfig>): WebhookConfig | null {
-  const webhooks = getWebhooks();
+export async function updateWebhook(id: string, updates: Partial<WebhookConfig>): Promise<WebhookConfig | null> {
+  const webhooks = await getWebhooks();
   const idx = webhooks.findIndex((w) => w.id === id);
   if (idx === -1) return null;
   webhooks[idx] = { ...webhooks[idx], ...updates };
-  saveWebhooks(webhooks);
+  await saveWebhooks(webhooks);
   return webhooks[idx];
 }
 
-export function getWebhooksByEvent(event: string): WebhookConfig[] {
-  return getWebhooks().filter((w) => w.active && w.events.includes(event));
+export async function getWebhooksByEvent(event: string): Promise<WebhookConfig[]> {
+  const webhooks = await getWebhooks();
+  return webhooks.filter((w) => w.active && w.events.includes(event));
 }
 
 export async function fireWebhooks(event: string, payload: any): Promise<void> {
-  const hooks = getWebhooksByEvent(event);
+  const hooks = await getWebhooksByEvent(event);
   await Promise.allSettled(
     hooks.map(async (hook) => {
       try {
@@ -68,6 +72,6 @@ export async function fireWebhooks(event: string, payload: any): Promise<void> {
   );
 }
 
-export function getAllWebhooks(): WebhookConfig[] {
+export async function getAllWebhooks(): Promise<WebhookConfig[]> {
   return getWebhooks();
 }

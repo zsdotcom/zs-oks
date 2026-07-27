@@ -374,6 +374,11 @@ export const GripVertical = make('grip-vertical', [
   <circle key="6" cx="15" cy="19" r="1" />,
 ]);
 
+export const Bell = make('bell', [
+  <path key="1" d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />,
+  <path key="2" d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />,
+]);
+
 export const RefreshCw = make('refresh-cw', [
   <polyline key="1" points="23 4 23 10 17 10" />,
   <polyline key="2" points="1 20 1 14 7 14" />,

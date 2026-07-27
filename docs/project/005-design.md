@@ -318,9 +318,10 @@ Hierarchy is established through **luminance and blur** rather than traditional 
 - [000 — Project Overview](000-overview.md) — High-level introduction
 - [002 — Technical Specification](002-specification.md) — Detailed component specifications
 - [004 — Architecture](004-architecture.md) — System architecture
+- [006 — Brand Guidelines](006-brand-guidelines.md) — Brand positioning, voice & tone, messaging library
 - [Index](index.md) — Full documentation index
-- [A2A Agents Guide](../guides/060-agents.md) — Agent UI and color identity
-- [Diagram Generation Guide](../guides/092-diagrams.md) — KaTeX and Mermaid rendering
+- [A2A Agents Guide](../guides/001-agents.md) — Agent UI and color identity
+- [Diagram Generation Guide](../guides/003-diagrams.md) — KaTeX and Mermaid rendering
 
 ---
 

@@ -106,9 +106,35 @@ const WorkspaceManager: React.FC<Props> = ({
         ))}
       </div>
 
-      {/* Active Project Directory Tree */}
+      {/* Active Project Dashboard */}
       {activeProjectId && currentProject && (
         <div className="space-y-3 pt-3 border-t border-[var(--border)]">
+
+          {/* Project Stats */}
+          <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+            <div className="bg-[var(--bg-primary)] rounded border border-[var(--border)] p-2 text-center">
+              <span className="block text-sm font-semibold text-[var(--accent)]">{files.length}</span>
+              <span className="text-[var(--text-muted)]">Files</span>
+            </div>
+            <div className="bg-[var(--bg-primary)] rounded border border-[var(--border)] p-2 text-center">
+              <span className="block text-sm font-semibold text-green-400">{agents.length}</span>
+              <span className="text-[var(--text-muted)]">Agents</span>
+            </div>
+            <div className="bg-[var(--bg-primary)] rounded border border-[var(--border)] p-2 text-center">
+              <span className="block text-sm font-semibold text-yellow-400">{tags.length}</span>
+              <span className="text-[var(--text-muted)]">Tags</span>
+            </div>
+            <div className="bg-[var(--bg-primary)] rounded border border-[var(--border)] p-2 text-center">
+              <span className="block text-sm font-semibold text-purple-400">{folders.length}</span>
+              <span className="text-[var(--text-muted)]">Folders</span>
+            </div>
+            <div className="col-span-2 bg-[var(--bg-primary)] rounded border border-[var(--border)] p-2 text-center">
+              <span className="text-[var(--text-muted)]">Created: {new Date(currentProject.createdAt).toLocaleDateString()}</span>
+              {currentProject.updatedAt && <span className="text-[var(--text-muted)]"> · Updated: {new Date(currentProject.updatedAt).toLocaleDateString()}</span>}
+              {currentProject.description && <p className="text-[10px] text-[var(--text-secondary)] mt-0.5">{currentProject.description}</p>}
+            </div>
+          </div>
+
           <div className="flex items-center gap-2 mb-1">
             <Database size={12} className="text-[var(--text-muted)]" />
             <span className="text-[10px] font-medium text-[var(--text-muted)] uppercase tracking-wider">Project Structure</span>

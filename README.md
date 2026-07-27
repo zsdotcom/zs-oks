@@ -20,20 +20,22 @@ A private AI research laboratory in your browser — 6 specialized agents collab
 
 ## ✦ Overview
 
-**Open Knowledge Studio** operates entirely within your browser using IndexedDB for persistent memory, Transformers.js for vector embeddings, and Orama JS for semantic search — all ML/search libraries loaded dynamically from CDN. Only `react` + `react-dom` at build time.
+A private AI research laboratory in your browser — 6 specialized agents collaborate on your work, all data stays local, zero backend required.
+
+Open Knowledge Studio operates entirely within your browser using IndexedDB for persistent memory, Transformers.js for vector embeddings, and Orama JS for semantic search — all ML/search libraries loaded dynamically from CDN. Only `react` + `react-dom` at build time.
 
 ### Core Stats
 
 | Metric | Value |
 |:-------|:------|
 | ⚡ Runtime deps | 2 (`react`, `react-dom`) |
-| 🧪 Tests | 117 across 7 files |
+| 🧪 Tests | 117 across 8 files |
 | 📦 Build size | ~90 KB gzip |
 | 🗄️ IndexedDB stores | 22 |
 | 🧩 Components | 25 (5 lazy-loaded) |
-| 🔧 Services | 16 |
+| 🔧 Services | 19 |
 | 🤖 Built-in agents | 6 + custom |
-| 🌐 AI providers | 6 |
+| 🌐 AI providers | 10 (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare) |
 
 ---
 
@@ -95,7 +97,7 @@ Session → Episodic → Semantic (vector-indexed) → Procedural → Working �
 <td width="50%">
 
 ### 🌐 Multi-Provider AI
-Unified router for Gemini, OpenAI, Anthropic, DeepSeek, Groq, and local Ollama — single API, 6 providers.
+Unified router for Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare — single API, 10 providers.
 
 </td>
 <td width="50%">
@@ -143,7 +145,7 @@ npm run build      # → dist/
 npm run preview
 
 # Tests
-npm test           # 117 tests across 7 files
+npm test           # 117 tests across 8 files
 npm run test:bench # Performance benchmarks
 ```
 
@@ -151,6 +153,13 @@ npm run test:bench # Performance benchmarks
 
 - **Node.js** v26.x (`.nvmrc` specifies 26)
 - **npm** v11.x
+
+---
+
+## ✦ Brand Assets
+
+- **Brand guidelines:** [`docs/project/006-brand-guidelines.md`](docs/project/006-brand-guidelines.md) — positioning, voice, tone, messaging, visual identity rules
+- **Free resource catalog:** [`docs/free-resources.md`](docs/free-resources.md) — free MCP servers, Cloudflare tier, CDN libraries, public-health APIs
 
 ---
 
@@ -162,13 +171,14 @@ Comprehensive documentation is available in the [`docs/`](docs/index.md) directo
 docs/
 ├── index.md                              # Master table of contents
 │
-├── project/                              # Core project docs (6 files)
+├── project/                              # Core project docs (7 files)
 │   ├── 000-overview.md                   # Project overview & quick start
 │   ├── 001-concept.md                    # Vision, personas, glossary
 │   ├── 002-specification.md              # Technical specifications
 │   ├── 003-blueprint.md                  # Tech stack & roadmap
 │   ├── 004-architecture.md               # System architecture
-│   └── 005-design.md                     # UI/UX design system
+│   ├── 005-design.md                     # UI/UX design system
+│   └── 006-brand-guidelines.md           # Brand guidelines & messaging
 │
 ├── developers/                           # Developer docs (12 files)
 │   ├── 000-quickstart.md                 # 5-minute quickstart
@@ -206,13 +216,14 @@ docs/
 ├── i18n/                                 # Internationalization (1 file)
 ├── a11y/                                 # Accessibility (1 file)
 ├── ops/                                  # Docs operations (2 files)
-└── agents/                               # Agent docs (66 files)
-    ├── SKILL.md / references/            # Agent system overview
-    ├── Built-in (6): coordinator, researcher, data-analyst, writer, reviewer, librarian
-    ├── Persona guides (9): epistemologist, bioinformatician, field-epidemiologist,
-    │                      clinical-trialist, data-journalist, genomic-analyst,
-    │                      environmental-epidemiologist, health-economist, vaccinologist
-    └── _template/                        # Custom agent template
+├── agents/                               # Agent docs (66 files)
+│   ├── SKILL.md / references/            # Agent system overview
+│   ├── Built-in (6): coordinator, researcher, data-analyst, writer, reviewer, librarian
+│   ├── Persona guides (9): epistemologist, bioinformatician, field-epidemiologist,
+│   │                      clinical-trialist, data-journalist, genomic-analyst,
+│   │                      environmental-epidemiologist, health-economist, vaccinologist
+│   └── _template/                        # Custom agent template
+└── free-resources.md                     # Free MCPs, Cloudflare, APIs, CDN libs
 ```
 
 > **Start here:** [`docs/index.md`](docs/index.md) → [`docs/project/000-overview.md`](docs/project/000-overview.md) → [`docs/developers/000-quickstart.md`](docs/developers/000-quickstart.md)

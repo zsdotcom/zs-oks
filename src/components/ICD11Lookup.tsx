@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { searchICD11, getAllICD11Codes, icd11ToFHIR, type ICD11Entry } from '../services/icd11Service';
+import { searchICD11, searchICD11WithFallback, getAllICD11Codes, icd11ToFHIR, type ICD11Entry } from '../services/icd11Service';
 import { searchICF, getAllICFCodes, getICFByComponent, type ICFEntry } from '../services/icfService';
 import { searchICHI, getAllICHICodes, getICHIBySection, type ICHIEntry } from '../services/ichiService';
 import type { WhoFicType } from '../services/whoFicIndex';
@@ -49,6 +49,8 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({
   const [results, setResults] = useState<(ICD11Entry | ICFEntry | ICHIEntry)[]>([]);
   const [showAll, setShowAll] = useState(false);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
+  const [visibleCounts, setVisibleCounts] = useState<Record<string, number>>({});
+  const PAGE_SIZE = 20;
   const [selectedEntry, setSelectedEntry] = useState<ICD11Entry | null>(null);
   const [fhirCopied, setFhirCopied] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -67,13 +69,13 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({
   const handleSearch = useCallback((value: string) => {
     setQuery(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
+    debounceRef.current = setTimeout(async () => {
       if (!value.trim()) {
         setResults([]);
         return;
       }
       let res: (ICD11Entry | ICFEntry | ICHIEntry)[] = [];
-      if (classificationType === 'icd11') res = searchICD11(value);
+      if (classificationType === 'icd11') res = await searchICD11WithFallback(value);
       else if (classificationType === 'icf') res = searchICF(value);
       else if (classificationType === 'ichi') res = searchICHI(value);
       setResults(res);
@@ -133,10 +135,15 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({
   const toggleChapter = (chapter: string) => {
     setExpandedChapters((prev) => {
       const next = new Set(prev);
-      if (next.has(chapter)) next.delete(chapter);
-      else next.add(chapter);
+      if (next.has(chapter)) { next.delete(chapter); return next; }
+      next.add(chapter);
       return next;
     });
+    setVisibleCounts((prev) => ({ ...prev, [chapter]: PAGE_SIZE }));
+  };
+
+  const showMoreCodes = (chapter: string) => {
+    setVisibleCounts((prev) => ({ ...prev, [chapter]: (prev[chapter] || PAGE_SIZE) + PAGE_SIZE }));
   };
 
   const info = CLASSIFICATION_INFO[classificationType];
@@ -250,7 +257,7 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({
                   </button>
                   {isExpanded && (
                     <div className="border-t border-[var(--border)]">
-                      {chapterCodes.map((entry: any) => (
+                      {chapterCodes.slice(0, visibleCounts[chapter] || PAGE_SIZE).map((entry: any) => (
                         <button
                           key={entry.code}
                           onClick={() => handleSelect(entry)}
@@ -263,6 +270,14 @@ export const ICD11Lookup: React.FC<ICD11LookupProps> = ({
                           <p className="text-[var(--text-muted)] mt-0.5 truncate">{entry.description}</p>
                         </button>
                       ))}
+                      {(visibleCounts[chapter] || PAGE_SIZE) < chapterCodes.length && (
+                        <button
+                          onClick={() => showMoreCodes(chapter)}
+                          className="w-full text-center px-3 py-1.5 text-[10px] text-[var(--accent)] hover:bg-[var(--bg-hover)] transition-colors"
+                        >
+                          Show {Math.min(PAGE_SIZE, chapterCodes.length - (visibleCounts[chapter] || PAGE_SIZE))} more ({chapterCodes.length - (visibleCounts[chapter] || PAGE_SIZE)} remaining)
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ChatMessage, MessageSender, ProviderConfig, KBFile } from '../types';
-import { queryLLM, getInitialSuggestions } from '../services/geminiService';
+import { ChatMessage, MessageSender, ProviderConfig, KBFile, MCPServer } from '../types';
+import { queryLLM, queryLLMStream, getInitialSuggestions } from '../services/geminiService';
 import { parse } from '../utils/markdown';
 import { Search, Send, Mic, MicOff, Sparkles, Loader2, Download, Bold, Italic, Code, Link, List, Heading } from './icons/lucide-shim';
+import { executeMCPTool, buildActiveToolsContext, parseToolCall } from '../services/mcpService';
 
 interface Props {
   messages: ChatMessage[];
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
   providerConfig: ProviderConfig;
   files: KBFile[];
+  mcpServers: MCPServer[];
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   initialSuggestions: string[];
@@ -19,7 +21,7 @@ interface Props {
 }
 
 const ChatInterface: React.FC<Props> = ({
-  messages, setMessages, providerConfig, files, isLoading, setIsLoading,
+  messages, setMessages, providerConfig, files, mcpServers, isLoading, setIsLoading,
   initialSuggestions, isFetchingSuggestions, setIsFetchingSuggestions, setInitialSuggestions,
   onMessageSent,
 }) => {
@@ -139,20 +141,6 @@ const ChatInterface: React.FC<Props> = ({
     return activeFiles.map((f) => `### ${f.name}\n${f.content}`).join('\n\n');
   }, [files]);
 
-  const handleStreamingResponse = async (response: string, msgId: string) => {
-    const words = response.split(' ');
-    let accumulated = '';
-    for (let i = 0; i < words.length; i++) {
-      accumulated += (i > 0 ? ' ' : '') + words[i];
-      setMessages((prev) =>
-        prev.map((m) => (m.id === msgId ? { ...m, text: accumulated } : m))
-      );
-      if (i % 3 === 0) {
-        await new Promise((r) => setTimeout(r, 10));
-      }
-    }
-  };
-
   const handleSend = async (text?: string) => {
     const messageText = text || input.trim();
     if (!messageText || isLoading) return;
@@ -167,6 +155,7 @@ const ChatInterface: React.FC<Props> = ({
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     inputRef.current?.focus();
+    setIsLoading(true);
     onMessageSent?.(messageText, 'user');
 
     const loadingMsg: ChatMessage = {
@@ -178,32 +167,118 @@ const ChatInterface: React.FC<Props> = ({
     };
     setMessages((prev) => [...prev, loadingMsg]);
 
-    const contextDocs = getContextDocs();
+    const toolContext = buildActiveToolsContext(mcpServers);
+    const mergedContext = [toolContext, getContextDocs()].filter(Boolean).join('\n\n');
     const recentMessages = messages.slice(-turnDepth);
 
+    const doStreamQuery = async (queryMessages: ChatMessage[], msgId: string): Promise<string> => {
+      let accumulated = '';
+      await queryLLMStream(queryMessages, providerConfig, (chunk) => {
+        accumulated += chunk;
+        setMessages((prev) => prev.map((m) =>
+          m.id === msgId ? { ...m, text: accumulated, isLoading: false, provider: providerConfig.provider, modelName: providerConfig.selectedModel } : m
+        ));
+      }, mergedContext);
+      return accumulated;
+    };
+
     try {
-      const response = await queryLLM(recentMessages, providerConfig, contextDocs);
-      setMessages((prev) => prev.map((m) =>
-        m.id === loadingMsg.id ? { ...m, text: '', isLoading: false, provider: providerConfig.provider, modelName: providerConfig.selectedModel } : m
-      ));
-      await handleStreamingResponse(response, loadingMsg.id);
+      let lastMsgId = loadingMsg.id;
+      let responseText = '';
+      let maxToolLoops = 5;
+
+      while (maxToolLoops-- > 0) {
+        responseText = await doStreamQuery(
+          [...recentMessages, ...messages.filter((m) => m.id.startsWith('tool-result-')).slice(-4)],
+          lastMsgId,
+        );
+
+        const toolCall = parseToolCall(responseText);
+        if (!toolCall) break;
+
+        const activeTools = mcpServers.flatMap((s) =>
+          s.tools.filter((t) => t.isActive).map((t) => ({ server: s, tool: t }))
+        );
+        const match = activeTools.find((t) => t.tool.name === toolCall.toolName);
+        if (!match) {
+          setMessages((prev) => [...prev, {
+            id: `tool-error-${Date.now()}`, text: `Unknown tool: ${toolCall.toolName}. Available tools: ${activeTools.map((t) => t.tool.name).join(', ')}`,
+            sender: MessageSender.SYSTEM, timestamp: new Date(),
+          }]);
+          break;
+        }
+
+        const toolResult = await executeMCPTool(match.server, match.tool, toolCall.params);
+        const resultMsg: ChatMessage = {
+          id: `tool-result-${Date.now()}`, text: `**Tool: ${toolCall.toolName}**\n\`\`\`json\n${JSON.stringify(toolResult.data ?? { error: toolResult.error }, null, 2).slice(0, 3000)}\n\`\`\``,
+          sender: MessageSender.SYSTEM, timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, resultMsg]);
+
+        lastMsgId = `loading-${Date.now()}`;
+        setMessages((prev) => [...prev, {
+          id: lastMsgId, text: '', sender: MessageSender.MODEL, timestamp: new Date(), isLoading: true,
+        }]);
+      }
     } catch (err) {
       setMessages((prev) => prev.map((m) =>
         m.id === loadingMsg.id ? { ...m, text: `Error: ${(err as Error).message}`, isLoading: false } : m
       ));
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const exportChat = () => {
-    const content = messages.map((m) => `[${m.sender}] ${m.text}`).join('\n\n');
-    const blob = new Blob([content], { type: 'text/markdown' });
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const exportRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (exportRef.current && !exportRef.current.contains(e.target as Node)) setShowExportMenu(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const exportAsMarkdown = () => {
+    const date = new Date().toISOString().slice(0, 10);
+    const header = `# Chat Export\n**Date:** ${date}\n**Provider:** ${providerConfig.provider}\n**Model:** ${providerConfig.selectedModel}\n\n---\n`;
+    const body = messages.filter((m) => !m.isLoading).map((m) => {
+      const role = m.sender === MessageSender.USER ? '**You**' : `**Assistant**${m.modelName ? ` (${m.modelName})` : ''}`;
+      return `### ${role}\n${m.text || '*Empty*'}\n`;
+    }).join('\n\n');
+    downloadFile(header + body, `chat-${date}.md`, 'text/markdown');
+    setShowExportMenu(false);
+  };
+
+  const exportAsJSON = () => {
+    const date = new Date().toISOString().slice(0, 10);
+    const data = {
+      exportedAt: new Date().toISOString(),
+      provider: providerConfig.provider,
+      model: providerConfig.selectedModel,
+      messages: messages.filter((m) => !m.isLoading).map((m) => ({
+        sender: m.sender === MessageSender.USER ? 'user' : 'assistant',
+        text: m.text,
+        timestamp: m.timestamp.toISOString(),
+        modelName: m.modelName || undefined,
+      })),
+    };
+    downloadFile(JSON.stringify(data, null, 2), `chat-${date}.json`, 'application/json');
+    setShowExportMenu(false);
+  };
+
+  const downloadFile = (content: string, filename: string, mime: string) => {
+    const blob = new Blob([content], { type: mime });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `chat-export-${new Date().toISOString().slice(0, 10)}.md`;
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  const toggleExportMenu = () => setShowExportMenu((prev) => !prev);
 
   return (
     <div className="flex flex-col h-full">
@@ -217,7 +292,15 @@ const ChatInterface: React.FC<Props> = ({
           <label className="text-xs text-[var(--text-secondary)]">Context turns:</label>
           <input type="range" min={2} max={30} value={turnDepth} onChange={(e) => setTurnDepth(Number(e.target.value))} className="w-20 h-1 accent-[var(--accent)]" />
           <span className="text-xs text-[var(--text-muted)] w-4">{turnDepth}</span>
-          <button onClick={exportChat} className="p-1.5 rounded hover:bg-[var(--bg-hover)]" title="Export chat"><Download size={14} /></button>
+          <div className="relative" ref={exportRef}>
+            <button onClick={toggleExportMenu} className="p-1.5 rounded hover:bg-[var(--bg-hover)]" title="Export chat" aria-label="Export chat" aria-expanded={showExportMenu}><Download size={14} /></button>
+            {showExportMenu && (
+              <div className="absolute right-0 top-full mt-1 w-36 bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg shadow-xl z-10 py-1">
+                <button onClick={exportAsMarkdown} className="w-full text-left px-3 py-1.5 text-xs hover:bg-[var(--bg-hover)]">Export as Markdown</button>
+                <button onClick={exportAsJSON} className="w-full text-left px-3 py-1.5 text-xs hover:bg-[var(--bg-hover)]">Export as JSON</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -287,7 +370,11 @@ const ChatInterface: React.FC<Props> = ({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
+              if (e.key === 'Enter' && !e.shiftKey && !e.metaKey && !e.ctrlKey) {
+                e.preventDefault();
+                handleSend();
+              }
+              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
                 handleSend();
               }

@@ -23,7 +23,7 @@ export interface DBSchema {
   metrics: { id: string; timestamp: string; topic: string; agentId: string; agentName: string; latencyMs: number; thinkingSeconds?: number; tokensEstimated: number; status: string };
   skills: { id: string; name: string; description: string; category: string; instructions: string; allowedTools: string[]; priority: string; triggers: string[]; createdAt: string; updatedAt: string };
   connectors: { id: string; name: string; type: string; enabled: boolean; config: string; status: string; lastSync: string };
-  workspaceProjects: { id: string; name: string; description: string; createdAt: string; agentIds: string[]; tags: string[]; sourceUrl?: string };
+  workspaceProjects: { id: string; name: string; description: string; createdAt: string; updatedAt: string; fileCount: number; agentCount: number; agentIds: string[]; tags: string[]; sourceUrl?: string };
   sandbox: { id: string; settings: string };
   sessions: { id: string; title: string; messages: string; provider: string; modelName: string; createdAt: string };
   versions: { id: string; documentId: string; content: string; createdAt: string; size: string; label?: string };
@@ -141,8 +141,9 @@ export async function dbGetByIndex<T>(storeName: StoreName, indexName: string, q
   const tx = db.transaction(storeName, 'readonly');
   const store = tx.objectStore(storeName);
   const index = store.index(indexName);
+  const range = Array.isArray(query) ? IDBKeyRange.bound(query, [...query, '\uffff'], false, false) : IDBKeyRange.only(query);
   return new Promise((resolve, reject) => {
-    const req = index.getAll(IDBKeyRange.only(query));
+    const req = index.getAll(range);
     req.onsuccess = () => resolve(req.result as T[]);
     req.onerror = () => reject(req.error);
   });
@@ -224,7 +225,7 @@ async function countStore(storeName: StoreName): Promise<number> {
 
 /* ─── Full Export / Import ─── */
 export async function exportAllData(): Promise<string> {
-  const stores: StoreName[] = ['files', 'folders', 'providers', 'urlGroups', 'prompts', 'a2aAgents', 'metrics', 'sandbox', 'sessions', 'versions', 'kanban', 'templates', 'tags', 'appState'];
+  const stores: StoreName[] = ['files', 'folders', 'providers', 'urlGroups', 'prompts', 'a2aAgents', 'metrics', 'sandbox', 'sessions', 'versions', 'kanban', 'templates', 'tags', 'appState', 'skills', 'connectors', 'workspaceProjects'];
   const exportData: Record<string, any> = {};
   for (const store of stores) {
     exportData[store] = await dbGetAll(store);

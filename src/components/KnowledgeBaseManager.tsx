@@ -2,9 +2,10 @@
  * KnowledgeBaseManager — File/folder management with drag-and-drop, search, and bulk actions.
  * @license SPDX-License-Identifier: Apache-2.0
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { KBFile, KBFolder, FileType } from '../types';
 import { Folder, FileText, Plus, Trash, Upload, Search, Download, Tag } from './icons/lucide-shim';
+import { getCSVSummary } from '../services/csvService';
 
 interface Props {
   files: KBFile[];
@@ -23,6 +24,77 @@ const KnowledgeBaseManager: React.FC<Props> = ({ files, folders, setFiles, setFo
   const [dragOver, setDragOver] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(folders.map((f) => f.id)));
+  const [csvPreview, setCsvPreview] = useState<{ fileId: string; headers: string[]; columnTypes: string[]; rowCount: number; preview: string[][] } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
+  const detectFileType = (name: string): FileType => {
+    const ext = name.split('.').pop()?.toLowerCase();
+    if (!ext) return 'text';
+    const typeMap: Record<string, FileType> = {
+      txt: 'text', md: 'markdown', json: 'json', csv: 'csv',
+      pdf: 'pdf', doc: 'doc', docx: 'doc',
+      xls: 'sheet', xlsx: 'sheet',
+      ppt: 'slides', pptx: 'slides',
+      png: 'image', jpg: 'image', jpeg: 'image', gif: 'image', webp: 'image', svg: 'image',
+    };
+    return typeMap[ext] || 'text';
+  };
+
+  const readFileAsText = (df: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target?.result as string);
+      reader.onerror = () => reject(new Error(`Failed to read ${df.name}`));
+      reader.readAsText(df);
+    });
+
+  const readFileAsDataURL = (df: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target?.result as string);
+      reader.onerror = () => reject(new Error(`Failed to read ${df.name}`));
+      reader.readAsDataURL(df);
+    });
+
+  const addFile = useCallback((df: File, folderId: string | null = null, notify?: () => void) => {
+    const type = detectFileType(df.name);
+    if (type === 'image') {
+      readFileAsDataURL(df).then((content) => {
+        const newFile: KBFile = {
+          id: `file-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          name: df.name, type, content,
+          size: `${(df.size / 1024).toFixed(1)} KB`,
+          parentFolderId: folderId, isActive: false, createdAt: new Date(),
+        };
+        setFiles((prev) => [newFile, ...prev]);
+        notify?.();
+      }).catch(() => {});
+    } else {
+      readFileAsText(df).then((content) => {
+        const newFile: KBFile = {
+          id: `file-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          name: df.name, type, content: type === 'pdf' ? content.slice(0, 100000) : content,
+          size: `${(df.size / 1024).toFixed(1)} KB`,
+          parentFolderId: folderId, isActive: false, createdAt: new Date(),
+        };
+        if (type === 'pdf' && df.size > 102400) {
+          newFile.url = URL.createObjectURL(df);
+        }
+        setFiles((prev) => [newFile, ...prev]);
+        notify?.();
+      }).catch(() => {});
+    }
+  }, [setFiles]);
+
+  const handleFilePicker = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const pickedFiles = Array.from(e.target.files || []);
+    for (const f of pickedFiles) {
+      if (f.size > MAX_FILE_SIZE) continue;
+      addFile(f);
+    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }, [addFile]);
 
   // Filter files by search
   const filteredFiles = searchQuery
@@ -98,25 +170,10 @@ const KnowledgeBaseManager: React.FC<Props> = ({ files, folders, setFiles, setFo
     setDragOver(false);
     const droppedFiles = Array.from(e.dataTransfer.files);
     for (const df of droppedFiles) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const content = ev.target?.result as string;
-        const type: FileType = df.name.endsWith('.json') ? 'json' : df.name.endsWith('.csv') ? 'csv' : 'text';
-        const newFile: KBFile = {
-          id: `file-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-          name: df.name,
-          type,
-          content,
-          size: `${(content.length / 1024).toFixed(1)} KB`,
-          parentFolderId: null,
-          isActive: false,
-          createdAt: new Date(),
-        };
-        setFiles((prev) => [newFile, ...prev]);
-      };
-      reader.readAsText(df);
+      if (df.size > MAX_FILE_SIZE) continue;
+      addFile(df);
     }
-  }, [setFiles]);
+  }, [addFile]);
 
   // Export file
   const exportFile = (file: KBFile) => {
@@ -154,6 +211,10 @@ const KnowledgeBaseManager: React.FC<Props> = ({ files, folders, setFiles, setFo
         <button onClick={() => setShowNewFile(!showNewFile)} className="p-1.5 rounded hover:bg-[var(--bg-hover)]" title="New file" aria-label="New file" aria-expanded={showNewFile}>
           <Plus size={14} className="text-[var(--text-secondary)]" />
         </button>
+        <button onClick={() => fileInputRef.current?.click()} className="p-1.5 rounded hover:bg-[var(--bg-hover)]" title="Upload file (PDF, image, doc)" aria-label="Upload file">
+          <Upload size={14} className="text-[var(--text-secondary)]" />
+        </button>
+        <input ref={fileInputRef} type="file" multiple accept=".txt,.md,.json,.csv,.pdf,.png,.jpg,.jpeg,.gif,.webp,.svg,.doc,.docx,.xls,.xlsx,.ppt,.pptx" className="hidden" onChange={handleFilePicker} aria-label="File picker" />
       </div>
 
       {/* New folder input */}
@@ -202,7 +263,7 @@ const KnowledgeBaseManager: React.FC<Props> = ({ files, folders, setFiles, setFo
           <div className="mb-2">
             <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1">Unsorted</div>
             {unsortedFiles.map((file) => (
-              <FileRow key={file.id} file={file} isActive={activeFileId === file.id} onSelect={onFileSelect} onDelete={deleteFile} onToggleActive={toggleActive} onExport={exportFile} />
+              <FileRow key={file.id} file={file} isActive={activeFileId === file.id} onSelect={onFileSelect} onDelete={deleteFile} onToggleActive={toggleActive} onExport={exportFile} onCsvPreview={(f) => { try { setCsvPreview({ fileId: f.id, ...getCSVSummary(f.content) }); } catch {} }} />
             ))}
           </div>
         )}
@@ -223,7 +284,7 @@ const KnowledgeBaseManager: React.FC<Props> = ({ files, folders, setFiles, setFo
               {isExpanded && (
                 <div className="ml-4">
                   {folderFiles.map((file) => (
-                    <FileRow key={file.id} file={file} isActive={activeFileId === file.id} onSelect={onFileSelect} onDelete={deleteFile} onToggleActive={toggleActive} onExport={exportFile} />
+                    <FileRow key={file.id} file={file} isActive={activeFileId === file.id} onSelect={onFileSelect} onDelete={deleteFile} onToggleActive={toggleActive} onExport={exportFile} onCsvPreview={(f) => { try { setCsvPreview({ fileId: f.id, ...getCSVSummary(f.content) }); } catch {} }} />
                   ))}
                 </div>
               )}
@@ -238,6 +299,44 @@ const KnowledgeBaseManager: React.FC<Props> = ({ files, folders, setFiles, setFo
           </div>
         )}
       </div>
+
+      {/* CSV Preview Popover */}
+      {csvPreview && (
+        <div className="absolute inset-0 z-30 bg-black/40 flex items-center justify-center p-4" onClick={() => setCsvPreview(null)}>
+          <div className="bg-[var(--bg-primary)] border border-[var(--border)] rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
+              <span className="text-sm font-medium">CSV Preview — {csvPreview.rowCount} rows, {csvPreview.headers.length} columns</span>
+              <button onClick={() => setCsvPreview(null)} className="p-1 rounded hover:bg-[var(--bg-hover)]" aria-label="Close preview">✕</button>
+            </div>
+            <div className="overflow-auto max-h-[60vh]">
+              <table className="w-full text-xs border-collapse">
+                <thead>
+                  <tr className="bg-[var(--bg-secondary)]">
+                    {csvPreview.headers.map((h, i) => (
+                      <th key={i} className="px-3 py-2 text-left font-medium border-b border-[var(--border)] whitespace-nowrap">
+                        {h}
+                        <span className="ml-1 text-[10px] text-[var(--text-muted)]">({csvPreview.columnTypes[i]})</span>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {csvPreview.preview.map((row, ri) => (
+                    <tr key={ri} className="hover:bg-[var(--bg-hover)]">
+                      {row.map((cell, ci) => (
+                        <td key={ci} className="px-3 py-1.5 border-b border-[var(--border)] truncate max-w-[200px]">{cell}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="px-4 py-2 border-t border-[var(--border)] text-[10px] text-[var(--text-muted)]">
+              Showing first {csvPreview.preview.length} of {csvPreview.rowCount} rows
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="px-3 py-1.5 border-t border-[var(--border)] flex justify-between text-[10px] text-[var(--text-muted)]">
@@ -257,11 +356,17 @@ const FileRow: React.FC<{
   onDelete: (id: string) => void;
   onToggleActive: (id: string) => void;
   onExport: (f: KBFile) => void;
-}> = ({ file, isActive, onSelect, onDelete, onToggleActive, onExport }) => (
+  onCsvPreview?: (f: KBFile) => void;
+}> = ({ file, isActive, onSelect, onDelete, onToggleActive, onExport, onCsvPreview }) => (
   <div className={`flex items-center gap-1 px-2 py-1 rounded cursor-pointer group ${isActive ? 'bg-[var(--accent-subtler)] border-l-2 border-[var(--accent)]' : 'hover:bg-[var(--bg-hover)]'}`} role="treeitem" aria-selected={isActive}>
     <input type="checkbox" checked={file.isActive} onChange={() => onToggleActive(file.id)} className="w-3 h-3 accent-[var(--accent)]" title="Include in AI context" aria-label={`Include ${file.name} in AI context`} />
     <FileText size={12} className="text-[var(--text-secondary)] shrink-0" />
     <span className="text-xs flex-1 truncate" onClick={() => onSelect(file)}>{file.name}</span>
+    {file.type === 'csv' && onCsvPreview && (
+      <button onClick={(e) => { e.stopPropagation(); onCsvPreview(file); }} className="p-0.5 opacity-0 group-hover:opacity-100 hover:text-green-400" title="Preview table" aria-label={`Preview ${file.name} as table`}>
+        <Tag size={10} />
+      </button>
+    )}
     <button onClick={(e) => { e.stopPropagation(); onExport(file); }} className="p-0.5 opacity-0 group-hover:opacity-100 hover:text-[var(--accent)]" title="Export" aria-label={`Export ${file.name}`}><Download size={10} /></button>
     <button onClick={(e) => { e.stopPropagation(); onDelete(file.id); }} className="p-0.5 opacity-0 group-hover:opacity-100 hover:text-red-400" title="Delete" aria-label={`Delete ${file.name}`}><Trash size={10} /></button>
   </div>

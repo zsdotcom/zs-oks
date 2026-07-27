@@ -18,7 +18,8 @@
 | 002 | [Technical Specification](project/002-specification.md) | Complete feature specs, component/service catalog, IndexedDB schema, CDN libs     | [Architecture](project/004-architecture.md) · [Blueprint](project/003-blueprint.md)      |
 | 003 | [Blueprint](project/003-blueprint.md)                   | Tech stack, architecture principles, success metrics, CI pipeline, roadmap        | [Overview](project/000-overview.md) · [Specification](project/002-specification.md)      |
 | 004 | [System Architecture](project/004-architecture.md)      | Architecture diagram, component tree, data flow, state management, security       | [Design](project/005-design.md) · [ADR](../architecture/000-index.md)                    |
-| 005 | [UI/UX Design](project/005-design.md)                   | Cyber-minimalist design system: colors, typography, layout, elevation, components | [Architecture](project/004-architecture.md) · [Guides](../guides/000-getting-started.md) |
+| 005 | [UI/UX Design](project/005-design.md)                   | Cyber-minimalist design system: colors, typography, layout, elevation, components | [Architecture](project/004-architecture.md) · [Brand](project/006-brand-guidelines.md) |
+| 006 | [Brand Guidelines](project/006-brand-guidelines.md)     | Brand positioning, voice & tone, messaging library, visual identity rules         | [Design](project/005-design.md) · [Overview](project/000-overview.md) |
 
 ## 🛠️ Developer Documentation
 
@@ -118,6 +119,12 @@
 | --- | -------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | 000 | [Docs Publishing Pipeline](ops/000-docs-ci-cd.md)        | Strategy for publishing docs as a static site (Docsify, VitePress, GitHub Pages) |
 | 001 | [Documentation Style Guide](ops/001-docs-style-guide.md) | Markdown conventions, frontmatter schema, cross-reference format, tone           |
+
+## 🆓 Free Resources
+
+| #   | Document                                            | Description                                                                      |
+| --- | --------------------------------------------------- | -------------------------------------------------------------------------------- |
+| 000 | [Free Resource Inventory](free-resources.md)        | Free MCP servers, Cloudflare services, CDN libraries, public-health APIs, OSS benefits |
 
 ## 🤖 In-App Agents
 

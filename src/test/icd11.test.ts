@@ -137,7 +137,7 @@ describe('FHIR integration', () => {
     const fhir = icd11ToFHIR(entry, 'pat-123');
     expect(fhir.resourceType).toBe('Condition');
     expect(fhir.id).toContain('cond-1A00');
-    expect(fhir.code.coding[0].system).toBe('http://id.who.int/icd11/mms');
+    expect(fhir.code.coding[0].system).toBe('http://id.who.int/icd/release/11/mms');
     expect(fhir.code.coding[0].code).toBe('1A00');
     expect(fhir.code.coding[0].display).toBe('Cholera');
     expect(fhir.subject.reference).toBe('Patient/pat-123');

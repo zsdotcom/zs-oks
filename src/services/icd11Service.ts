@@ -269,7 +269,7 @@ export function icd11ToFHIR(entry: ICD11Entry, patientId?: string): FHIRConditio
     id: `cond-${entry.code}-${Date.now()}`,
     code: {
       coding: [{
-        system: 'http://id.who.int/icd11/mms',
+        system: 'http://id.who.int/icd/release/11/mms',
         code: entry.code,
         display: entry.title,
       }],
@@ -282,9 +282,68 @@ export function icd11ToFHIR(entry: ICD11Entry, patientId?: string): FHIRConditio
 }
 
 export function FHIRToICD11(condition: FHIRCondition): ICD11Entry | undefined {
-  const coding = condition.code.coding.find(c => c.system.includes('icd11'));
+  const ICD11_SYSTEMS = ['http://id.who.int/icd/release/11/mms', 'http://id.who.int/icd11/mms'];
+  const coding = condition.code.coding.find(c => ICD11_SYSTEMS.some(s => c.system === s));
   if (!coding) return undefined;
   return getICD11ByCode(coding.code);
+}
+
+/* ─── WHO API Live Search with fallback ─── */
+
+let whoToken: string | null = null;
+let tokenExpiry = 0;
+
+async function getWHOToken(): Promise<string> {
+  if (whoToken && Date.now() < tokenExpiry) return whoToken;
+  try {
+    const res = await fetch('https://icdaccessmanagement.who.int/connect/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'client_id=icdapi&grant_type=ICDClientCredentials&scope=icdapi_access',
+    });
+    if (!res.ok) throw new Error(`Token error: ${res.status}`);
+    const data = await res.json();
+    whoToken = data.access_token;
+    tokenExpiry = Date.now() + (data.expires_in || 3600) * 1000 - 60000;
+    return whoToken!;
+  } catch {
+    throw new Error('WHO API token acquisition failed');
+  }
+}
+
+export async function searchICD11Live(query: string): Promise<ICD11Entry[]> {
+  if (!query.trim()) return [];
+  try {
+    const token = await getWHOToken();
+    const res = await fetch(`https://id.who.int/icd/release/11/mms/search?q=${encodeURIComponent(query)}&useHighlighting=false&flatResults=true`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
+        'API-Version': 'v2',
+      },
+    });
+    if (!res.ok) throw new Error(`WHO API error: ${res.status}`);
+    const data = await res.json();
+    const entries: ICD11Entry[] = (data.destinationEntities || []).map((item: any) => {
+      const code = item.theCode || item.code || '';
+      const title = item.title?.value || '';
+      const chapter = item.parentTitle?.value || '';
+      const def = item.definition?.value || item.longDefinition?.value || '';
+      return { code, title, chapter, description: def };
+    });
+    if (entries.length > 0) return entries.slice(0, 25);
+    throw new Error('No results from WHO API');
+  } catch {
+    return searchICD11(query);
+  }
+}
+
+export async function searchICD11WithFallback(query: string): Promise<ICD11Entry[]> {
+  try {
+    const results = await searchICD11Live(query);
+    if (results.length > 0) return results;
+  } catch {}
+  return searchICD11(query);
 }
 
 export function searchICD11ByFHIR(fhirResource: any): ICD11Entry[] {

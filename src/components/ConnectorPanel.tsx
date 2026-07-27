@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ConnectorConfig } from '../types';
-import { loadConnectors, getConnectors, addConnector, removeConnector, testGitHubConnection, testSlackWebhook, fetchRSSFeed } from '../services/connectorService';
+import { loadConnectors, getConnectors, addConnector, removeConnector, testGitHubConnection, testSlackWebhook, fetchRSSFeed, syncConnector, getConnectorData, updateConnectorStatus } from '../services/connectorService';
 
 const CONNECTOR_TYPES: { type: ConnectorConfig['type']; icon: string; fields: { key: string; label: string; type: string; placeholder: string }[] }[] = [
   {
@@ -40,9 +40,24 @@ const CONNECTOR_TYPES: { type: ConnectorConfig['type']; icon: string; fields: { 
 export const ConnectorPanel: React.FC = () => {
   const [connectors, setConnectors] = useState<ConnectorConfig[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [syncingId, setSyncingId] = useState<string | null>(null);
+  const [dataCounts, setDataCounts] = useState<Record<string, number>>({});
   const [newConnector, setNewConnector] = useState<{ name: string; type: ConnectorConfig['type']; config: Record<string, string> }>({
     name: '', type: 'github', config: {},
   });
+
+  useEffect(() => {
+    loadConnectors().then(async () => {
+      const loaded = getConnectors();
+      setConnectors(loaded);
+      const counts: Record<string, number> = {};
+      for (const c of loaded) {
+        const data = await getConnectorData(c.id);
+        counts[c.id] = data.length;
+      }
+      setDataCounts(counts);
+    });
+  }, []);
 
   useEffect(() => {
     loadConnectors().then(() => {
@@ -95,6 +110,15 @@ export const ConnectorPanel: React.FC = () => {
     setConnectors((prev) => prev.map((c) =>
       c.id === connector.id ? { ...c, status: success ? 'connected' as const : 'error' as const } : c
     ));
+  };
+
+  const handleSync = async (connector: ConnectorConfig) => {
+    setSyncingId(connector.id);
+    const result = await syncConnector(connector);
+    setConnectors(getConnectors());
+    const data = await getConnectorData(connector.id);
+    setDataCounts((prev) => ({ ...prev, [connector.id]: data.length }));
+    setSyncingId(null);
   };
 
   const activeTypeConfig = CONNECTOR_TYPES.find((t) => t.type === newConnector.type);
@@ -180,12 +204,23 @@ export const ConnectorPanel: React.FC = () => {
                     }`}>
                       {connector.status}
                     </span>
+                    {dataCounts[connector.id] > 0 && (
+                      <span className="text-[9px] text-[var(--text-muted)]">{dataCounts[connector.id]} items</span>
+                    )}
                     <button
                       onClick={() => handleTest(connector)}
                       className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 hover:bg-blue-500/20"
                       title="Test connection"
                     >
                       Test
+                    </button>
+                    <button
+                      onClick={() => handleSync(connector)}
+                      disabled={syncingId === connector.id}
+                      className="text-[9px] px-1.5 py-0.5 rounded bg-green-500/10 text-green-400 hover:bg-green-500/20 disabled:opacity-40"
+                      title="Sync data"
+                    >
+                      {syncingId === connector.id ? 'Syncing...' : 'Sync'}
                     </button>
                     <button
                       onClick={() => handleRemove(connector.id)}
@@ -205,6 +240,12 @@ export const ConnectorPanel: React.FC = () => {
                       </span>
                     </div>
                   ))}
+                  {connector.lastSync && (
+                    <div className="flex gap-2 pt-1 border-t border-[var(--border)] mt-1">
+                      <span className="text-[var(--text-muted)]">Last sync:</span>
+                      <span className="text-[var(--text-secondary)]">{new Date(connector.lastSync).toLocaleString()}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             );

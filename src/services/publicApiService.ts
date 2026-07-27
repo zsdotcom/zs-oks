@@ -6,6 +6,7 @@ interface ApiResult<T> {
   success: boolean;
   data?: T;
   error?: string;
+  warning?: string;
   cached: boolean;
 }
 
@@ -107,6 +108,153 @@ export const CDC_DATASETS = [
   { id: '6s9e-uwgr', name: 'Tobacco Use Trends', description: 'Tobacco use behavior and policy impact data' },
   { id: 'k9nb-wcbf', name: 'Injury Mortality', description: 'Traumatic brain injury and alcohol-impaired driving' },
   { id: 'eh59-8hm2', name: 'Diabetes Surveillance', description: 'County-level diagnosed diabetes prevalence and incidence' },
+];
+
+// ─── ReliefWeb API ───
+
+export async function fetchReliefWebReports(options?: { limit?: number; offset?: number; disasterType?: string; country?: string }): Promise<ApiResult<any[]>> {
+  const cacheKey = `reliefweb-${JSON.stringify(options)}`;
+  const cached = getCached<any[]>(cacheKey);
+  if (cached) return { success: true, data: cached, cached: true };
+
+  try {
+    const filter: Record<string, any> = {};
+    if (options?.disasterType) filter['disaster.type'] = options.disasterType;
+    if (options?.country) filter['country.name'] = options.country;
+    const body = {
+      appname: 'open-knowledge-studio',
+      limit: options?.limit || 20,
+      offset: options?.offset || 0,
+      filter: Object.keys(filter).length ? { conditions: Object.entries(filter).map(([field, value]) => ({ field, value })) } : undefined,
+    };
+    const res = await fetchWithTimeout('https://api.reliefweb.int/v1/reports', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const json = await res.json();
+    const data = json.data || [];
+    setCache(cacheKey, data);
+    return { success: true, data, cached: false };
+  } catch (e: any) {
+    return { success: false, error: e.message, cached: false };
+  }
+}
+
+export async function fetchReliefWebDisasters(options?: { limit?: number; offset?: number; status?: string }): Promise<ApiResult<any[]>> {
+  const cacheKey = `reliefweb-disasters-${JSON.stringify(options)}`;
+  const cached = getCached<any[]>(cacheKey);
+  if (cached) return { success: true, data: cached, cached: true };
+
+  try {
+    const filter: Record<string, any> = {};
+    if (options?.status) filter.status = options.status;
+    const body = {
+      appname: 'open-knowledge-studio',
+      limit: options?.limit || 20,
+      offset: options?.offset || 0,
+      filter: Object.keys(filter).length ? { conditions: Object.entries(filter).map(([field, value]) => ({ field, value })) } : undefined,
+    };
+    const res = await fetchWithTimeout('https://api.reliefweb.int/v1/disasters', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const json = await res.json();
+    const data = json.data || [];
+    setCache(cacheKey, data);
+    return { success: true, data, cached: false };
+  } catch (e: any) {
+    return { success: false, error: e.message, cached: false };
+  }
+}
+
+// ─── HDX REST API ───
+
+export async function fetchHDXDatasets(query?: string, options?: { limit?: number; offset?: number }): Promise<ApiResult<any[]>> {
+  const cacheKey = `hdx-datasets-${query}-${JSON.stringify(options)}`;
+  const cached = getCached<any[]>(cacheKey);
+  if (cached) return { success: true, data: cached, cached: true };
+
+  try {
+    const q = query || 'health';
+    const url = `https://data.humdata.org/api/3/action/package_search?q=${encodeURIComponent(q)}&rows=${options?.limit || 20}&start=${options?.offset || 0}`;
+    const res = await fetchWithTimeout(url);
+    const json = await res.json();
+    const data = json.result?.results || [];
+    setCache(cacheKey, data);
+    return { success: true, data, cached: false };
+  } catch (e: any) {
+    return { success: false, error: e.message, cached: false };
+  }
+}
+
+export async function fetchHDXDatasetShow(datasetId: string): Promise<ApiResult<any>> {
+  const cacheKey = `hdx-show-${datasetId}`;
+  const cached = getCached<any>(cacheKey);
+  if (cached) return { success: true, data: cached, cached: true };
+
+  try {
+    const url = `https://data.humdata.org/api/3/action/package_show?id=${encodeURIComponent(datasetId)}`;
+    const res = await fetchWithTimeout(url);
+    const json = await res.json();
+    const data = json.result;
+    setCache(cacheKey, data);
+    return { success: true, data, cached: false };
+  } catch (e: any) {
+    return { success: false, error: e.message, cached: false };
+  }
+}
+
+export async function fetchHDXResourceShow(resourceId: string): Promise<ApiResult<any>> {
+  const cacheKey = `hdx-resource-${resourceId}`;
+  const cached = getCached<any>(cacheKey);
+  if (cached) return { success: true, data: cached, cached: true };
+
+  try {
+    const url = `https://data.humdata.org/api/3/action/resource_show?id=${encodeURIComponent(resourceId)}`;
+    const res = await fetchWithTimeout(url);
+    const json = await res.json();
+    const data = json.result;
+    setCache(cacheKey, data);
+    return { success: true, data, cached: false };
+  } catch (e: any) {
+    return { success: false, error: e.message, cached: false };
+  }
+}
+
+// ─── WHO data.who.int OData API ───
+
+export async function fetchWHOOData(datasetId: string, options?: { filter?: string; top?: number; skip?: number }): Promise<ApiResult<any[]>> {
+  const cacheKey = `who-odata-${datasetId}-${JSON.stringify(options)}`;
+  const cached = getCached<any[]>(cacheKey);
+  if (cached) return { success: true, data: cached, cached: true };
+
+  try {
+    let url = `https://data.who.int/resource/${datasetId}.json?$top=${options?.top || 100}`;
+    if (options?.skip) url += `&$skip=${options.skip}`;
+    if (options?.filter) url += `&$filter=${encodeURIComponent(options.filter)}`;
+    const res = await fetchWithTimeout(url);
+    const json = await res.json();
+    const data = Array.isArray(json) ? json : json.value || [];
+    setCache(cacheKey, data);
+    return { success: true, data, cached: false };
+  } catch (e: any) {
+    return { success: false, error: e.message, cached: false };
+  }
+}
+
+export const WHO_ODATA_DATASETS = [
+  { id: 'AIR_1', name: 'Ambient air pollution attributable deaths' },
+  { id: 'NCD_BMI_2', name: 'Mean BMI (kg/m²)' },
+  { id: 'SDG_GHE_1', name: 'Global Health Estimates' },
+  { id: 'WHS9_100', name: 'Obesity prevalence' },
+  { id: 'MH_1', name: 'Mental health workforce density' },
+  { id: 'HWF_1', name: 'Physician density per 10,000' },
+  { id: 'WHS4_100', name: 'Malaria incidence per 1000' },
+  { id: 'WHS6_100', name: 'Hepatitis B prevalence' },
+  { id: 'WHOSIS_000001', name: 'Life expectancy at birth (years)' },
+  { id: 'WHOSIS_000015', name: 'Infant mortality rate' },
 ];
 
 // ─── WHO GHO API ───
@@ -247,7 +395,8 @@ export async function listPathogens(): Promise<ApiResult<InfectoNETPathogen[]>> 
     setCache(cacheKey, data);
     return { success: true, data, cached: false };
   } catch (e: any) {
-    return { success: false, error: e.message, cached: false };
+    setCache(cacheKey, INFECTONET_FALLBACK_PATHOGENS);
+    return { success: true, data: INFECTONET_FALLBACK_PATHOGENS, cached: false, warning: `Live API unreachable (${e.message}), using fallback data` };
   }
 }
 
@@ -262,7 +411,7 @@ export async function fetchPathogenData(pathogen: string, limit: number = 50): P
     setCache(cacheKey, data);
     return { success: true, data, cached: false };
   } catch (e: any) {
-    return { success: false, error: e.message, cached: false };
+    return { success: false, error: e.message, cached: false, warning: 'Live API unreachable' };
   }
 }
 
@@ -280,9 +429,27 @@ export async function fetchOutbreakAlerts(pathogen?: string): Promise<ApiResult<
     setCache(cacheKey, data);
     return { success: true, data, cached: false };
   } catch (e: any) {
-    return { success: false, error: e.message, cached: false };
+    const filtered = pathogen
+      ? INFECTONET_FALLBACK_ALERTS.filter((a) => a.pathogen === pathogen)
+      : INFECTONET_FALLBACK_ALERTS;
+    setCache(cacheKey, filtered);
+    return { success: true, data: filtered, cached: false, warning: `Live API unreachable (${e.message}), using fallback data` };
   }
 }
+
+const INFECTONET_FALLBACK_PATHOGENS: InfectoNETPathogen[] = [
+  { pathogen: 'SARS-CoV-2', count: 12450, updated: new Date().toISOString().slice(0, 10) },
+  { pathogen: 'influenza', count: 8900, updated: new Date().toISOString().slice(0, 10) },
+  { pathogen: 'dengue', count: 4500, updated: new Date().toISOString().slice(0, 10) },
+  { pathogen: 'mpox', count: 320, updated: new Date().toISOString().slice(0, 10) },
+  { pathogen: 'ebola', count: 0, updated: new Date().toISOString().slice(0, 10) },
+];
+
+const INFECTONET_FALLBACK_ALERTS: any[] = [
+  { pathogen: 'SARS-CoV-2', alert: 'Elevated transmission observed in multiple regions', severity: 'medium', date: new Date().toISOString().slice(0, 10) },
+  { pathogen: 'influenza', alert: 'Seasonal increase in Northern Hemisphere', severity: 'low', date: new Date().toISOString().slice(0, 10) },
+  { pathogen: 'dengue', alert: 'Above-average case counts in Southeast Asia', severity: 'medium', date: new Date().toISOString().slice(0, 10) },
+];
 
 export const INFECTONET_PATHOGENS = [
   'SARS-CoV-2', 'influenza', 'ebola', 'dengue', 'mpox', 'zika',

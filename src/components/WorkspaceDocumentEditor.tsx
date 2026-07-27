@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { KBFile, DocumentVersion } from '../types';
 import { parse, generateTOC } from '../utils/markdown';
 import { Edit, Download, Clock, Plus, X, Eye, Layout, Copy, Printer } from './icons/lucide-shim';
+import DiffView from './DiffView';
 
 function exportToPDF(fileName: string, html: string, isDownload: boolean): void {
   const mathElements = document.querySelectorAll('.katex-math, .katex-inline');
@@ -87,6 +88,7 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
   const [showTemplates, setShowTemplates] = useState(false);
   const [renderedHTML, setRenderedHTML] = useState('');
   const [toast, setToast] = useState('');
+  const [diffVersion, setDiffVersion] = useState<DocumentVersion | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -246,23 +248,39 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
       )}
 
       {/* Versions panel */}
-      {showVersions && (
-        <div id="versions-panel" className="absolute top-12 right-4 z-40 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg shadow-xl p-3 w-72 max-h-96 overflow-y-auto">
+      {showVersions && !diffVersion && (
+        <div id="versions-panel" className="absolute top-12 right-4 z-40 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg shadow-xl p-3 w-80 max-h-96 overflow-y-auto">
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs font-medium">Version History</span>
             <button onClick={() => setShowVersions(false)}><X size={12} /></button>
           </div>
           {versions.filter((v) => v.documentId === file.id).map((v) => (
             <div key={v.id} className="flex items-center gap-2 p-2 rounded hover:bg-[var(--bg-hover)] text-xs">
-              <Clock size={12} className="text-[var(--text-muted)]" />
-              <div>
-                <span className="font-medium">{v.label || 'Version'}</span>
-                <span className="block text-[10px] text-[var(--text-muted)]">{new Date(v.createdAt).toLocaleString()} — {v.size}</span>
+              <Clock size={12} className="text-[var(--text-muted)] shrink-0" />
+              <div className="flex-1 min-w-0">
+                <span className="font-medium block truncate">{v.label || 'Version'}</span>
+                <span className="block text-[10px] text-[var(--text-muted)] truncate">{new Date(v.createdAt).toLocaleString()} — {v.size}</span>
               </div>
-              <button onClick={() => { setContent(v.content); setRenderedHTML(parse(v.content)); }} className="ml-auto text-[10px] text-[var(--accent)]">Restore</button>
+              <div className="flex gap-1 shrink-0">
+                <button onClick={() => setDiffVersion(v)} className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--accent-subtle)] text-[var(--accent)] hover:opacity-80">Diff</button>
+                <button onClick={() => { setContent(v.content); setRenderedHTML(parse(v.content)); }} className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/10 text-green-400 hover:opacity-80">Restore</button>
+              </div>
             </div>
           ))}
           {versions.filter((v) => v.documentId === file.id).length === 0 && <p className="text-[10px] text-[var(--text-muted)]">No versions yet</p>}
+        </div>
+      )}
+
+      {/* Diff view overlay */}
+      {diffVersion && (
+        <div className="absolute inset-0 z-50 bg-[var(--bg-primary)]">
+          <DiffView
+            oldText={diffVersion.content}
+            newText={content}
+            oldLabel={diffVersion.label || 'v' + (versions.indexOf(diffVersion) + 1).toString()}
+            newLabel="Current"
+            onClose={() => setDiffVersion(null)}
+          />
         </div>
       )}
 

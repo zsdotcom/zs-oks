@@ -282,6 +282,296 @@ async function queryCloudflare(
   }
 }
 
+/* ─── Streaming ─── */
+
+async function* streamOpenAICompatible(
+  messages: ChatMessage[],
+  config: ProviderConfig,
+  baseUrl: string,
+  contextDocs?: string,
+  systemPrompt?: string,
+): AsyncGenerator<string> {
+  const apiKey = config.apiKey;
+  if (!apiKey) throw new Error(`API key required for ${config.provider}.`);
+  const model = config.selectedModel || 'gpt-4o-mini';
+
+  const chatMessages = [
+    { role: 'system', content: systemPrompt || 'You are a helpful research and knowledge assistant.' },
+    ...(contextDocs ? [{ role: 'user', content: `## Context:\n${contextDocs}` }] : []),
+    ...messages
+      .filter((m) => m.sender !== MessageSender.SYSTEM && !m.isLoading)
+      .map((m) => ({
+        role: m.sender === MessageSender.USER ? 'user' : 'assistant',
+        content: m.text,
+      })),
+  ];
+
+  const res = await fetch(`${baseUrl}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      messages: chatMessages,
+      temperature: config.temperature,
+      max_tokens: config.maxTokens || 4096,
+      stream: true,
+    }),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`${config.provider} API error (${res.status}): ${errText}`);
+  }
+
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error('No response body for streaming');
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || !trimmed.startsWith('data: ')) continue;
+      const data = trimmed.slice(6);
+      if (data === '[DONE]') return;
+      try {
+        const parsed = JSON.parse(data);
+        const content = parsed.choices?.[0]?.delta?.content || '';
+        if (content) yield content;
+      } catch { /* skip malformed chunk */ }
+    }
+  }
+}
+
+async function* streamGemini(
+  messages: ChatMessage[],
+  config: ProviderConfig,
+  contextDocs?: string,
+  systemPrompt?: string,
+): AsyncGenerator<string> {
+  const model = config.selectedModel || 'gemini-3.5-flash';
+  const apiKey = config.apiKey || (typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_GEMINI_API_KEY : '') || '';
+  if (!apiKey) throw new Error('Gemini API key required.');
+
+  const systemInstruction = systemPrompt
+    ? { role: 'system', parts: [{ text: systemPrompt }] }
+    : { role: 'system', parts: [{ text: 'You are a helpful research and knowledge assistant.' }] };
+
+  const contextPart = contextDocs
+    ? { role: 'user', parts: [{ text: `## Context Documents:\n${contextDocs}\n\nPlease reference these documents when answering.` }] }
+    : null;
+
+  const contents = [
+    contextPart,
+    ...messages
+      .filter((m) => m.sender !== MessageSender.SYSTEM && !m.isLoading)
+      .map((m) => ({
+        role: m.sender === MessageSender.USER ? 'user' : 'model',
+        parts: [{ text: m.text }],
+      })),
+  ].filter(Boolean);
+
+  const body = {
+    contents,
+    generationConfig: {
+      temperature: config.temperature,
+      maxOutputTokens: 8192,
+    },
+  };
+
+  const res = await fetch(`${GEMINI_API_BASE}/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Gemini API error (${res.status}): ${errText}`);
+  }
+
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error('No response body');
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith('data: ')) continue;
+      try {
+        const parsed = JSON.parse(trimmed.slice(6));
+        const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        if (text) yield text;
+      } catch { /* skip */ }
+    }
+  }
+}
+
+async function* streamAnthropic(
+  messages: ChatMessage[],
+  config: ProviderConfig,
+  contextDocs?: string,
+  systemPrompt?: string,
+): AsyncGenerator<string> {
+  const apiKey = config.apiKey;
+  if (!apiKey) throw new Error('Anthropic API key required.');
+  const model = config.selectedModel || 'claude-3-5-sonnet-latest';
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model,
+      system: systemPrompt || 'You are a helpful research and knowledge assistant.',
+      messages: [
+        ...(contextDocs ? [{ role: 'user', content: `## Context:\n${contextDocs}` }] : []),
+        ...messages
+          .filter((m) => m.sender !== MessageSender.SYSTEM && !m.isLoading)
+          .map((m) => ({
+            role: m.sender === MessageSender.USER ? 'user' : 'assistant',
+            content: m.text,
+          })),
+      ],
+      max_tokens: config.maxTokens || 4096,
+      stream: true,
+    }),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Anthropic API error (${res.status}): ${errText}`);
+  }
+
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error('No response body');
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith('data: ')) continue;
+      try {
+        const parsed = JSON.parse(trimmed.slice(6));
+        if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
+          yield parsed.delta.text;
+        }
+      } catch { /* skip */ }
+    }
+  }
+}
+
+async function* streamOllama(
+  messages: ChatMessage[],
+  config: ProviderConfig,
+  contextDocs?: string,
+  systemPrompt?: string,
+): AsyncGenerator<string> {
+  const baseUrl = config.customEndpoint || 'http://localhost:11434';
+  const model = config.selectedModel || 'llama3';
+
+  const res = await fetch(`${baseUrl}/api/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: 'system', content: systemPrompt || 'You are a helpful assistant.' },
+        ...(contextDocs ? [{ role: 'user', content: `## Context:\n${contextDocs}` }] : []),
+        ...messages
+          .filter((m) => m.sender !== MessageSender.SYSTEM && !m.isLoading)
+          .map((m) => ({
+            role: m.sender === MessageSender.USER ? 'user' : 'assistant',
+            content: m.text,
+          })),
+      ],
+      stream: true,
+      options: { temperature: config.temperature },
+    }),
+  });
+
+  if (!res.ok) throw new Error(`Ollama API error: ${res.status}`);
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error('No response body');
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (parsed.done) return;
+        if (parsed.message?.content) yield parsed.message.content;
+      } catch { /* skip */ }
+    }
+  }
+}
+
+export async function queryLLMStream(
+  messages: ChatMessage[],
+  config: ProviderConfig,
+  onChunk: (text: string) => void,
+  contextDocs?: string,
+  systemPrompt?: string,
+): Promise<string> {
+  let fullText = '';
+
+  const providerStreamMap: Record<string, () => AsyncGenerator<string>> = {
+    gemini: () => streamGemini(messages, config, contextDocs, systemPrompt),
+    openai: () => streamOpenAICompatible(messages, config, 'https://api.openai.com/v1', contextDocs, systemPrompt),
+    deepseek: () => streamOpenAICompatible(messages, config, 'https://api.deepseek.com/v1', contextDocs, systemPrompt),
+    groq: () => streamOpenAICompatible(messages, config, 'https://api.groq.com/openai/v1', contextDocs, systemPrompt),
+    openrouter: () => streamOpenAICompatible(messages, config, 'https://openrouter.ai/api/v1', contextDocs, systemPrompt),
+    cerebras: () => streamOpenAICompatible(messages, config, 'https://api.cerebras.ai/v1', contextDocs, systemPrompt),
+    github: () => streamOpenAICompatible(messages, config, 'https://models.inference.ai.azure.com/v1', contextDocs, systemPrompt),
+    cloudflare: () => streamOpenAICompatible(messages, config, 'https://api.cloudflare.com/client/v4/accounts', contextDocs, systemPrompt),
+    anthropic: () => streamAnthropic(messages, config, contextDocs, systemPrompt),
+    ollama: () => streamOllama(messages, config, contextDocs, systemPrompt),
+  };
+
+  const streamFn = providerStreamMap[config.provider];
+  if (!streamFn) {
+    throw new Error(`Streaming not supported for provider: ${config.provider}`);
+  }
+
+  for await (const chunk of streamFn()) {
+    fullText += chunk;
+    onChunk(chunk);
+  }
+
+  return fullText;
+}
+
 /* ─── A2A Multi-Agent Debate ─── */
 function buildAgentConfig(baseConfig: ProviderConfig, agent: Partial<A2AAgent>): ProviderConfig {
   if (agent.provider && agent.modelName) {

@@ -103,15 +103,34 @@ Complete reference for all environment variables used by Open Knowledge Studio.
 
 ### 2.9 GitHub Token
 
+**Free tier:** Unlimited for public repos; included with GitHub Free plan.
+
 1. Go to [github.com/settings/tokens](https://github.com/settings/tokens)
 2. Click **Generate new token (classic)**
 3. Select scopes: `repo` (for private repos), `public_repo` (for public repos)
 4. Click **Generate token**
 5. Copy the token
 
+### 2.10 GitHub OAuth Client ID (Device Flow)
+
+Used by `githubAuthService.ts` for device-flow authentication in the app.
+
+1. Go to [github.com/settings/developers](https://github.com/settings/developers)
+2. Click **New OAuth App**
+3. Set **Authorization callback URL** to `http://localhost:3000`
+4. Copy the **Client ID**
+
 ---
 
-## 3. Configuration Methods
+## 3. CSP (Content Security Policy)
+
+The dev server CSP in `vite.config.ts` `connect-src` controls which API domains the app can reach. If enabling a new external API, add its domain to the `connect-src` directive.
+
+Currently allowed: OpenStreetMap tiles, LLM provider APIs (Gemini, OpenAI, Anthropic, DeepSeek, Groq, OpenRouter, Cerebras, GitHub, Cloudflare), jsDelivr CDN, BD FHIR endpoints (`tr.ocl.dghs.gov.bd`, `icd11.dghs.gov.bd`, `fhir.dghs.gov.bd`, `sandbox.fhir.dghs.gov.bd`), GitHub API, WHO GHO/data.who.int, CDC Socrata, Delphi CMU, Open-Meteo, HDX.
+
+---
+
+## 4. Configuration Methods
 
 ### Method 1: `.env` File (Development)
 
@@ -140,7 +159,7 @@ Set environment variables in your deployment platform's UI:
 
 ---
 
-## 4. How VITE_* Variables Work
+## 5. How VITE_* Variables Work
 
 Vite exposes all `VITE_*` environment variables to client-side code at build time via `import.meta.env`:
 
@@ -157,7 +176,7 @@ This means users can enter keys through the UI without touching `.env`.
 
 ---
 
-## 5. Security Best Practices
+## 6. Security Best Practices
 
 | Practice | Detail |
 | :--- | :--- |
@@ -171,7 +190,7 @@ This means users can enter keys through the UI without touching `.env`.
 
 ---
 
-## 6. Verification
+## 7. Verification
 
 Verify your configuration is working:
 
@@ -190,10 +209,11 @@ Open the app and go to **Settings → AI Providers**. If keys are configured, pr
 ## See Also
 
 - [5-Minute Quick Start](000-quickstart.md) — Get up and running fast
-- [Complete Setup & Installation](010-setup.md) — Full environment setup
-- [Non-Coder Guide](030-non-coder-guide.md) — Step-by-step key configuration
-- [Development Guidelines](040-development.md) — Coding standards
-- [CI/CD Pipeline](080-ci-cd.md) — GitHub secrets configuration
+- [Free Resource Inventory](../free-resources.md) — Free CSP domains, CDN libraries, API sources
+- [Complete Setup & Installation](001-setup.md) — Full environment setup
+- [Non-Coder Guide](003-non-coder-guide.md) — Step-by-step key configuration
+- [Development Guidelines](004-development.md) — Coding standards
+- [CI/CD Pipeline](008-ci-cd.md) — GitHub secrets configuration
 
 ---
 
