@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { parse } from '@/utils/markdown';
 
 type DocsEntry = { title: string; category: string };
 
@@ -125,62 +126,14 @@ function parseMarkdownSections(markdown: string): DocSection[] {
   return sections;
 }
 
-function renderMarkdownToHtml(markdown: string): string {
-  const blocks: string[] = [];
-  let html = markdown.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
-    const escaped = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    const idx = blocks.length;
-    blocks.push(`<pre><code${lang ? ` class="language-${lang}"` : ''}>${escaped}</code></pre>`);
-    return `%%CB${idx}%%`;
-  });
-
-  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-
-  html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
-  html = html.replace(/((?:<li>(?:(?!<\/li>)[\s\S])*<\/li>\n?)+)/g, '<ul>$1</ul>');
-
-  html = html.replace(/^---$/gm, '<hr>');
-  html = html.replace(/^\*\*\*$/gm, '<hr>');
-  html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
-
-  html = html.replace(/%%CB(\d+)%%/g, (_, idx) => blocks[parseInt(idx)]);
-
-  const lines = html.split('\n');
-  const result: string[] = [];
-  let pBuffer: string[] = [];
-
-  for (const line of lines) {
-    const t = line.trim();
-    if (!t) {
-      if (pBuffer.length) { result.push(`<p>${pBuffer.join(' ')}</p>`); pBuffer = []; }
-      continue;
-    }
-    if (/^<(h[123]|ul|ol|pre|blockquote|table|hr)\b/.test(t) || /^<\/(ul|ol|pre|blockquote|table)>$/.test(t)) {
-      if (pBuffer.length) { result.push(`<p>${pBuffer.join(' ')}</p>`); pBuffer = []; }
-      result.push(t);
-      continue;
-    }
-    pBuffer.push(t);
-  }
-  if (pBuffer.length) result.push(`<p>${pBuffer.join(' ')}</p>`);
-
-  return result.join('\n');
-}
-
 export const DocumentationViewer: React.FC = () => {
   const [activeDoc, setActiveDoc] = useState<string>('index');
   const [searchQuery, setSearchQuery] = useState('');
   const [markdown, setMarkdown] = useState<string>('');
   const [loading, setLoading] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  const doc = DOCS_MAP[activeDoc];
+  const doc = DOCS_MAP[activeDoc] || DOCS_MAP['index'];
 
   useEffect(() => {
     if (!doc) return;
@@ -194,10 +147,50 @@ export const DocumentationViewer: React.FC = () => {
         setLoading(false);
       })
       .catch(() => {
-        setMarkdown('# Document not available\n\nThe documentation content could not be loaded. Please refer to the `docs/` folder in the repository.');
+        setMarkdown('# Document not available\n\nThe documentation content could not be loaded.');
         setLoading(false);
       });
   }, [activeDoc]);
+
+  // Post-render: KaTeX and Mermaid
+  useEffect(() => {
+    if (!contentRef.current || loading) return;
+
+    // KaTeX
+    const katex = (window as any).katex;
+    if (katex) {
+      contentRef.current.querySelectorAll('.katex-math').forEach((el) => {
+        const math = el.getAttribute('data-math');
+        if (math) {
+          try { katex.render(math, el, { displayMode: true, throwOnError: false }); } catch {}
+        }
+      });
+      contentRef.current.querySelectorAll('.katex-inline').forEach((el) => {
+        const math = el.getAttribute('data-math');
+        if (math) {
+          try { katex.render(math, el, { displayMode: false, throwOnError: false }); } catch {}
+        }
+      });
+    }
+
+    // Mermaid
+    const mermaidBlocks = contentRef.current.querySelectorAll('.language-mermaid');
+    if (mermaidBlocks.length > 0 && (window as any).mermaid) {
+      mermaidBlocks.forEach((el) => {
+        const pre = el.closest('pre');
+        if (pre) {
+          const source = el.textContent || '';
+          const div = document.createElement('div');
+          div.className = 'mermaid';
+          div.textContent = source;
+          pre.parentNode?.replaceChild(div, pre);
+        }
+      });
+      try {
+        (window as any).mermaid.run({ querySelector: '.mermaid' });
+      } catch {}
+    }
+  }, [markdown, loading]);
 
   const filteredDocs = useMemo(() => {
     if (!searchQuery.trim()) return null;
@@ -277,8 +270,9 @@ export const DocumentationViewer: React.FC = () => {
           ) : (
             <div className="space-y-2">
               <div
+                ref={contentRef}
                 className="prose prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(markdown) }}
+                dangerouslySetInnerHTML={{ __html: parse(markdown) }}
               />
 
               {sections.length > 1 && (
