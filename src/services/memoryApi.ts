@@ -29,7 +29,7 @@ export async function getEpisodicByProject(projectId: string, agentId?: string):
   if (agentId) {
     return dbGetByIndex<DBSchema['episodic']>('episodic', 'projectId_agentId', [projectId, agentId]);
   }
-  return dbGetByIndex<DBSchema['episodic']>('episodic', 'projectId_agentId', projectId);
+  return dbGetByIndex<DBSchema['episodic']>('episodic', 'projectId_agentId', [projectId]);
 }
 
 export async function purgeEpisodic(beforeDate: string): Promise<void> {

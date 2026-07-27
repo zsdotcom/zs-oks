@@ -11,7 +11,6 @@ interface Props {
   onSwitchProject: (projectId: string) => void;
   onCreateProject: (name: string) => void;
   onDeleteProject: (projectId: string) => void;
-  onAddAgent: (agentId: string) => void;
   onRemoveAgent: (agentId: string) => void;
   projects?: WorkspaceProject[];
 }
@@ -31,7 +30,7 @@ const WORKSPACE_DIRS = [
 const WorkspaceManager: React.FC<Props> = ({
   files, folders, agents, tags, activeProjectId,
   onSwitchProject, onCreateProject, onDeleteProject,
-  onAddAgent, onRemoveAgent, projects: externalProjects,
+  onRemoveAgent, projects: externalProjects,
 }) => {
   const [showNewProject, setShowNewProject] = useState(false);
   const [projectName, setProjectName] = useState('');

@@ -35,7 +35,7 @@
 
 | Feature | Specification |
 | :--- | :--- |
-| **Built-in Agents** | Coordinator (🎯), Researcher (🔬), Data Analyst (📊), Writer (✍️), Reviewer (🔍), Librarian (📚) |
+| **Built-in Agents** | Coordinator (🎯), Researcher (🔬), Data Analyst (📊), Writer (✍️), Reviewer (🔍), Librarian (📚), Security Analyst (🛡️), Code Reviewer (🔎), Planning Agent (📋), Testing Agent (🧪), Code Generator (⚡), Knowledge Curator (🏛️) |
 | **Agent Identity** | Each agent has: `id`, `name`, `role`, `avatar` (emoji), `color` (hex), `isActive`, `memoryType`, `maxTurnDepth`, `provider`, `modelName`, `skills[]`, `tools[]`, `systemPrompt` |
 | **A2A Debate** | All active agents receive the same user prompt and respond independently. Responses rendered with agent color, avatar, and name. |
 | **Agent Configuration** | Settings panel for: system prompt editing, active/inactive toggle, provider/model selection, skill/tool assignment |
@@ -162,6 +162,7 @@
 | `skillService` | Skill registry with priority, triggers, categories, auto-activation | IndexedDB |
 | `connectorService` | GitHub, Slack, RSS, email, webhook connectors | IndexedDB |
 | `webhookService` | Webhook dispatch for event-driven integration | IndexedDB |
+| `mcpService` | MCP tool execution with 40+ known API endpoints (CDC, WHO, Delphi, Brave, GitHub, World Bank, Open Library, Europe PMC, CrossRef, Google Books, NewsAPI, Discord, Telegram) | Known endpoint map |
 
 ### 2.10 CDN Libraries
 
@@ -186,7 +187,7 @@
 | **ICD11Lookup** | Debounced search, chapter-grouped browse, FHIR conversion |
 | **EpiMap** | Leaflet.js map with severity-coded markers, popups, auto-fit bounds |
 | **KanbanBoardView** | Drag-drop columns, task creation, status tracking |
-| **ConnectorPanel** | GitHub, Slack, RSS, webhook add/manage/test |
+| **ConnectorPanel** | GitHub, Slack, RSS, webhook, Discord, Telegram, Notion, Linear, Jira add/manage/test |
 | **WebhookManager** | Create, edit, test, and delete custom webhooks |
 | **AgentBuilder** | Custom agent creation form with preview |
 | **PublicDataPanel** | CDC, WHO, FluView, COVIDcast, Pathogen, Weather, Air Quality data browser |

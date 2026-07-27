@@ -5,7 +5,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { KBFile, DocumentVersion } from '../types';
 import { parse, generateTOC } from '../utils/markdown';
-import { Edit, Download, Clock, Plus, X, Eye, Layout, Copy, Printer } from './icons/lucide-shim';
+import { Edit, Download, Clock, Plus, X, Eye, Layout, Copy, Printer, Users } from './icons/lucide-shim';
+import type { CollabPresence } from '../services/collaborationService';
 import DiffView from './DiffView';
 
 function exportToPDF(fileName: string, html: string, isDownload: boolean): void {
@@ -79,9 +80,10 @@ interface Props {
   versions: DocumentVersion[];
   onSaveVersion: (docId: string, content: string, label?: string) => void;
   templates: { id: string; name: string; content: string; category: string }[];
+  collabPeers?: CollabPresence[];
 }
 
-export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, versions, onSaveVersion, templates }) => {
+export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, versions, onSaveVersion, templates, collabPeers }) => {
   const [content, setContent] = useState('');
   const [showTOC, setShowTOC] = useState(true);
   const [showVersions, setShowVersions] = useState(false);
@@ -211,6 +213,14 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
         <div className="flex items-center gap-2">
           <Edit size={14} className="text-[var(--accent)]" />
           <span className="text-sm font-medium">{file.name}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {collabPeers && collabPeers.filter((p) => p.activeFileId === file.id).length > 0 && (
+            <div className="flex items-center gap-1 text-[10px] text-[var(--text-muted)]" title="Collaborators editing this file">
+              <Users size={12} className="text-green-400" />
+              <span>{collabPeers.filter((p) => p.activeFileId === file.id).length}</span>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-1">
           <button onClick={() => setShowTOC(!showTOC)} className={`p-1.5 rounded ${showTOC ? 'bg-[var(--accent-subtle)] text-[var(--accent)]' : 'hover:bg-[var(--bg-hover)] text-[var(--text-secondary)]'}`} title="Table of Contents" aria-label="Toggle table of contents" aria-expanded={showTOC} aria-controls="toc-panel"><Layout size={14} /></button>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import type { EpiDataPoint } from './EpiMap';
 import type { SurveillanceFeed, SurveillanceSummary } from '../services/surveillanceService';
 import type { OutbreakAlert, OutbreakStats } from '../services/outbreakService';
-import { computeSurveillanceSummary } from '../services/surveillanceService';
+import { computeSurveillanceSummary, getSurveillanceData, getSurveillanceFeeds } from '../services/surveillanceService';
 import { detectOutbreaks, computeOutbreakStats } from '../services/outbreakService';
 import { Activity, AlertTriangle, Zap, Globe, RefreshCw, Loader2, BarChart, MapPin } from './icons/lucide-shim';
 
@@ -22,9 +22,6 @@ export const SurveillanceDashboard: React.FC<Props> = ({ dataPoints, onDataRefre
   const refresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      const { getSurveillanceData, getSurveillanceFeeds, computeSurveillanceSummary } = await import('../services/surveillanceService');
-      const { detectOutbreaks, computeOutbreakStats } = await import('../services/outbreakService');
-
       const freshData = await getSurveillanceData(true);
       onDataRefresh?.(freshData);
 

@@ -4,6 +4,8 @@ import { PROVIDER_OPTIONS, BUILT_IN_TOOLS } from '../types';
 import type { WebhookConfig } from '../services/webhookService';
 import { X, Download, Upload, Edit, Trash, Plus, Zap, BookOpen, Wrench, Globe, Check } from './icons/lucide-shim';
 import { WebhookManager } from './WebhookManager';
+import { getSupportedLocales } from '../services/i18nService';
+import type { SupportedLocale } from '../services/i18nService';
 
 interface Props {
   show: boolean;
@@ -14,6 +16,7 @@ interface Props {
   isA2ALoading: boolean;
   onRunDebate: () => void;
   onExportAll: () => void;
+  onExportCSV?: () => void;
   onImport: (e: React.ChangeEvent<HTMLInputElement>) => void;
   sandboxSettings: SandboxSettings;
   onSandboxChange: (settings: SandboxSettings) => void;
@@ -32,19 +35,22 @@ interface Props {
   onGoogleOAuthClientIdChange?: (id: string) => void;
   gitHubOAuthClientId?: string;
   onGitHubOAuthClientIdChange?: (id: string) => void;
+  locale?: SupportedLocale;
+  onLocaleChange?: (locale: SupportedLocale) => void;
 }
 
 const DEFAULT_AGENT_IDS = ['coord', 'research', 'data', 'writer', 'review', 'librarian'];
 
 const SettingsPanel: React.FC<Props> = ({
   show, onClose, providerConfig, onProviderConfigChange,
-  a2aAgents, isA2ALoading, onRunDebate, onExportAll, onImport,
+  a2aAgents, isA2ALoading, onRunDebate, onExportAll, onExportCSV, onImport,
   sandboxSettings, onSandboxChange,
   onEditAgent, onCreateAgent, onDeleteAgent,
   webhooks, onAddWebhook, onRemoveWebhook, onUpdateWebhook,
   skills, onCreateSkill, onDeleteSkill, onTestProvider,
   googleOAuthClientId, onGoogleOAuthClientIdChange,
   gitHubOAuthClientId, onGitHubOAuthClientIdChange,
+  locale, onLocaleChange,
 }) => {
   const [tab, setTab] = useState<'general' | 'agents' | 'skills' | 'tools' | 'knowledge' | 'webhooks'>('general');
   const [showMarketplace, setShowMarketplace] = useState(false);
@@ -150,6 +156,22 @@ const SettingsPanel: React.FC<Props> = ({
               </div>
             </div>
 
+            {/* Language */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-medium text-[var(--text-secondary)]">Language</h3>
+              <div className="flex gap-2">
+                {getSupportedLocales().map((l) => (
+                  <button
+                    key={l.code}
+                    onClick={() => onLocaleChange?.(l.code)}
+                    className={`px-3 py-1.5 rounded-lg text-xs border transition-colors ${locale === l.code ? 'border-[var(--accent)] bg-[var(--accent-subtler)] text-[var(--accent)]' : 'border-[var(--border)] hover:border-[var(--border-light)] text-[var(--text-secondary)]'}`}
+                  >
+                    {l.nativeName}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Google OAuth */}
             <div className="space-y-3">
               <h3 className="text-xs font-medium text-[var(--text-secondary)]">Google OAuth</h3>
@@ -180,9 +202,11 @@ const SettingsPanel: React.FC<Props> = ({
             <div className="space-y-3">
               <h3 className="text-xs font-medium text-[var(--text-secondary)]">Data Management</h3>
               <div className="flex gap-2">
-                <button onClick={onExportAll} className="flex items-center gap-1 text-xs bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg px-3 py-2 hover:border-[var(--accent)]/50"><Download size={12} /> Export All Data</button>
-                <label className="flex items-center gap-1 text-xs bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg px-3 py-2 hover:border-[var(--accent)]/50 cursor-pointer"><Upload size={12} /> Import Data<input type="file" accept=".json" onChange={onImport} className="hidden" /></label>
+                <button onClick={onExportAll} className="flex items-center gap-1 text-xs bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg px-3 py-2 hover:border-[var(--accent)]/50"><Download size={12} /> Export JSON</button>
+                <button onClick={onExportCSV} className="flex items-center gap-1 text-xs bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg px-3 py-2 hover:border-[var(--accent)]/50"><Download size={12} /> Export CSV</button>
+                <label className="flex items-center gap-1 text-xs bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg px-3 py-2 hover:border-[var(--accent)]/50 cursor-pointer"><Upload size={12} /> Import<input type="file" accept=".json" onChange={onImport} className="hidden" /></label>
               </div>
+              <p className="text-[9px] text-[var(--text-muted)]">JSON: full workspace backup. CSV: file metadata only. Import: restore from a JSON backup.</p>
             </div>
           </div>
         )}

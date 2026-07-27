@@ -1,6 +1,6 @@
 # Open Knowledge Studio — Documentation Index
 
-**Documentation Version:** 3.0
+**Documentation Version:** 3.1
 **Last Updated:** July 27, 2026
 
 ---
@@ -43,7 +43,7 @@
 | #   | Document                                                      | Description                                                                                                                                          | Related                                                                                          |
 | --- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | 000 | [Getting Started](guides/000-getting-started.md)              | First-time user walkthrough: interface tour, first chat, first document                                                                              | [Agents](guides/001-agents.md) · [Quickstart](developers/000-quickstart.md)                      |
-| 001 | [A2A Agents](guides/001-agents.md)                            | 6 debate agents, system prompts, skills/tools, A2A panel, custom agent creation                                                                      | [Workflows](guides/002-workflows.md) · [Memory](developers/005-memory-architecture.md)           |
+| 001 | [A2A Agents](guides/001-agents.md)                            | 12 debate agents, system prompts, skills/tools, A2A panel, custom agent creation (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planning Agent, Testing Agent, Code Generator, Knowledge Curator) | [Workflows](guides/002-workflows.md) · [Memory](developers/005-memory-architecture.md)           |
 | 002 | [Multi-Agent Workflows](guides/002-workflows.md)              | Orchestrated (decompose → execute → synthesize) and Sequential (chain) modes                                                                         | [Agents](guides/001-agents.md) · [Architecture](project/004-architecture.md)                     |
 | 003 | [Diagram Generation](guides/003-diagrams.md)                  | KaTeX math, Mermaid diagrams (8 types), Data Analyst diagram prompt, examples                                                                        | [PDF Export](guides/004-pdf-export.md) · [Design](project/005-design.md)                         |
 | 004 | [PDF Export](guides/004-pdf-export.md)                        | Print-to-PDF and Export PDF buttons, print styles, KaTeX in export                                                                                   | [Diagrams](guides/003-diagrams.md) · [Development](developers/004-development.md)                |

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   ChatMessage, MessageSender, KBFile, KBFolder, URLGroup,
   ProviderConfig, SavedPrompt, A2AAgent, A2AMetric, SandboxSettings,
@@ -11,9 +11,9 @@ import type { GitHubUser } from './services/githubAuthService';
 import { SEED_TEMPLATES } from './data/templates';
 import { SEED_SKILLS } from './data/skills';
 import { queryLLM, getInitialSuggestions, runA2ADebate, runOrchestratedWorkflow, runSequentialWorkflow } from './services/geminiService';
-import { signInWithGoogle, logoutUser, subscribeAuth, updateUserDoc, getStoredClientId, loadRuntimeClientId, setRuntimeClientId } from './services/googleAuthService';
+import { signInWithGoogle, logoutUser, subscribeAuth, updateUserDoc, loadRuntimeClientId, setRuntimeClientId } from './services/googleAuthService';
 import { signInWithGitHub, pollGitHubToken, logoutGitHub, getGitHubUser, getStoredGitHubToken, loadGitHubClientId, setGitHubClientId, getStoredGitHubClientId } from './services/githubAuthService';
-import { dbGetAll, dbPut, dbDelete, dbGetKey, dbSetKey, migrateLocalStorage, exportAllData, importAllData } from './db/indexedDB';
+import { dbGetAll, dbPut, dbGetKey, dbSetKey, migrateLocalStorage, exportAllData, importAllData } from './db/indexedDB';
 import { useFiles } from './hooks/useFiles';
 import { useChat } from './hooks/useChat';
 import { usePWAInstall } from './hooks/usePWAInstall';
@@ -21,8 +21,10 @@ import { useNotifications, notify } from './hooks/useNotifications';
 import { ToastContainer } from './components/ToastContainer';
 import { fireWebhooks, getAllWebhooks, addWebhook, removeWebhook as removeWebhookSvc, updateWebhook as updateWebhookSvc } from './services/webhookService';
 import type { WebhookConfig } from './services/webhookService';
-import { loadSkillRegistry, getSkillRegistry, addSkill, removeSkill, findRelevantSkills, PRESET_SKILLS } from './services/skillService';
+import { loadSkillRegistry, getSkillRegistry, addSkill, removeSkill, PRESET_SKILLS } from './services/skillService';
 import { loadConnectors, getConnectors, addConnector, removeConnector } from './services/connectorService';
+import { getLocale, setLocale } from './services/i18nService';
+import type { SupportedLocale } from './services/i18nService';
 import KnowledgeBaseManager from './components/KnowledgeBaseManager';
 import ChatInterface from './components/ChatInterface';
 import ThemeSwitcher from './components/ThemeSwitcher';
@@ -42,6 +44,10 @@ const ObservabilityDashboard = React.lazy(() => import('./components/Observabili
 const GoogleWorkspacePanel = React.lazy(() => import('./components/GoogleWorkspacePanel').then(m => ({ default: m.GoogleWorkspacePanel })));
 const SettingsPanel = React.lazy(() => import('./components/SettingsPanel'));
 const MCPServerPanel = React.lazy(() => import('./components/MCPServerPanel').then(m => ({ default: m.MCPServerPanel })));
+import { A2AMetricsDashboard } from './components/A2AMetricsDashboard';
+import { NLQueryPanel } from './components/NLQueryPanel';
+import { SurveillanceDashboard } from './components/SurveillanceDashboard';
+import { ReportGenerator } from './components/ReportGenerator';
 import type { EpiDataPoint } from './components/EpiMap';
 import { DocumentationViewer } from './components/DocumentationViewer';
 
@@ -158,6 +164,48 @@ const DEFAULT_A2A_AGENTS: A2AAgent[] = [
     tools: ['remember', 'recall', 'forget', 'vectorize', 'semantic-search', 'search-wikipedia', 'search-openalex', 'read-file', 'write-file'],
     systemPrompt: `You are the Librarian Agent of Open Knowledge Studio. Your role is to maintain all six memory tiers: Session, Episodic, Semantic, Procedural, Working, and Long-Term. Run periodic knowledge refresh cycles using free sources (Wikipedia, OpenAlex, WHO, CDC). Rebuild the semantic search index when new documents are added. Manage references and build project-specific glossaries. Compress episodic memory by summarizing old sessions. Never delete memories without user confirmation. Always cite the source when refreshing knowledge.`,
   },
+  {
+    id: 'security', name: 'Security Analyst', role: 'Analyzes code and configurations for security vulnerabilities', avatar: '🛡️', color: '#EF4444', isActive: true,
+    memoryType: 'persistent', maxTurnDepth: 20, provider: 'gemini', modelName: 'gemini-2.5-flash',
+    skills: ['code-review', 'dependency-analysis', 'compliance-check'],
+    tools: ['read-file', 'write-file', 'search-web', 'code-review', 'dependency-analyze', 'data-validate', 'remember', 'recall'],
+    systemPrompt: `You are the Security Analyst Agent. Your role is to examine source code, configurations, and project files for potential security vulnerabilities. Use the code-review tool to analyze code for OWASP Top 10 issues, insecure patterns, and misconfigurations. Check dependencies for known vulnerabilities. Validate security configurations against industry standards. Provide structured findings with severity levels: Critical, High, Medium, Low. Always include remediation recommendations. Save findings to persistent memory for trend analysis.`,
+  },
+  {
+    id: 'code-reviewer', name: 'Code Reviewer', role: 'Reviews code quality, style, and best practices', avatar: '🔎', color: '#6366F1', isActive: true,
+    memoryType: 'session', maxTurnDepth: 15, provider: 'gemini', modelName: 'gemini-2.5-flash',
+    skills: ['code-review', 'writing-technical-doc', 'data-statistical-analysis'],
+    tools: ['read-file', 'write-file', 'code-review', 'code-docgen', 'code-format', 'dependency-analyze', 'test-generate', 'remember'],
+    systemPrompt: `You are the Code Reviewer Agent. Your role is to review source code for quality, style compliance, and adherence to best practices. Check for readability, maintainability, performance, and proper error handling. Use the code-review tool for automated analysis and the code-format tool for style verification. Generate inline comments with suggested fixes. Categorize each finding as Major, Minor, or Suggestion. Always provide before/after examples for improvements. Generate test cases alongside review when appropriate.`,
+  },
+  {
+    id: 'planner', name: 'Planning Agent', role: 'Decomposes complex tasks and creates execution plans', avatar: '📋', color: '#14B8A6', isActive: true,
+    memoryType: 'full', maxTurnDepth: 30, provider: 'gemini', modelName: 'gemini-2.5-pro',
+    skills: ['workflow-decompose', 'workflow-validate', 'workflow-merge', 'executive-summary'],
+    tools: ['spawn-agent', 'status-track', 'send-message', 'list-agents', 'read-file', 'write-file', 'batch-process', 'remember', 'recall'],
+    systemPrompt: `You are the Planning Agent. Your role is to decompose complex user requests into structured execution plans. Analyze the request, identify sub-tasks, determine dependencies between tasks, estimate effort, and produce a prioritized action plan. For each task specify: description, dependencies, estimated complexity (Low/Medium/High), and recommended agent type. Use the status-track tool to monitor progress. Track all plans in memory for reuse and adaptation. Always produce a Gantt-style timeline in Mermaid format.`,
+  },
+  {
+    id: 'tester', name: 'Testing Agent', role: 'Generates and validates test cases', avatar: '🧪', color: '#84CC16', isActive: true,
+    memoryType: 'session', maxTurnDepth: 15, provider: 'groq', modelName: 'llama-3.3-70b-versatile',
+    skills: ['test-generation', 'data-validate', 'quality-check'],
+    tools: ['read-file', 'write-file', 'test-generate', 'data-validate', 'calculate', 'remember', 'recall'],
+    systemPrompt: `You are the Testing Agent. Your role is to analyze source code and generate comprehensive test cases. Identify edge cases, error conditions, and happy paths. Use the test-generate tool to produce unit tests in the appropriate framework (vitest, jest, pytest, etc.). Validate test coverage by examining code paths. Generate both unit and integration tests when applicable. Report test results with pass/fail/error status. Suggest test coverage improvements for untested code paths.`,
+  },
+  {
+    id: 'code-gen', name: 'Code Generator', role: 'Generates source code from specifications', avatar: '⚡', color: '#F97316', isActive: true,
+    memoryType: 'session', maxTurnDepth: 25, provider: 'gemini', modelName: 'gemini-2.5-flash',
+    skills: ['code-documentation', 'api-spec-gen', 'writing-technical-doc'],
+    tools: ['read-file', 'write-file', 'code-docgen', 'api-spec-gen', 'sql-query', 'code-format', 'test-generate', 'remember'],
+    systemPrompt: `You are the Code Generator Agent. Your role is to generate high-quality source code from natural language specifications. Analyze the requirements, determine the best architecture and design patterns, and produce clean, well-documented code. Use the code-docgen tool to add proper documentation. Use the sql-query tool for database-related code. Always include error handling, input validation, and type safety. Generate corresponding tests alongside implementation. Use the code-format tool to ensure consistent style.`,
+  },
+  {
+    id: 'knowledge-curator', name: 'Knowledge Curator', role: 'Organizes, tags, and interlinks knowledge assets', avatar: '🏛️', color: '#A855F7', isActive: true,
+    memoryType: 'full', maxTurnDepth: 30, provider: 'gemini', modelName: 'gemini-2.5-flash',
+    skills: ['knowledge-refresh', 'reference-manager', 'glossary-build', 'consistency-audit'],
+    tools: ['read-file', 'write-file', 'search-wikipedia', 'search-openalex', 'semantic-search', 'vectorize', 'remember', 'recall', 'markdown-toc', 'text-summarize'],
+    systemPrompt: `You are the Knowledge Curator Agent. Your role is to organize the knowledge base by tagging, categorizing, and interlinking all knowledge assets. Scan documents for key terms and build concept maps. Generate cross-references between related documents. Build a project glossary with term definitions. Use the markdown-toc tool to structure documents. Create knowledge summaries using the text-summarize tool. Maintain a knowledge graph showing how documents relate to each other.`,
+  },
 ];
 
 const INITIAL_SAVED_PROMPTS: SavedPrompt[] = [
@@ -178,6 +226,7 @@ const App: React.FC = () => {
   const [gitHubPolling, setGitHubPolling] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<string>('dark');
   const [accentColor, setAccentColor] = useState<string>('#8B5CF6');
+  const [locale, setLocaleState] = useState<SupportedLocale>(getLocale());
   const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showChatSessions, setShowChatSessions] = useState(false);
@@ -189,6 +238,8 @@ const App: React.FC = () => {
   const [toolsTab, setToolsTab] = useState<'tools' | 'connectors'>('tools');
   const [showEpiMap, setShowEpiMap] = useState(false);
   const [epiDataPoints, setEpiDataPoints] = useState<EpiDataPoint[]>([]);
+  const [observabilityTab, setObservabilityTab] = useState<'overview' | 'metrics'>('overview');
+  const [dataTab, setDataTab] = useState<'public' | 'surveillance' | 'reports'>('public');
 
   useEffect(() => {
     import('./services/epiDataService').then(({ fetchEpiData }) =>
@@ -297,6 +348,45 @@ const App: React.FC = () => {
         { name: 'local_search', description: 'Search for local businesses and places', parameters: 'query: string, country?: string', isActive: true },
       ],
     },
+    {
+      id: 'mcp-github-api', name: 'GitHub API', description: 'GitHub REST API for repositories, code search, issues, pull requests, and releases', status: 'disconnected',
+      tools: [
+        { name: 'github_user_repos', description: 'List repositories for the authenticated user', parameters: 'perPage?: number, sort?: string, type?: string', isActive: true },
+        { name: 'github_search_code', description: 'Search code across public repositories', parameters: 'query: string, perPage?: number', isActive: true },
+        { name: 'github_search_issues', description: 'Search issues and pull requests', parameters: 'query: string, perPage?: number', isActive: true },
+        { name: 'github_list_commits', description: 'List commits in a repository', parameters: 'owner: string, repo: string, perPage?: number, branch?: string', isActive: true },
+        { name: 'github_list_pulls', description: 'List pull requests in a repository', parameters: 'owner: string, repo: string, state?: string, perPage?: number', isActive: true },
+      ],
+    },
+    {
+      id: 'mcp-world-bank', name: 'World Bank Data', description: 'World Bank API for development indicators, country data, and economic statistics', status: 'disconnected',
+      tools: [
+        { name: 'world_bank_indicator', description: 'Fetch World Bank indicator data for a country', parameters: 'indicator: string, country: string, date?: string, perPage?: number', isActive: true },
+        { name: 'world_bank_countries', description: 'List countries and regions with metadata', parameters: 'perPage?: number, region?: string', isActive: true },
+        { name: 'world_bank_indicators_list', description: 'List all available World Bank indicators', parameters: 'perPage?: number', isActive: true },
+      ],
+    },
+    {
+      id: 'mcp-open-library', name: 'Open Library', description: 'Open Library API for searching books, works, and subjects', status: 'disconnected',
+      tools: [
+        { name: 'open_library_search', description: 'Search for books and works', parameters: 'query: string, limit?: number, page?: number', isActive: true },
+        { name: 'open_library_subjects', description: 'Get books by subject', parameters: 'subject: string, limit?: number', isActive: true },
+      ],
+    },
+    {
+      id: 'mcp-news', name: 'News Headlines', description: 'News API for top headlines and article search across health, science, and technology', status: 'disconnected',
+      tools: [
+        { name: 'newsapi_top_headlines', description: 'Get top news headlines', parameters: 'country?: string, category?: string, pageSize?: number', isActive: true },
+        { name: 'newsapi_everything', description: 'Search all news articles', parameters: 'query: string, sortBy?: string, pageSize?: number', isActive: true },
+      ],
+    },
+    {
+      id: 'mcp-google-books', name: 'Google Books', description: 'Google Books API for searching publications, reviews, and metadata', status: 'disconnected',
+      tools: [
+        { name: 'google_books_search', description: 'Search for books and volumes', parameters: 'query: string, maxResults?: number, lang?: string', isActive: true },
+        { name: 'google_books_volume', description: 'Get details for a specific volume', parameters: 'volumeId: string', isActive: true },
+      ],
+    },
   ]);
 
   // Agent builder & webhook state
@@ -306,7 +396,6 @@ const App: React.FC = () => {
 
   // Skills state
   const [skills, setSkills] = useState<SkillDefinition[]>([...PRESET_SKILLS.map((s) => ({ ...s })), ...SEED_SKILLS.map((s) => ({ ...s }))]);
-  const [showSkillBuilder, setShowSkillBuilder] = useState(false);
 
   // Connectors state
   const [connectors, setConnectors] = useState<ConnectorConfig[]>([]);
@@ -339,6 +428,7 @@ const App: React.FC = () => {
     }).catch(() => {});
     dbGetKey('ui-theme').then((v) => { if (v) { setSelectedTheme(v); try { localStorage.setItem('oks_ui-theme', v); } catch {} } else { try { const l = localStorage.getItem('oks_ui-theme'); if (l) setSelectedTheme(l); } catch {} } }).catch(() => {});
     dbGetKey('ui-accent').then((v) => { if (v) { setAccentColor(v); try { localStorage.setItem('oks_ui-accent', v); } catch {} } else { try { const l = localStorage.getItem('oks_ui-accent'); if (l) setAccentColor(l); } catch {} } }).catch(() => {});
+    dbGetKey('ui-locale').then((v) => { if (v) { handleLocaleChange(v as SupportedLocale); } else { try { const l = localStorage.getItem('oks_locale'); if (l) handleLocaleChange(l as SupportedLocale); } catch {} } }).catch(() => {});
     getAllWebhooks().then((hooks) => setWebhooks(hooks));
     const kbdHandler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -419,7 +509,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.remove('theme-light', 'theme-sepia', 'theme-forest', 'theme-ocean', 'theme-midnight', 'theme-solarized');
+    root.classList.remove('theme-light', 'theme-sepia', 'theme-forest', 'theme-ocean', 'theme-midnight', 'theme-solarized', 'theme-weweb');
     if (selectedTheme !== 'dark') {
       root.classList.add(`theme-${selectedTheme}`);
     }
@@ -584,7 +674,9 @@ const App: React.FC = () => {
       await importAllData(text);
       const hooks = await getAllWebhooks();
       if (hooks.length > 0) setWebhooks(hooks);
-    } catch {}
+    } catch (err) {
+      notify({ type: 'error', title: 'Import failed', message: err instanceof Error ? err.message : 'Invalid file format' });
+    }
     e.target.value = '';
   };
 
@@ -595,6 +687,18 @@ const App: React.FC = () => {
     const a = document.createElement('a');
     a.href = url;
     a.download = `oks-export-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportCSV = () => {
+    const headers = 'id,name,type,size,createdAt\n';
+    const rows = files.map((f) => `"${f.id}","${f.name.replace(/"/g, '""')}","${f.type}","${f.size}","${f.createdAt?.toISOString?.() || ''}"`).join('\n');
+    const blob = new Blob([headers + rows], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `oks-files-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -671,6 +775,13 @@ const App: React.FC = () => {
     removeSkill(id).catch(() => {});
   }, []);
 
+  const handleLocaleChange = useCallback((newLocale: SupportedLocale) => {
+    setLocale(newLocale);
+    setLocaleState(newLocale);
+    dbSetKey('ui-locale', newLocale).catch(() => {});
+    try { localStorage.setItem('oks_locale', newLocale); } catch {}
+  }, []);
+
   // Provider test handler
   const handleTestProvider = useCallback(async (provider: LLMProvider, apiKey: string): Promise<boolean> => {
     if (!apiKey) return false;
@@ -705,6 +816,7 @@ const App: React.FC = () => {
     { view: 'skills', icon: <BookOpen size={14} />, label: 'Skills' },
     { view: 'tools', icon: <Wrench size={14} />, label: 'Tools' },
     { view: 'data', icon: <Database size={14} />, label: 'Data' },
+    { view: 'nlquery', icon: <Target size={14} />, label: 'NL Query' },
     { view: 'knowledge', icon: <Globe size={14} />, label: 'Knowledge' },
     { view: 'docs', icon: <BookOpen size={14} />, label: 'Docs' },
   ];
@@ -849,8 +961,13 @@ const App: React.FC = () => {
                     setWorkspaceProjects((prev) => prev.filter((p) => p.id !== id));
                     if (activeProjectId === id) setActiveProjectId('default');
                   }}
-                  onAddAgent={() => {}}
-                  onRemoveAgent={() => {}}
+                  onRemoveAgent={(agentId) => {
+                    setWorkspaceProjects((prev) => prev.map((p) =>
+                      p.id === activeProjectId
+                        ? { ...p, agentIds: p.agentIds.filter((id) => id !== agentId) }
+                        : p
+                    ));
+                  }}
                   projects={workspaceProjects}
                 />
                 <div className="border-t border-(--border) my-2" />
@@ -915,6 +1032,7 @@ const App: React.FC = () => {
                   versions={documentVersions}
                   onSaveVersion={handleSaveVersion}
                   templates={templates.map((t) => ({ id: t.id, name: t.name, content: t.content, category: t.category }))}
+                  collabPeers={collabPeers}
                 />
               </React.Suspense>
             )}
@@ -927,9 +1045,21 @@ const App: React.FC = () => {
 
             {activeView === 'observability' && (
               <PanelErrorBoundary panelName="Observability">
-                <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-50 text-(--text-muted) text-xs">Loading...</div>}>
-                  <ObservabilityDashboard metrics={a2aMetrics} agents={a2aAgents.map((a) => ({ id: a.id, name: a.name, color: a.color }))} files={files} folders={folders} messages={messages} workspaceProjects={workspaceProjects} />
-                </React.Suspense>
+                <div className="flex flex-col h-full">
+                  <div className="flex gap-2 px-4 pt-3 pb-2 border-b border-(--border) shrink-0">
+                    <button onClick={() => setObservabilityTab('overview')} className={`text-[10px] px-2 py-1 rounded transition-colors ${observabilityTab === 'overview' ? 'bg-(--accent-subtle) text-(--accent)' : 'text-(--text-muted) hover:text-(--text-primary)'}`}>Overview</button>
+                    <button onClick={() => setObservabilityTab('metrics')} className={`text-[10px] px-2 py-1 rounded transition-colors ${observabilityTab === 'metrics' ? 'bg-(--accent-subtle) text-(--accent)' : 'text-(--text-muted) hover:text-(--text-primary)'}`}>Agent Metrics</button>
+                  </div>
+                  <div className="flex-1 overflow-hidden">
+                    <React.Suspense fallback={<div className="flex items-center justify-center h-full min-h-50 text-(--text-muted) text-xs">Loading...</div>}>
+                      {observabilityTab === 'overview' ? (
+                        <ObservabilityDashboard metrics={a2aMetrics} agents={a2aAgents.map((a) => ({ id: a.id, name: a.name, color: a.color }))} files={files} folders={folders} messages={messages} workspaceProjects={workspaceProjects} />
+                      ) : (
+                        <A2AMetricsDashboard metrics={a2aMetrics} agents={a2aAgents.map((a) => ({ id: a.id, name: a.name, color: a.color, avatar: a.avatar }))} />
+                      )}
+                    </React.Suspense>
+                  </div>
+                </div>
               </PanelErrorBoundary>
             )}
 
@@ -994,9 +1124,32 @@ const App: React.FC = () => {
 
             {activeView === 'data' && (
               <PanelErrorBoundary panelName="Data">
-                <React.Suspense fallback={<div className="p-4 text-xs text-(--text-muted)">Loading...</div>}>
-                  <PublicDataPanel />
-                </React.Suspense>
+                <div className="flex flex-col h-full">
+                  <div className="flex gap-2 px-4 pt-3 pb-2 border-b border-(--border) shrink-0">
+                    <button onClick={() => setDataTab('public')} className={`text-[10px] px-2 py-1 rounded transition-colors ${dataTab === 'public' ? 'bg-(--accent-subtle) text-(--accent)' : 'text-(--text-muted) hover:text-(--text-primary)'}`}>Public Data</button>
+                    <button onClick={() => setDataTab('surveillance')} className={`text-[10px] px-2 py-1 rounded transition-colors ${dataTab === 'surveillance' ? 'bg-(--accent-subtle) text-(--accent)' : 'text-(--text-muted) hover:text-(--text-primary)'}`}>Surveillance</button>
+                    <button onClick={() => setDataTab('reports')} className={`text-[10px] px-2 py-1 rounded transition-colors ${dataTab === 'reports' ? 'bg-(--accent-subtle) text-(--accent)' : 'text-(--text-muted) hover:text-(--text-primary)'}`}>Reports</button>
+                  </div>
+                  <div className="flex-1 overflow-hidden">
+                    <React.Suspense fallback={<div className="p-4 text-xs text-(--text-muted)">Loading...</div>}>
+                      {dataTab === 'public' && <PublicDataPanel />}
+                      {dataTab === 'surveillance' && (
+                        <SurveillanceDashboard
+                          dataPoints={epiDataPoints}
+                          onDataRefresh={(data) => setEpiDataPoints(data)}
+                        />
+                      )}
+                      {dataTab === 'reports' && (
+                        <ReportGenerator
+                          surveillanceData={epiDataPoints}
+                          summary={null}
+                          alerts={[]}
+                          stats={null}
+                        />
+                      )}
+                    </React.Suspense>
+                  </div>
+                </div>
               </PanelErrorBoundary>
             )}
 
@@ -1041,6 +1194,12 @@ const App: React.FC = () => {
               </PanelErrorBoundary>
             )}
 
+            {activeView === 'nlquery' && (
+              <PanelErrorBoundary panelName="NL Query">
+                <NLQueryPanel config={providerConfig} />
+              </PanelErrorBoundary>
+            )}
+
             {activeView === 'knowledge' && (
               <PanelErrorBoundary panelName="Knowledge">
                 <div className="p-4 overflow-y-auto">
@@ -1055,6 +1214,12 @@ const App: React.FC = () => {
                       { name: 'WHO GHO', desc: 'Global health indicators', rate: 'Unlimited', icon: '🌍' },
                       { name: 'GDELT', desc: 'Global news monitoring', rate: '20/min', icon: '📰' },
                       { name: 'CrossRef', desc: 'DOI lookup & metadata', rate: '50/sec', icon: '🔗' },
+                      { name: 'World Bank', desc: 'Development indicators & country data', rate: 'Unlimited', icon: '🏦' },
+                      { name: 'Open Library', desc: 'Books, works & subjects', rate: 'Unlimited', icon: '📖' },
+                      { name: 'Google Books', desc: 'Books & publications search', rate: '1K/day', icon: '📕' },
+                      { name: 'News API', desc: 'Headlines & article search', rate: '500/day', icon: '📰' },
+                      { name: 'Europe PMC', desc: 'Life science literature', rate: 'Unlimited', icon: '🧬' },
+                      { name: 'GitHub API', desc: 'Repos, code search & issues', rate: '60/hr', icon: '🐙' },
                     ].map((src) => (
                       <div key={src.name} className="p-3 rounded-lg bg-(--bg-secondary) border border-(--border)">
                         <div className="flex items-center gap-2 mb-1">
@@ -1214,6 +1379,7 @@ const App: React.FC = () => {
             isA2ALoading={isA2ALoading}
             onRunDebate={() => handleA2ADebate('Discuss the best approach to build a resilient knowledge base for field researchers')}
             onExportAll={handleExportAll}
+            onExportCSV={handleExportCSV}
             onImport={handleImport}
             sandboxSettings={sandboxSettings}
             onSandboxChange={setSandboxSettings}
@@ -1232,6 +1398,8 @@ const App: React.FC = () => {
             onGoogleOAuthClientIdChange={async (id) => { setGoogleOAuthClientId(id); await setRuntimeClientId(id); }}
             gitHubOAuthClientId={gitHubOAuthClientId}
             onGitHubOAuthClientIdChange={async (id) => { setGitHubOAuthClientId(id); await setGitHubClientId(id); }}
+            locale={locale}
+            onLocaleChange={handleLocaleChange}
           />
         </React.Suspense>
 
@@ -1241,6 +1409,7 @@ const App: React.FC = () => {
             <span>{files.length} files</span>
             <span>{folders.length} folders</span>
             <span>{documentVersions.length} versions</span>
+            {collabPeers.length > 0 && <span className="text-green-400">{collabPeers.length} online</span>}
           </div>
           <div className="flex items-center gap-3">
             <span>IndexedDB</span>

@@ -35,6 +35,41 @@ const CONNECTOR_TYPES: { type: ConnectorConfig['type']; icon: string; fields: { 
       { key: 'secret', label: 'Secret (optional)', type: 'password', placeholder: 'shared-secret' },
     ],
   },
+  {
+    type: 'discord', icon: '🎮',
+    fields: [
+      { key: 'webhookUrl', label: 'Discord Webhook URL', type: 'url', placeholder: 'https://discord.com/api/webhooks/...' },
+    ],
+  },
+  {
+    type: 'telegram', icon: '✈️',
+    fields: [
+      { key: 'token', label: 'Bot Token', type: 'password', placeholder: '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11' },
+      { key: 'chatId', label: 'Chat ID', type: 'text', placeholder: '-1001234567890' },
+    ],
+  },
+  {
+    type: 'notion', icon: '📝',
+    fields: [
+      { key: 'token', label: 'Integration Token', type: 'password', placeholder: 'secret_...' },
+      { key: 'parentId', label: 'Parent Page ID', type: 'text', placeholder: 'Optional page/db ID' },
+    ],
+  },
+  {
+    type: 'linear', icon: '📋',
+    fields: [
+      { key: 'apiKey', label: 'API Key', type: 'password', placeholder: 'lin_api_...' },
+      { key: 'teamId', label: 'Team ID', type: 'text', placeholder: 'Optional team ID' },
+    ],
+  },
+  {
+    type: 'jira', icon: '🪲',
+    fields: [
+      { key: 'domain', label: 'Jira Domain', type: 'text', placeholder: 'your-domain.atlassian.net' },
+      { key: 'email', label: 'Email', type: 'email', placeholder: 'user@example.com' },
+      { key: 'token', label: 'API Token', type: 'password', placeholder: 'ATATT3...' },
+    ],
+  },
 ];
 
 export const ConnectorPanel: React.FC = () => {
@@ -101,6 +136,10 @@ export const ConnectorPanel: React.FC = () => {
       } else if (connector.type === 'rss') {
         const feed = await fetchRSSFeed(connector.config.feedUrl || '');
         success = feed.length > 0;
+      } else if (connector.type === 'discord') {
+        success = await testSlackWebhook(connector.config.webhookUrl || '');
+      } else if (connector.type === 'telegram') {
+        success = connector.config.token ? connector.config.token.length > 20 : false;
       } else {
         success = true;
       }

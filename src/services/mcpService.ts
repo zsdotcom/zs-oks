@@ -138,6 +138,125 @@ const KNOWN_ENDPOINTS: Record<string, { url: string; method: string; buildQuery:
     method: 'GET',
     buildQuery: (p) => new URLSearchParams({ id: p.id || '' }),
   },
+  /* ─── GitHub API Endpoints ─── */
+  github_user_repos: {
+    url: 'https://api.github.com/user/repos',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ per_page: p.perPage || '30', sort: p.sort || 'updated', ...(p.type ? { type: p.type } : {}) }),
+  },
+  github_search_code: {
+    url: 'https://api.github.com/search/code',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ q: p.query || '', per_page: p.perPage || '30' }),
+  },
+  github_search_issues: {
+    url: 'https://api.github.com/search/issues',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ q: p.query || '', per_page: p.perPage || '30' }),
+  },
+  github_get_readme: {
+    url: 'https://api.github.com/repos/{owner}/{repo}/readme',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ ...(p.owner && p.repo ? {} : {}) }),
+  },
+  github_list_commits: {
+    url: 'https://api.github.com/repos/{owner}/{repo}/commits',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ per_page: p.perPage || '10', ...(p.branch ? { sha: p.branch } : {}) }),
+  },
+  github_list_pulls: {
+    url: 'https://api.github.com/repos/{owner}/{repo}/pulls',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ state: p.state || 'open', per_page: p.perPage || '10' }),
+  },
+  github_release_notes: {
+    url: 'https://api.github.com/repos/{owner}/{repo}/releases/latest',
+    method: 'GET',
+    buildQuery: () => new URLSearchParams(),
+  },
+  /* ─── World Bank API Endpoints ─── */
+  world_bank_indicator: {
+    url: 'https://api.worldbank.org/v2/country/{country}/indicator/{indicator}',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ format: 'json', ...(p.date ? { date: p.date } : {}), per_page: p.perPage || '50' }),
+  },
+  world_bank_countries: {
+    url: 'https://api.worldbank.org/v2/country',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ format: 'json', per_page: p.perPage || '100', region: p.region || '' }),
+  },
+  world_bank_indicators_list: {
+    url: 'https://api.worldbank.org/v2/indicator',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ format: 'json', per_page: p.perPage || '100' }),
+  },
+  /* ─── Open Library API Endpoints ─── */
+  open_library_search: {
+    url: 'https://openlibrary.org/search.json',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ q: p.query || 'subject:epidemiology', limit: p.limit || '20', ...(p.page ? { page: p.page } : {}) }),
+  },
+  open_library_work: {
+    url: 'https://openlibrary.org/works/{workId}.json',
+    method: 'GET',
+    buildQuery: () => new URLSearchParams(),
+  },
+  open_library_subjects: {
+    url: 'https://openlibrary.org/subjects/{subject}.json',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ limit: p.limit || '20', ...(p.detail ? { details: p.detail } : {}) }),
+  },
+  /* ─── News & Media Endpoints ─── */
+  newsapi_top_headlines: {
+    url: 'https://newsapi.org/v2/top-headlines',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ country: p.country || 'us', category: p.category || 'health', pageSize: p.pageSize || '10', ...(p.apiKey ? { apiKey: p.apiKey } : {}) }),
+  },
+  newsapi_everything: {
+    url: 'https://newsapi.org/v2/everything',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ q: p.query || 'health', sortBy: p.sortBy || 'publishedAt', pageSize: p.pageSize || '10', ...(p.apiKey ? { apiKey: p.apiKey } : {}) }),
+  },
+  /* ─── Google Books API Endpoints ─── */
+  google_books_search: {
+    url: 'https://www.googleapis.com/books/v1/volumes',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ q: p.query || 'public health', maxResults: p.maxResults || '20', ...(p.lang ? { langRestrict: p.lang } : {}) }),
+  },
+  google_books_volume: {
+    url: 'https://www.googleapis.com/books/v1/volumes/{volumeId}',
+    method: 'GET',
+    buildQuery: () => new URLSearchParams(),
+  },
+  /* ─── Europe PMC Endpoints ─── */
+  europe_pmc_search: {
+    url: 'https://www.ebi.ac.uk/europepmc/api/search',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ query: p.query || 'infectious disease', pageSize: p.pageSize || '20', resultType: 'core', ...(p.sort ? { sort: p.sort } : {}) }),
+  },
+  /* ─── CrossRef API Endpoints ─── */
+  crossref_works: {
+    url: 'https://api.crossref.org/works',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ query: p.query || '', rows: p.rows || '20', sort: p.sort || 'relevance', order: p.order || 'desc' }),
+  },
+  crossref_funders: {
+    url: 'https://api.crossref.org/funders',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ query: p.query || '', rows: p.rows || '20' }),
+  },
+  /* ─── Discord Webhook Endpoint ─── */
+  discord_send_message: {
+    url: 'https://discord.com/api/webhooks/{webhookId}/{webhookToken}',
+    method: 'POST',
+    buildQuery: (p) => new URLSearchParams(),
+  },
+  /* ─── Telegram Bot API Endpoints ─── */
+  telegram_send_message: {
+    url: 'https://api.telegram.org/bot{token}/sendMessage',
+    method: 'POST',
+    buildQuery: (p) => new URLSearchParams(),
+  },
 };
 
 export async function executeMCPTool(

@@ -97,4 +97,40 @@ export const SEED_TEMPLATES: DocumentTemplate[] = [
     content: '# RESEARCH PROJECT PLAN\n\n## Project Overview\n- Title:\n- Principal Investigator:\n- Institution:\n- Start Date:\n- End Date:\n\n## Research Questions\n1.\n2.\n3.\n\n## Objectives\n1.\n2.\n3.\n\n## Methodology\n- Design:\n- Population:\n- Sample Size:\n- Data Collection:\n- Analysis Plan:\n\n## Timeline\n\n```mermaid\ngantt\n  title Project Timeline\n  dateFormat YYYY-MM-DD\n  \n  section Preparation\n  Literature Review     :a1, 2026-01-01, 30d\n  Ethics Approval       :a2, after a1, 14d\n  \n  section Data\n  Collection            :a3, after a2, 60d\n  Analysis              :a4, after a3, 30d\n  \n  section Output\n  Writing               :a5, after a4, 45d\n  Submission            :milestone, after a5, 0d\n```\n\n## Budget\n| Category | Amount |\n|---|---|\n| Personnel | |\n| Equipment | |\n| Travel | |\n| Publication | |\n| **Total** | |\n\n## Dissemination Plan\n- Target journals:\n- Conferences:\n- Open access:\n\n## References\n',
     icon: 'Layout',
   },
+  // ─── Code & Software Templates ───
+  {
+    id: 't-code-review', name: 'Code Review Checklist', description: 'Systematic code review checklist with OWASP and best practices', category: 'custom',
+    content: '# CODE REVIEW CHECKLIST\n\n## Project:\n## Reviewer:\n## Date:\n\n## Functional Correctness\n- [ ] Logic matches requirements\n- [ ] Edge cases handled\n- [ ] Error handling complete\n- [ ] Input validation present\n\n## Security (OWASP Top 10)\n- [ ] No injection vulnerabilities\n- [ ] Authentication/authorization proper\n- [ ] Sensitive data not exposed\n- [ ] No broken access control\n- [ ] No security misconfiguration\n\n## Performance\n- [ ] No N+1 queries\n- [ ] Memory usage reasonable\n- [ ] No unnecessary computations\n- [ ] Lazy loading where appropriate\n\n## Code Quality\n- [ ] Follows project style guide\n- [ ] Proper naming conventions\n- [ ] Comments are meaningful\n- [ ] No dead code\n- [ ] Tests cover critical paths\n\n## Overall Assessment\n- Quality score (1-5):\n- Critical issues:\n- Major issues:\n- Minor issues:\n- Suggestions:',
+    icon: 'SearchCheck',
+  },
+  {
+    id: 't-code-design-doc', name: 'Technical Design Document', description: 'Software design document with architecture decisions', category: 'custom',
+    content: '# TECHNICAL DESIGN DOCUMENT\n\n**Project:**\n**Author:**\n**Date:**\n**Status:** Draft / Review / Approved\n\n## 1. Overview\n- Problem statement:\n- Goals:\n- Non-goals:\n\n## 2. Architecture\n\n```mermaid\nflowchart TD\n  A[Client] --> B[API Gateway]\n  B --> C[Service]\n  C --> D[(Database)]\n  C --> E[Cache]\n```\n\n## 3. Data Model\n\n### Entities\n| Entity | Fields | Description |\n|---|---|---|\n| | | |\n\n### Relationships\n\n## 4. API Design\n| Method | Endpoint | Description |\n|---|---|---|\n| GET | /api/ | |\n| POST | /api/ | |\n\n## 5. Technology Stack\n- Language/Framework:\n- Database:\n- Cache:\n- Queue:\n- Deployment:\n\n## 6. Security Considerations\n\n## 7. Testing Strategy\n- Unit tests:\n- Integration tests:\n- E2E tests:\n\n## 8. Deployment Plan\n\n## 9. Monitoring & Observability\n\n## 10. Appendix\n- ADRs:\n- References:',
+    icon: 'Wrench',
+  },
+  {
+    id: 't-code-adr', name: 'Architecture Decision Record', description: 'Lightweight ADR template for tracking architecture decisions', category: 'custom',
+    content: '# ARCHITECTURE DECISION RECORD (ADR)\n\n**ADR-NNN:**\n**Title:**\n**Status:** Proposed / Accepted / Deprecated / Superseded\n**Date:**\n**Author:**\n\n## Context\nWhat is the issue motivating this decision?\n\n## Decision\nWhat is the change being proposed?\n\n## Consequences\nWhat trade-offs and implications does this decision have?\n\n### Positive\n- \n- \n\n### Negative\n- \n- \n\n## Alternatives Considered\n| Alternative | Pros | Cons |\n|---|---|---|\n| | | |\n\n## References\n- \n- ',
+    icon: 'Library',
+  },
+  {
+    id: 't-code-test-plan', name: 'Test Plan Template', description: 'Comprehensive test planning document', category: 'custom',
+    content: '# TEST PLAN\n\n**Project:**\n**Version:**\n**Author:**\n**Date:**\n\n## 1. Scope\n- In scope:\n- Out of scope:\n\n## 2. Test Strategy\n- Unit testing approach:\n- Integration testing approach:\n- E2E testing approach:\n- Performance testing:\n\n## 3. Test Environment\n- OS/Platform:\n- Browser:\n- Mobile:\n- Dependencies:\n\n## 4. Test Cases\n\n### Functional Tests\n| ID | Description | Steps | Expected Result | Priority |\n|---|---|---|---|---|\n| TC-001 | | | | |\n\n### Edge Cases\n| ID | Description | Steps | Expected Result |\n|---|---|---|---|\n| EC-001 | | | |\n\n### Security Tests\n| ID | Description | Steps | Expected Result |\n|---|---|---|---|\n| ST-001 | | | |\n\n## 5. Automation\n- Framework:\n- CI/CD integration:\n- Coverage targets:\n\n## 6. Schedule\n- Test execution:\n- Bug fixing:\n- Regression:\n\n## 7. Acceptance Criteria\n- [ ] All critical tests pass\n- [ ] Coverage >= 80%\n- [ ] No critical or major bugs\n\n## 8. Sign-off\n- **QA Lead:**\n- **Product Owner:**',
+    icon: 'Target',
+  },
+  {
+    id: 't-code-api-ref', name: 'API Reference Documentation', description: 'Generate comprehensive API reference docs', category: 'custom',
+    content: '# API REFERENCE\n\n## Base URL\n`https://api.example.com/v1`\n\n## Authentication\n`Authorization: Bearer <token>`\n\n## Endpoints\n\n### GET /resource\n**Description:**\n**Headers:**\n| Name | Type | Required | Description |\n|---|---|---|---|\n| Authorization | string | Yes | Bearer token |\n\n**Query Parameters:**\n| Parameter | Type | Required | Default | Description |\n|---|---|---|---|---|\n| page | number | No | 1 | Page number |\n\n**Response 200:**\n```json\n{\n  "data": [],\n  "pagination": {}\n}\n```\n\n**Response 401:**\n```json\n{ "error": "Unauthorized" }\n```\n\n### POST /resource\n**Description:**\n**Request Body:**\n```json\n{\n  "title": "string",\n  "content": "string"\n}\n\n```\n\n**Response 201:**\n```json\n{ "id": "string", "createdAt": "date" }\n```\n\n## Rate Limiting\n- 100 requests/minute\n- Header: `X-RateLimit-Remaining`\n\n## Errors\n| Code | Description |\n|---|---|\n| 400 | Bad Request |\n| 401 | Unauthorized |\n| 404 | Not Found |\n| 429 | Rate Limit Exceeded |\n| 500 | Internal Server Error |',
+    icon: 'Wrench',
+  },
+  {
+    id: 't-code-changelog', name: 'Changelog Template', description: 'Keep a changelog following Keep a Changelog convention', category: 'custom',
+    content: '# Changelog\n\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/),\nand this project adheres to [Semantic Versioning](https://semver.org/).\n\n## [Unreleased]\n\n### Added\n- \n\n### Changed\n- \n\n### Deprecated\n- \n\n### Removed\n- \n\n### Fixed\n- \n\n### Security\n- \n\n## [1.0.0] - YYYY-MM-DD\n\n### Added\n- Initial release',
+    icon: 'Activity',
+  },
+  {
+    id: 't-code-readme', name: 'Project README', description: 'Standard GitHub README template for open source projects', category: 'custom',
+    content: '# Project Name\n\n> Short description of the project.\n\n## Features\n- Feature 1\n- Feature 2\n- Feature 3\n\n## Installation\n\n```bash\nnpm install project-name\n```\n\n## Usage\n\n```javascript\nimport { something } from \'project-name\';\n\nsomething();\n```\n\n## API\n\n### `functionName(param1, param2)`\nDescription of the function.\n\n## Configuration\n| Option | Type | Default | Description |\n|---|---|---|---|\n| option1 | string | \'default\' | Description |\n\n## Contributing\n1. Fork the repository\n2. Create a feature branch\n3. Submit a pull request\n\n## License\nMIT\n\n## Contributors\n- ',
+    icon: 'BookOpen',
+  },
 ];

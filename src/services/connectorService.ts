@@ -139,6 +139,11 @@ export async function syncConnector(connector: ConnectorConfig): Promise<{ succe
         data = await fetchRSSFeed(feedUrl);
         break;
       }
+      case 'discord':
+      case 'telegram':
+      case 'notion':
+      case 'linear':
+      case 'jira':
       case 'slack':
       case 'email':
       case 'webhook':
