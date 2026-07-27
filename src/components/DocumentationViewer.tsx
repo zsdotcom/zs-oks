@@ -1,38 +1,94 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-const DOCS_MAP: Record<string, { title: string; category: string; path: string }> = {
-  'index': { title: 'Documentation Home', category: 'home', path: '/docs/index.md' },
-  'project/000-overview': { title: 'Project Overview', category: 'Project', path: '/docs/project/000-overview.md' },
-  'project/010-blueprint': { title: 'Blueprint', category: 'Project', path: '/docs/project/010-blueprint.md' },
-  'project/020-architecture': { title: 'Architecture', category: 'Project', path: '/docs/project/020-architecture.md' },
-  'project/030-design': { title: 'UI/UX Design', category: 'Project', path: '/docs/project/030-design.md' },
-  'project/090-feature-status': { title: 'Feature Status', category: 'Project', path: '/docs/project/090-feature-status.md' },
-  'project/100-reference': { title: 'Reference', category: 'Project', path: '/docs/project/100-reference.md' },
-  'project/110-repository-tree': { title: 'Repository Tree', category: 'Project', path: '/docs/project/110-repository-tree.md' },
-  'developers/040-development': { title: 'Development Guide', category: 'Developers', path: '/docs/developers/040-development.md' },
-  'developers/050-setup': { title: 'Setup Guide', category: 'Developers', path: '/docs/developers/050-setup.md' },
-  'developers/070-memory-architecture': { title: 'Memory Architecture', category: 'Developers', path: '/docs/developers/070-memory-architecture.md' },
-  'developers/080-test-suite': { title: 'Test Suite', category: 'Developers', path: '/docs/developers/080-test-suite.md' },
-  'developers/095-code-splitting': { title: 'Code Splitting', category: 'Developers', path: '/docs/developers/095-code-splitting.md' },
-  'developers/098-cicd-pipeline': { title: 'CI/CD Pipeline', category: 'Developers', path: '/docs/developers/098-cicd-pipeline.md' },
-  'developers/099-deployment': { title: 'Deployment', category: 'Developers', path: '/docs/developers/099-deployment.md' },
-  'guides/060-agents': { title: 'A2A Agents Guide', category: 'Guides', path: '/docs/guides/060-agents.md' },
-  'guides/091-workflows': { title: 'Multi-Agent Workflows', category: 'Guides', path: '/docs/guides/091-workflows.md' },
-  'guides/092-diagrams': { title: 'Diagram Generation', category: 'Guides', path: '/docs/guides/092-diagrams.md' },
-  'guides/093-pdf-export': { title: 'PDF Export', category: 'Guides', path: '/docs/guides/093-pdf-export.md' },
-  'guides/094-sandbox': { title: 'Sandboxed Execution', category: 'Guides', path: '/docs/guides/094-sandbox.md' },
-  'guides/096-epi-map': { title: 'Epi Map', category: 'Guides', path: '/docs/guides/096-epi-map.md' },
-  'guides/097-icd11': { title: 'ICD-11 Lookup', category: 'Guides', path: '/docs/guides/097-icd11.md' },
-  'agents/index': { title: 'Agent Documentation Index', category: 'Agents', path: '/docs/agents/index.md' },
-  'agents/researcher': { title: 'Researcher Agent', category: 'Agents', path: '/docs/agents/researcher/index.md' },
-  'agents/data-analyst': { title: 'Data Analyst Agent', category: 'Agents', path: '/docs/agents/data-analyst/index.md' },
-  'agents/writer': { title: 'Writer Agent', category: 'Agents', path: '/docs/agents/writer/index.md' },
-  'agents/reviewer': { title: 'Reviewer Agent', category: 'Agents', path: '/docs/agents/reviewer/index.md' },
-  'agents/librarian': { title: 'Librarian Agent', category: 'Agents', path: '/docs/agents/librarian/index.md' },
-  'agents/coordinator': { title: 'Coordinator Agent', category: 'Agents', path: '/docs/agents/coordinator/index.md' },
+type DocsEntry = { title: string; category: string };
+
+const DOCS_MAP: Record<string, DocsEntry> = {
+  'index': { title: 'Documentation Home', category: 'Home' },
+  'project/000-overview': { title: 'Project Overview', category: 'Project' },
+  'project/001-concept': { title: 'Concept & Vision', category: 'Project' },
+  'project/002-specification': { title: 'Technical Specification', category: 'Project' },
+  'project/003-blueprint': { title: 'Project Blueprint', category: 'Project' },
+  'project/004-architecture': { title: 'System Architecture', category: 'Project' },
+  'project/005-design': { title: 'UI/UX Design System', category: 'Project' },
+  'architecture/000-index': { title: 'ADR Overview', category: 'Architecture' },
+  'architecture/001-zero-npm-dependency': { title: 'ADR-001: Zero NPM Dependency', category: 'Architecture' },
+  'architecture/002-6-tier-memory': { title: 'ADR-002: 6-Tier Memory', category: 'Architecture' },
+  'architecture/003-vector-web-worker': { title: 'ADR-003: Vector Web Worker', category: 'Architecture' },
+  'architecture/004-code-splitting': { title: 'ADR-004: Code Splitting', category: 'Architecture' },
+  'architecture/005-indexeddb-schema': { title: 'ADR-005: IndexedDB Schema', category: 'Architecture' },
+  'architecture/006-pwa-offline': { title: 'ADR-006: PWA & Offline', category: 'Architecture' },
+  'developers/000-quickstart': { title: '5-Minute Quick Start', category: 'Developers' },
+  'developers/001-setup': { title: 'Complete Setup & Installation', category: 'Developers' },
+  'developers/002-environment': { title: 'Environment Variables & API Keys', category: 'Developers' },
+  'developers/003-non-coder-guide': { title: 'Guide for Non-Coder Developers', category: 'Developers' },
+  'developers/004-development': { title: 'Development Guidelines', category: 'Developers' },
+  'developers/005-memory-architecture': { title: 'Memory Architecture Deep Dive', category: 'Developers' },
+  'developers/006-test-suite': { title: 'Test Suite Documentation', category: 'Developers' },
+  'developers/007-code-splitting': { title: 'Code Splitting & Performance', category: 'Developers' },
+  'developers/008-ci-cd': { title: 'CI/CD Pipeline', category: 'Developers' },
+  'developers/009-deployment': { title: 'Deployment Guide', category: 'Developers' },
+  'developers/010-dependency-removal': { title: 'Zero-Dependency Architecture', category: 'Developers' },
+  'developers/011-mcp-configuration': { title: 'MCP Server Configuration', category: 'Developers' },
+  'guides/000-getting-started': { title: 'Getting Started', category: 'Guides' },
+  'guides/001-agents': { title: 'A2A Agents Guide', category: 'Guides' },
+  'guides/002-workflows': { title: 'Multi-Agent Workflows', category: 'Guides' },
+  'guides/003-diagrams': { title: 'Diagram Generation', category: 'Guides' },
+  'guides/004-pdf-export': { title: 'PDF Export Guide', category: 'Guides' },
+  'guides/005-sandbox': { title: 'Sandboxed Code Execution', category: 'Guides' },
+  'guides/006-epi-map': { title: 'Epidemiological Map', category: 'Guides' },
+  'guides/007-icd11': { title: 'ICD-11 Lookup', category: 'Guides' },
+  'guides/008-connectors': { title: 'Connectors Guide', category: 'Guides' },
+  'guides/009-webhooks': { title: 'Webhooks Guide', category: 'Guides' },
+  'guides/010-public-data': { title: 'Public Data APIs', category: 'Guides' },
+  'api/000-index': { title: 'API Documentation', category: 'API' },
+  'api/001-memory-api': { title: 'Memory API Reference', category: 'API' },
+  'api/002-indexeddb': { title: 'IndexedDB Schema', category: 'API' },
+  'api/003-gemini-service': { title: 'Gemini/LLM Service API', category: 'API' },
+  'api/004-sandbox-api': { title: 'Sandbox API Reference', category: 'API' },
+  'agents/SKILL': { title: 'A2A Debate Agents Overview', category: 'Agents' },
+  'agents/references/index': { title: 'Agent System Reference', category: 'Agents' },
+  'agents/coordinator/SKILL': { title: 'Coordinator Agent', category: 'Agents' },
+  'agents/coordinator/references/TEMPLATES': { title: 'Coordinator — Templates', category: 'Agents' },
+  'agents/coordinator/references/TOOLS': { title: 'Coordinator — Tools', category: 'Agents' },
+  'agents/coordinator/workflows/README': { title: 'Coordinator — Workflows', category: 'Agents' },
+  'agents/data-analyst/SKILL': { title: 'Data Analyst Agent', category: 'Agents' },
+  'agents/data-analyst/references/TEMPLATES': { title: 'Data Analyst — Templates', category: 'Agents' },
+  'agents/data-analyst/references/TOOLS': { title: 'Data Analyst — Tools', category: 'Agents' },
+  'agents/data-analyst/workflows/README': { title: 'Data Analyst — Workflows', category: 'Agents' },
+  'agents/librarian/SKILL': { title: 'Librarian Agent', category: 'Agents' },
+  'agents/librarian/references/TEMPLATES': { title: 'Librarian — Templates', category: 'Agents' },
+  'agents/librarian/references/TOOLS': { title: 'Librarian — Tools', category: 'Agents' },
+  'agents/librarian/workflows/README': { title: 'Librarian — Workflows', category: 'Agents' },
+  'agents/researcher/SKILL': { title: 'Researcher Agent', category: 'Agents' },
+  'agents/researcher/references/TEMPLATES': { title: 'Researcher — Templates', category: 'Agents' },
+  'agents/researcher/references/TOOLS': { title: 'Researcher — Tools', category: 'Agents' },
+  'agents/researcher/workflows/README': { title: 'Researcher — Workflows', category: 'Agents' },
+  'agents/reviewer/SKILL': { title: 'Reviewer Agent', category: 'Agents' },
+  'agents/reviewer/references/TEMPLATES': { title: 'Reviewer — Templates', category: 'Agents' },
+  'agents/reviewer/references/TOOLS': { title: 'Reviewer — Tools', category: 'Agents' },
+  'agents/reviewer/workflows/README': { title: 'Reviewer — Workflows', category: 'Agents' },
+  'agents/writer/SKILL': { title: 'Writer Agent', category: 'Agents' },
+  'agents/writer/references/TEMPLATES': { title: 'Writer — Templates', category: 'Agents' },
+  'agents/writer/references/TOOLS': { title: 'Writer — Tools', category: 'Agents' },
+  'agents/writer/workflows/README': { title: 'Writer — Workflows', category: 'Agents' },
+  'benchmarks/000-index': { title: 'Benchmarks Overview', category: 'Benchmarks' },
+  'benchmarks/001-results': { title: 'Benchmark Results', category: 'Benchmarks' },
+  'changelog/000-changelog': { title: 'Changelog', category: 'Changelog' },
+  'a11y/000-a11y': { title: 'Accessibility', category: 'A11y' },
+  'i18n/000-i18n': { title: 'Internationalization', category: 'i18n' },
+  'ops/000-docs-ci-cd': { title: 'Docs Publishing Pipeline', category: 'Ops' },
+  'ops/001-docs-style-guide': { title: 'Documentation Style Guide', category: 'Ops' },
+  'security/000-index': { title: 'Security Documentation', category: 'Security' },
+  'security/001-threat-model': { title: 'Threat Model', category: 'Security' },
+  'security/002-data-privacy': { title: 'Data Privacy & Trust', category: 'Security' },
+  'security/003-api-key-management': { title: 'API Key Management', category: 'Security' },
 };
 
-const CATEGORIES = ['Project', 'Developers', 'Guides', 'Agents'] as const;
+const CATEGORIES = [
+  'Project', 'Architecture', 'Developers', 'Guides', 'API',
+  'Agents', 'Benchmarks', 'Changelog', 'Security', 'Ops',
+  'A11y', 'i18n',
+];
 
 const SEARCH_INDEX = Object.entries(DOCS_MAP).map(([id, doc]) => ({
   id,
@@ -70,26 +126,52 @@ function parseMarkdownSections(markdown: string): DocSection[] {
 }
 
 function renderMarkdownToHtml(markdown: string): string {
-  let html = markdown
-    .replace(/^### (.+)$/gm, '<h3 class="text-sm font-semibold mt-4 mb-1 text-[var(--text-primary)]">$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2 class="text-base font-bold mt-5 mb-2 text-[var(--accent-light)]">$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1 class="text-lg font-bold mt-2 mb-3 text-white">$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-[var(--text-primary)]">$1</strong>')
-    .replace(/\*([^*]+)\*/g, '<em class="text-[var(--text-secondary)]">$1</em>')
-    .replace(/`([^`]+)`/g, '<code class="text-[10px] px-1 py-0.5 rounded bg-[var(--accent-dark)]/50 text-[var(--accent-light)]">$1</code>')
-    .replace(/^- (.+)$/gm, '<li class="text-[11px] text-[var(--text-secondary)] ml-3 list-disc">$1</li>')
-    .replace(/^\| (.+) \|$/gm, (match: string) => {
-      const cells = match.split('|').filter(Boolean).map((c: string) => c.trim());
-      if (cells.every((c: string) => /^[-:]+$/.test(c))) return '<tr class="border-b border-[var(--border)]"><td colspan="99"><hr class="border-[var(--border)]" /></td></tr>';
-      return `<tr class="border-b border-[var(--border)]">${cells.map((c: string) => `<td class="text-[10px] px-2 py-1 text-[var(--text-secondary)]">${c}</td>`).join('')}</tr>`;
-    })
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-[var(--accent)] hover:text-[var(--accent-light)] underline" target="_blank" rel="noopener">$1</a>')
-    .replace(/\n\n/g, '</p><p class="text-[11px] text-[var(--text-secondary)] leading-relaxed mb-2">')
-    .replace(/^---$/gm, '<hr class="border-[var(--border)] my-3" />');
+  const blocks: string[] = [];
+  let html = markdown.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
+    const escaped = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const idx = blocks.length;
+    blocks.push(`<pre><code${lang ? ` class="language-${lang}"` : ''}>${escaped}</code></pre>`);
+    return `%%CB${idx}%%`;
+  });
 
-  html = '<p class="text-[11px] text-[var(--text-secondary)] leading-relaxed mb-2">' + html + '</p>';
-  html = html.replace(/<\/p>\s*<p class="text-\[11px\] text-\[var\(--text-secondary\)\] leading-relaxed mb-2">\s*<\/p>/g, '</p><p class="text-[11px] text-[var(--text-secondary)] leading-relaxed mb-2"></p>');
-  return html;
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+  html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>(?:(?!<\/li>)[\s\S])*<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+  html = html.replace(/^---$/gm, '<hr>');
+  html = html.replace(/^\*\*\*$/gm, '<hr>');
+  html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+
+  html = html.replace(/%%CB(\d+)%%/g, (_, idx) => blocks[parseInt(idx)]);
+
+  const lines = html.split('\n');
+  const result: string[] = [];
+  let pBuffer: string[] = [];
+
+  for (const line of lines) {
+    const t = line.trim();
+    if (!t) {
+      if (pBuffer.length) { result.push(`<p>${pBuffer.join(' ')}</p>`); pBuffer = []; }
+      continue;
+    }
+    if (/^<(h[123]|ul|ol|pre|blockquote|table|hr)\b/.test(t) || /^<\/(ul|ol|pre|blockquote|table)>$/.test(t)) {
+      if (pBuffer.length) { result.push(`<p>${pBuffer.join(' ')}</p>`); pBuffer = []; }
+      result.push(t);
+      continue;
+    }
+    pBuffer.push(t);
+  }
+  if (pBuffer.length) result.push(`<p>${pBuffer.join(' ')}</p>`);
+
+  return result.join('\n');
 }
 
 export const DocumentationViewer: React.FC = () => {
@@ -122,7 +204,7 @@ export const DocumentationViewer: React.FC = () => {
     const q = searchQuery.toLowerCase();
     return SEARCH_INDEX
       .filter((item) => item.searchText.includes(q) || item.title.includes(q))
-      .map((item) => DOCS_MAP[item.id])
+      .map((item) => ({ id: item.id, ...DOCS_MAP[item.id] }))
       .slice(0, 10);
   }, [searchQuery]);
 
@@ -130,75 +212,79 @@ export const DocumentationViewer: React.FC = () => {
 
   return (
     <div className="flex h-full bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-hidden">
-      <aside className="w-56 border-r border-[var(--border)] overflow-y-auto shrink-0 bg-[var(--bg-secondary)]">
-        <div className="p-2">
-          <div className="relative mb-2">
+      <aside className="w-64 border-r border-[var(--border)] overflow-y-auto shrink-0 bg-[var(--bg-secondary)]">
+        <div className="p-3">
+          <div className="relative mb-3">
             <input
               type="text"
               placeholder="Search docs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full text-[10px] px-2 py-1.5 rounded bg-[var(--bg-primary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-gray-600 focus:outline-none focus:border-[var(--accent)]"
+              className="w-full text-xs px-3 py-1.5 rounded bg-[var(--bg-primary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
             />
           </div>
           {filteredDocs ? (
             <div className="space-y-0.5">
               {filteredDocs.map((d) => (
                 <button
-                  key={d.path}
-                  onClick={() => { setActiveDoc(d.path.replace('/docs/', '').replace('.md', '')); setSearchQuery(''); }}
-                  className="w-full text-left text-[10px] px-2 py-1 rounded hover:bg-[var(--accent-subtle)] text-[var(--accent)]"
+                  key={d.id}
+                  onClick={() => { setActiveDoc(d.id); setSearchQuery(''); }}
+                  className="w-full text-left text-xs px-2 py-1 rounded hover:bg-[var(--accent-subtle)] text-[var(--accent)]"
                 >
                   {d.title}
                 </button>
               ))}
             </div>
           ) : (
-            CATEGORIES.map((cat) => (
-              <div key={cat} className="mb-2">
-                <div className="text-[9px] font-semibold uppercase tracking-wider text-[var(--text-muted)] px-2 mb-1">{cat}</div>
-                {Object.entries(DOCS_MAP)
-                  .filter(([, d]) => d.category === cat)
-                  .map(([id, d]) => (
+            CATEGORIES.map((cat) => {
+              const entries = Object.entries(DOCS_MAP).filter(([, d]) => d.category === cat);
+              if (entries.length === 0) return null;
+              return (
+                <div key={cat} className="mb-3">
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)] px-2 mb-1">{cat}</div>
+                  {entries.map(([id, d]) => (
                     <button
                       key={id}
                       onClick={() => setActiveDoc(id)}
-                      className={`w-full text-left text-[10px] px-2 py-1 rounded transition-colors ${
+                      className={`w-full text-left text-xs px-2 py-1 rounded transition-colors ${
                         activeDoc === id ? 'bg-[var(--accent-subtle)] text-[var(--accent-light)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
                       }`}
                     >
                       {d.title}
                     </button>
                   ))}
-              </div>
-            ))
+                </div>
+              );
+            })
           )}
         </div>
       </aside>
 
-      <main className="flex-1 overflow-y-auto p-4">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[var(--border)]">
-            <span className="text-[9px] font-medium uppercase tracking-wider text-[var(--accent)]">{doc?.category || ''}</span>
-            <span className="text-[10px] text-[var(--text-muted)]">/</span>
-            <h1 className="text-xs font-semibold text-[var(--text-primary)]">{doc?.title || 'Documentation'}</h1>
-          </div>
+      <main className="flex-1 overflow-y-auto p-6">
+        <div className="max-w-4xl mx-auto">
+          {doc && (
+            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[var(--border)]">
+              <span className="text-xs font-medium uppercase tracking-wider text-[var(--accent)]">{doc.category}</span>
+              <span className="text-xs text-[var(--text-muted)]">/</span>
+              <h1 className="text-sm font-semibold text-[var(--text-primary)]">{doc.title}</h1>
+            </div>
+          )}
 
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--accent)]" />
+            <div className="flex items-center justify-center py-16">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--accent)]" />
             </div>
           ) : (
-            <div className="space-y-1">
+            <div className="space-y-2">
               <div
-                className="prose prose-invert max-w-none [&_pre]:bg-[var(--bg-secondary)] [&_pre]:p-2 [&_pre]:rounded [&_pre]:text-[10px] [&_pre]:overflow-x-auto [&_code]:text-[10px]"
+                className="prose prose-invert max-w-none"
                 dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(markdown) }}
               />
 
               {sections.length > 1 && (
-                <div className="mt-6 pt-4 border-t border-[var(--border)]">
-                  <div className="text-[9px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">Sections</div>
-                  <div className="flex flex-wrap gap-1">
+                <div className="mt-8 pt-5 border-t border-[var(--border)]">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">On this page</div>
+                  <div className="flex flex-wrap gap-1.5">
                     {sections.map((s) => (
                       <button
                         key={s.id}
@@ -206,7 +292,7 @@ export const DocumentationViewer: React.FC = () => {
                           const el = document.getElementById(s.id);
                           el?.scrollIntoView({ behavior: 'smooth' });
                         }}
-                        className="text-[9px] px-2 py-1 rounded bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:bg-[var(--accent-subtle)] hover:text-[var(--accent)] transition-colors"
+                        className="text-xs px-2.5 py-1 rounded bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:bg-[var(--accent-subtle)] hover:text-[var(--accent)] transition-colors"
                       >
                         {s.title}
                       </button>
