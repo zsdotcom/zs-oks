@@ -85,10 +85,26 @@ const DOCS_MAP: Record<string, DocsEntry> = {
   'security/003-api-key-management': { title: 'API Key Management', category: 'Security' },
   'guides/012-bd-health-system': { title: 'Bangladesh Health Ecosystem', category: 'Guides' },
   'guides/013-bd-core-fhir': { title: 'BD Core FHIR IG Integration', category: 'Guides' },
+  /* ─── Onboarding Series ─── */
+  'onboarding/000-overview': { title: 'Welcome — Journey Map', category: 'Onboarding' },
+  'onboarding/001-first-steps': { title: 'First Steps: Interface Tour', category: 'Onboarding' },
+  'onboarding/002-connect-provider': { title: 'Connect an AI Provider', category: 'Onboarding' },
+  'onboarding/003-create-project': { title: 'Create Your First Project', category: 'Onboarding' },
+  'onboarding/004-knowledge-base': { title: 'Build Your Knowledge Base', category: 'Onboarding' },
+  'onboarding/005-your-first-chat': { title: 'Your First Chat', category: 'Onboarding' },
+  'onboarding/006-using-agents': { title: 'Using A2A Agents', category: 'Onboarding' },
+  'onboarding/007-using-tools': { title: 'Using Tools & MCP Servers', category: 'Onboarding' },
+  'onboarding/008-documents': { title: 'Creating Documents', category: 'Onboarding' },
+  'onboarding/009-templates': { title: 'Templates', category: 'Onboarding' },
+  'onboarding/010-skills': { title: 'Skills & Automation', category: 'Onboarding' },
+  'onboarding/011-connectors': { title: 'Connectors', category: 'Onboarding' },
+  'onboarding/012-kanban': { title: 'Kanban Boards', category: 'Onboarding' },
+  'onboarding/013-export-share': { title: 'Export & Share', category: 'Onboarding' },
+  'onboarding/014-project-complete': { title: 'Project Complete', category: 'Onboarding' },
 };
 
 const CATEGORIES = [
-  'Project', 'Architecture', 'Developers', 'Guides', 'API',
+  'Onboarding', 'Project', 'Architecture', 'Developers', 'Guides', 'API',
   'Agents', 'Benchmarks', 'Changelog', 'Security', 'Ops',
   'A11y', 'i18n',
 ];

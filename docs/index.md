@@ -5,7 +5,9 @@
 
 ---
 
-**Open Knowledge Studio** is a zero-dependency, browser-native, 6-agent A2A platform for offline-first research, writing, and data analysis. For a high-level introduction, see the [Project Overview](project/000-overview.md).
+**Open Knowledge Studio** is a zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. For a high-level introduction, see the [Project Overview](project/000-overview.md).
+
+> 🚀 **New to the app?** Start the [**Onboarding Journey**](onboarding/000-overview.md) — a step-by-step walkthrough from first visit to project completion.
 
 ---
 
@@ -146,16 +148,17 @@
 | Metric                       | Value                                                                  |
 | ---------------------------- | ---------------------------------------------------------------------- |
 | **Runtime dependencies**     | 2 (`react`, `react-dom`)                                               |
-| **Test count**               | 117 across 8 files                                                     |
+| **Test count**               | 227 across 14 files                                                    |
 | **Test coverage thresholds** | >80% statements, >75% branches, >85% functions, >80% lines             |
 | **Build size**               | ~90 KB gzip                                                            |
 | **IndexedDB stores**         | 22                                                                     |
-| **Components**               | 25 (5 lazy-loaded)                                                     |
+| **Components**               | 28 (5 lazy-loaded)                                                     |
 | **Services**                 | 19                                                                     |
-| **Built-in agents**          | 6 (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian) |
+| **Built-in agents**          | 12 (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planning Agent, Testing Agent, Code Generator, Knowledge Curator) |
 | **AI providers**             | 10 (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare) |
 | **CDN libraries**            | 5 (Transformers.js, Orama, KaTeX, Mermaid, Leaflet)                    |
 | **License**                  | MIT                                                                    |
+| **Onboarding guides**        | 15 (overview + 14 step-by-step walkthroughs)                           |
 
 ---
 
