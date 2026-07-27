@@ -5,8 +5,8 @@ let skillRegistry: SkillDefinition[] = [];
 
 export async function loadSkillRegistry(): Promise<void> {
   try {
-    const stored = await dbGetAll<SkillDefinition>('skills');
-    skillRegistry = stored;
+    const stored = await dbGetAll<any>('skills');
+    skillRegistry = stored.map((s: any) => ({ ...s, createdAt: new Date(s.createdAt), updatedAt: new Date(s.updatedAt) }));
   } catch {
     skillRegistry = [];
   }

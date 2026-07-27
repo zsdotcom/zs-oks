@@ -275,7 +275,7 @@ async function queryCloudflare(
   } catch (err) {
     try {
       const openaiBase = 'https://api.cloudflare.com/client/v4/accounts';
-      return queryOpenAICompatible(messages, { ...config, customEndpoint: undefined }, contextDocs, systemPrompt, `${openaiBase}/${accountId}/ai/v1/run`);
+      return queryOpenAICompatible(messages, { ...config, customEndpoint: undefined }, contextDocs, systemPrompt, `${openaiBase}/${accountId}/ai/v1`);
     } catch {
       throw err;
     }

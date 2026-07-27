@@ -480,13 +480,13 @@ const App: React.FC = () => {
     setIsA2ALoading(true);
     const contextDocs = files.filter((f) => f.isActive).map((f) => `### ${f.name}\n${f.content}`).join('\n\n') || undefined;
     const rawChain = [
-      a2aAgents.find((a) => a.id === 'research')!,
-      a2aAgents.find((a) => a.id === 'writer')!,
-      a2aAgents.find((a) => a.id === 'review')!,
-      a2aAgents.find((a) => a.id === 'coord')!,
-    ].filter(Boolean);
+      a2aAgents.find((a) => a.id === 'research'),
+      a2aAgents.find((a) => a.id === 'writer'),
+      a2aAgents.find((a) => a.id === 'review'),
+      a2aAgents.find((a) => a.id === 'coord'),
+    ].filter((a): a is A2AAgent => a !== undefined);
+    if (rawChain.length < 2) { setIsA2ALoading(false); return; }
     const workflowChain = rawChain.map((a) => ({ agentId: a.id, name: a.name, systemPrompt: a.systemPrompt }));
-    if (workflowChain.length < 2) { setIsA2ALoading(false); return; }
     const response = await runSequentialWorkflow(topic, workflowChain, providerConfig, contextDocs, (agentName, response, latency) => {
       const metric: A2AMetric = {
         id: `m-seq-${Date.now()}-${agentName}`,

@@ -5,7 +5,8 @@ let connectors: ConnectorConfig[] = [];
 
 export async function loadConnectors(): Promise<void> {
   try {
-    connectors = await dbGetAll<ConnectorConfig>('connectors');
+    const stored = await dbGetAll<any>('connectors');
+    connectors = stored.map((c: any) => ({ ...c, config: typeof c.config === 'string' ? JSON.parse(c.config) : c.config }));
   } catch {
     connectors = [];
   }

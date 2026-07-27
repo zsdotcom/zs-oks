@@ -49,7 +49,7 @@
         "js/ts.preferences.importModuleSpecifier": "non-relative",
         "tailwindCSS.experimental.classRegex": [],
         "tailwindCSS.validate": true,
-        "typescript.disableAutomaticTypeAcquisition": true,
+        "js/ts.tsserver.automaticTypeAcquisition.enabled": false,
         "cSpell.words": [
           "bradlc",
           "codeandbrain",

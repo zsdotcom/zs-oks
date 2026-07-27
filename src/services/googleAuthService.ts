@@ -28,8 +28,6 @@ export async function setRuntimeClientId(id: string): Promise<void> {
   await dbSetKey('google-oauth-client-id', id);
 }
 
-const CLIENT_ID: string = ''; // resolved dynamically in signInWithGoogle
-
 const SCOPES = [
   'openid', 'email', 'profile',
   'https://www.googleapis.com/auth/drive.appdata',
@@ -98,10 +96,10 @@ export const signInWithGoogle = async (): Promise<AppUser | null> => {
         scope: SCOPES,
         callback: async (resp: any) => {
           if (resp.error) { reject(Object.assign(new Error(resp.error_description || resp.error), { code: resp.error })); return; }
+          if (resp.access_token === undefined) { reject(Object.assign(new Error('Google sign-in cancelled.'), { code: 'auth/popup-closed-by-user' })); return; }
           cachedAccessToken = resp.access_token;
           try { const user = await fetchUserInfo(resp.access_token); currentUser = user; notify(); resolve(user); } catch (err) { reject(err); }
         },
-        error_callback: (err: any) => { reject(Object.assign(new Error(err?.message || 'Google sign-in cancelled.'), { code: err?.type === 'popup_closed' ? 'auth/popup-closed-by-user' : 'auth/error' })); },
       });
       tokenClient.requestAccessToken({ prompt: 'consent' });
     } catch (err) { reject(err); }

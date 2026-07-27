@@ -31,7 +31,7 @@ A private AI research laboratory in your browser — 6 specialized agents collab
 | 📦 Build size | ~90 KB gzip |
 | 🗄️ IndexedDB stores | 22 |
 | 🧩 Components | 25 (5 lazy-loaded) |
-| 🔧 Services | 12 |
+| 🔧 Services | 13 |
 | 🤖 Built-in agents | 6 + custom |
 | 🌐 AI providers | 6 |
 
@@ -156,7 +156,7 @@ npm run test:bench # Performance benchmarks
 
 ## ✦ Documentation
 
-Comprehensive documentation is available in the [`docs/`](docs/index.md) directory with **83 files across 12 sections**:
+Comprehensive documentation is available in the [`docs/`](docs/index.md) directory with **84 files across 12 sections**:
 
 ```
 docs/
@@ -184,7 +184,7 @@ docs/
 │   ├── 010-dependency-removal.md         # Zero-dependency architecture
 │   └── 011-mcp-configuration.md          # MCP server configuration
 │
-├── guides/                               # User guides (11 files)
+├── guides/                               # User guides (12 files)
 │   ├── 000-getting-started.md            # First-time user walkthrough
 │   ├── 001-agents.md                     # A2A agents guide
 │   ├── 002-workflows.md                  # Multi-agent workflows
@@ -195,7 +195,8 @@ docs/
 │   ├── 007-icd11.md                      # ICD-11 lookup
 │   ├── 008-connectors.md                 # Connectors guide
 │   ├── 009-webhooks.md                   # Webhooks guide
-│   └── 010-public-data.md               # Public data APIs
+│   ├── 010-public-data.md                # Public data APIs
+│   └── 011-google-oauth-setup.md         # Google OAuth setup guide
 │
 ├── architecture/                         # Architecture Decision Records (7 files)
 ├── api/                                  # API reference (5 files)
@@ -231,7 +232,7 @@ open-knowledge-studio/
 ├── public/                    # Static assets (favicon, manifest, sw)
 ├── src/
 │   ├── components/            # 25 React components (5 lazy-loaded)
-│   ├── services/              # 12 application services
+│   ├── services/              # 13 application services
 │   ├── db/                    # IndexedDB: 22 object stores
 │   ├── hooks/                 # useChat, useFiles, usePWAInstall
 │   ├── test/                  # 74 tests across 6 files

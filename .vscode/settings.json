@@ -8,7 +8,7 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
-  "typescript.disableAutomaticTypeAcquisition": true,
+    "js/ts.tsserver.automaticTypeAcquisition.enabled": false,
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "tailwindCSS.experimental.classRegex": [],
   "tailwindCSS.validate": true,

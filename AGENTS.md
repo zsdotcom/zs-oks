@@ -31,14 +31,15 @@ CI order (`ci.yml`): `typecheck` → `test` → `build`. E2E runs only on PRs. D
 - Transformers.js and Orama JS are dynamically loaded from jsdelivr CDN in Workers/lazy imports — never installed via npm.
 - Several panels are `React.lazy()` loaded: `A2AMetricsDashboard`, `GoogleWorkspacePanel`, `SettingsPanel`, `MCPServerPanel`, `WorkspaceDocumentEditor`.
 - 25 components (13 direct + 5 lazy + 2 re-export aliases + 1 chart dir + 1 icon shim).
-- 12 services: `connectorService`, `embeddingWorker`, `geminiService`, `googleAuthService`, `icd11Service`, `memoryApi`, `oramaService`, `publicApiService`, `sandboxService`, `searchService`, `skillService`, `webhookService`.
-- 82 documentation files across 12 sections in `docs/` (see `docs/index.md` for full index).
+- 13 services: `connectorService`, `embeddingWorker`, `geminiService`, `githubAuthService`, `googleAuthService`, `icd11Service`, `memoryApi`, `oramaService`, `publicApiService`, `sandboxService`, `searchService`, `skillService`, `webhookService`.
+- 84 documentation files across 12 sections in `docs/` (see `docs/index.md` for full index).
 
 ## Key gotchas
 - **Path alias `@/`** maps to `src/`. Import from `@/types`, `@/components/...`, etc.
 - **Only 2 npm runtime deps**: `react` and `react-dom`. Never add another. All other libs (Transformers.js, Orama, KaTeX, Mermaid, Leaflet) come from CDN.
 - **API keys** come from `import.meta.env.VITE_*` env vars and are also configurable at runtime via Settings panel (stored in IndexedDB). `.env.example` documents all vars.
 - **Google OAuth** (`src/services/googleAuthService.ts`) loads GIS script from CDN dynamically. Requires `VITE_GOOGLE_OAUTH_CLIENT_ID`.
+- **GitHub OAuth** (`src/services/githubAuthService.ts`) uses device flow for authentication. Requires `VITE_GITHUB_OAUTH_CLIENT_ID`.
 - **If docs conflict with source code**, trust the source.
 - **Benchmarks** write to `benchmark-results.json` (gitignored).
 
