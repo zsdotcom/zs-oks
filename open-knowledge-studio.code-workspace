@@ -6,6 +6,19 @@
     }
   ],
   "settings": {
+    "cSpell.words": [
+      "bradlc",
+      "codeandbrain",
+      "dbaeumer",
+      "esbenp",
+      "fluxbox",
+      "indexeddb",
+      "mikestead",
+      "noninteractive",
+      "orama",
+      "tamasfe",
+      "yzhang"
+    ],
     "files.associations": {
       "*.css": "tailwindcss"
     },
@@ -15,8 +28,7 @@
       "source.fixAll.eslint": "explicit",
       "source.organizeImports": "explicit"
     },
-    "js/ts.tsdk.path": "node_modules/typescript/lib",
-    "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+    "typescript.disableAutomaticTypeAcquisition": true,
     "js/ts.preferences.importModuleSpecifier": "non-relative",
     "tailwindCSS.experimental.classRegex": [],
     "tailwindCSS.validate": true,
@@ -46,7 +58,6 @@
       "ms-playwright.playwright",
       "vitest.explorer",
       "github.vscode-github-actions",
-      "ms-vscode-remote.remote-containers",
       "ms-azuretools.vscode-docker",
       "biomejs.biome",
       "yzhang.markdown-all-in-one",
