@@ -70,11 +70,13 @@ export default defineConfig({
 | :-- | :--- | :--- | :--: | :--- |
 | 1 | `src/test/memory.unit.test.ts` | Unit | 25 | All 6 memory tiers, workspace isolation, embeddings, storage management |
 | 2 | `src/test/memory.integration.test.ts` | Integration | 10 | Cross-tier promotion, workspace isolation, BroadcastChannel sync, storage |
-| 3 | `src/test/memory.benchmark.ts` | Benchmark | 4 | IndexedDB write/read performance, search latency |
+| 3 | `src/test/memory.benchmark.ts` | Benchmark | 5 | IndexedDB write/read performance, search latency, key generation |
 | 4 | `src/test/gemini.test.ts` | Unit | 8 | LLM provider router, orchestrated workflow, sequential workflow |
 | 5 | `src/test/sandbox.test.ts` | Unit | 9 | Sandbox data creation, cleanup, edge cases |
 | 6 | `src/test/icd11.test.ts` | Unit | 22 | ICD-11 search, code lookup, FHIR conversion |
-| | **Total** | | **78** | |
+| 7 | `src/test/icf.test.ts` | Unit | 22 | ICF search, code lookup, FHIR conversion |
+| 8 | `src/test/ichi.test.ts` | Unit | 22 | ICHI search, code lookup, FHIR conversion |
+| | **Total** | | **117** | |
 
 ---
 
@@ -283,7 +285,65 @@ Results are written to `benchmark-results.json` (gitignored).
 
 ---
 
-## 10. Running Tests
+## 10. ICF Tests — icf.test.ts (22 Cases)
+
+| Test | What it validates |
+| :--- | :--- |
+| Search by keyword | Returns matching ICF codes |
+| Search by code | Exact code lookup |
+| Get all codes | Complete code listing |
+| Get by component | Component-specific filtering (Body Functions, Activities, etc.) |
+| ICF to FHIR conversion | HL7 FHIR R4 format conversion |
+| FHIR to ICF | Reverse FHIR conversion |
+| Search by FHIR resource | Find ICF codes from FHIR data |
+| Invalid code handling | Graceful error on bad codes |
+| Multi-language search | Search in multiple languages |
+| Component listing | All 4 components enumerated |
+| Code hierarchy | Parent/child code relationships |
+| Definition lookup | ICF definitions returned |
+| Qualifier codes | Qualifier scale codes |
+| Inclusion criteria | Inclusion/exclusion rules |
+| Code validation | Valid vs invalid codes |
+| Code formatting | Standard formatting enforced |
+| Deprecated codes | Deprecation status reported |
+| Version info | API version returned |
+| Batch lookup | Multiple codes in one call |
+| Empty search | Empty query handling |
+| Special characters | Unicode/full-text search |
+| Performance | Lookup response time |
+
+---
+
+## 11. ICHI Tests — ichi.test.ts (22 Cases)
+
+| Test | What it validates |
+| :--- | :--- |
+| Search by keyword | Returns matching ICHI codes |
+| Search by code | Exact code lookup |
+| Get all codes | Complete code listing |
+| Get by chapter | Chapter-specific filtering |
+| ICHI to FHIR conversion | HL7 FHIR R4 format conversion |
+| FHIR to ICHI | Reverse FHIR conversion |
+| Search by FHIR resource | Find ICHI codes from FHIR data |
+| Invalid code handling | Graceful error on bad codes |
+| Multi-language search | Search in multiple languages |
+| Chapter listing | All chapters enumerated |
+| Code hierarchy | Parent/child code relationships |
+| Target codes | Target (ICD-11/ICF) code associations |
+| Definition lookup | ICHI definitions returned |
+| Intervention type | Intervention type classification |
+| Code validation | Valid vs invalid codes |
+| Code formatting | Standard formatting enforced |
+| Deprecated codes | Deprecation status reported |
+| Version info | API version returned |
+| Batch lookup | Multiple codes in one call |
+| Empty search | Empty query handling |
+| Special characters | Unicode/full-text search |
+| Performance | Lookup response time |
+
+---
+
+## 12. Running Tests
 
 ```bash
 # All tests
@@ -314,7 +374,7 @@ npm run test:bench:compare
 
 ---
 
-## 11. Coverage Thresholds
+## 13. Coverage Thresholds
 
 Configured in `vitest.config.ts`, enforced in CI:
 

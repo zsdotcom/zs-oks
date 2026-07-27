@@ -30,7 +30,7 @@
 | 003 | [Non-Coder Guide](developers/003-non-coder-guide.md)                 | Click-by-click setup for non-developers: install Node, clone, get keys, run      | [Quickstart](developers/000-quickstart.md) · [Environment](developers/002-environment.md)                  |
 | 004 | [Development Guidelines](developers/004-development.md)              | Coding standards, TypeScript strict mode, git workflow, contribution guide       | [Tests](developers/006-test-suite.md) · [CI/CD](developers/008-ci-cd.md)                                   |
 | 005 | [Memory Architecture](developers/005-memory-architecture.md)         | 6-tier memory deep dive, vector embedding pipeline, Orama search, cross-tier ops | [API: Memory](../api/001-memory-api.md) · [ADR-002](../architecture/002-6-tier-memory.md)                  |
-| 006 | [Test Suite](developers/006-test-suite.md)                           | 74 tests across 6 files, coverage thresholds, mock behavior, benchmark suite     | [Development](developers/004-development.md) · [Benchmarks](../benchmarks/000-index.md)                    |
+| 006 | [Test Suite](developers/006-test-suite.md)                           | 117 tests across 8 files, coverage thresholds, mock behavior, benchmark suite    | [Development](developers/004-development.md) · [Benchmarks](../benchmarks/000-index.md)                    |
 | 007 | [Code Splitting & Performance](developers/007-code-splitting.md)     | 5 lazy-loaded components, Suspense pattern, direct imports list, bundle targets  | [ADR-004](../architecture/004-code-splitting.md) · [Dependencies](developers/010-dependency-removal.md)    |
 | 008 | [CI/CD Pipeline](developers/008-ci-cd.md)                            | GitHub Actions workflows (ci.yml, deploy.yml), secrets, local CI simulation      | [Deployment](developers/009-deployment.md) · [Docs Ops](../ops/000-docs-ci-cd.md)                          |
 | 009 | [Deployment Guide](developers/009-deployment.md)                     | Docker, Vercel, Netlify — step-by-step for each, comparison table                | [CI/CD](developers/008-ci-cd.md) · [Environment](developers/002-environment.md)                            |
@@ -53,8 +53,8 @@
 | 009 | [Webhooks](guides/009-webhooks.md)                            | Webhook event system, creation flow, payload format, use cases                                                                                       | [Connectors](guides/008-connectors.md) · [MCP](developers/011-mcp-configuration.md)              |
 | 010 | [Public Data APIs](guides/010-public-data.md)                 | CDC, WHO, FluView, COVIDcast, Pathogen, Weather, Air Quality data browser                                                                            | [ICD-11](guides/007-icd11.md) · [Epi Map](guides/006-epi-map.md)                                 |
 | 011 | [Google OAuth Setup](guides/011-google-oauth-setup.md)        | Google OAuth 2.0 to connect to Google Workspace (Drive, Docs, Sheets, Gmail, Tasks). This is a client-side flow using Google Identity Services (GIS) | [Sandbox](guides/005-sandbox.md) · [Getting Start](guides/000-getting-started.md)                |
-| 012 | [Bangladesh Health Ecosystem](guides/011-bd-health-system.md) | SHR, Health ID, DHIS2, OpenMRS+, VaxEPI, CRVS, telemedicine, ICD-11 transition                                                                       | [BD Core FHIR](guides/012-bd-core-fhir.md) · [ICD-11](guides/007-icd11.md)                       |
-| 013 | [BD Core FHIR IG](guides/012-bd-core-fhir.md)                 | OCL terminology, geographic hierarchy, vaccine codes, FHIR sandbox                                                                                   | [BD Health Ecosystem](guides/011-bd-health-system.md) · [Public Data](guides/010-public-data.md) |
+| 012 | [Bangladesh Health Ecosystem](guides/012-bd-health-system.md) | SHR, Health ID, DHIS2, OpenMRS+, VaxEPI, CRVS, telemedicine, ICD-11 transition                                                                       | [BD Core FHIR](guides/013-bd-core-fhir.md) · [ICD-11](guides/007-icd11.md)                       |
+| 013 | [BD Core FHIR IG](guides/013-bd-core-fhir.md)                 | OCL terminology, geographic hierarchy, vaccine codes, FHIR sandbox                                                                                   | [BD Health Ecosystem](guides/012-bd-health-system.md) · [Public Data](guides/010-public-data.md) |
 
 ## 🏗️ Architecture Decisions
 
@@ -132,20 +132,6 @@
 | **Librarian** 📚    | [SKILL.md](agents/librarian/SKILL.md) · [Templates](agents/librarian/references/TEMPLATES.md) · [Tools](agents/librarian/references/TOOLS.md)          | Memory maintenance, reference management, knowledge organization |
 | **Template** ❓     | [SKILL.md](agents/_template/SKILL.md) · [Templates](agents/_template/references/TEMPLATES.md) · [Tools](agents/_template/references/TOOLS.md)          | Custom agent creation template                                   |
 
-## 👤 Persona Agent Guides
-
-| Persona                          | Documentation                                                                                                                                                                                                                        | Description                                                         |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
-| **Epistemologist**               | [SKILL.md](agents/persona-1-epistemologist/SKILL.md) · [Templates](agents/persona-1-epistemologist/references/TEMPLATES.md) · [Tools](agents/persona-1-epistemologist/references/TOOLS.md)                                           | Epistemological analysis, methodology evaluation, knowledge quality |
-| **Bioinformatician**             | [SKILL.md](agents/persona-2-bioinformatician/SKILL.md) · [Templates](agents/persona-2-bioinformatician/references/TEMPLATES.md) · [Tools](agents/persona-2-bioinformatician/references/TOOLS.md)                                     | Sequence analysis, phylogenetics, multi-omics integration           |
-| **Field Epidemiologist**         | [SKILL.md](agents/persona-3-field-epidemiologist/SKILL.md) · [Templates](agents/persona-3-field-epidemiologist/references/TEMPLATES.md) · [Tools](agents/persona-3-field-epidemiologist/references/TOOLS.md)                         | Outbreak investigation, contact tracing, real-time surveillance     |
-| **Clinical Trialist**            | [SKILL.md](agents/persona-4-clinical-trialist/SKILL.md) · [Templates](agents/persona-4-clinical-trialist/references/TEMPLATES.md) · [Tools](agents/persona-4-clinical-trialist/references/TOOLS.md)                                  | Trial design, protocol review, regulatory compliance                |
-| **Data Journalist**              | [SKILL.md](agents/persona-5-data-journalist/SKILL.md) · [Templates](agents/persona-5-data-journalist/references/TEMPLATES.md) · [Tools](agents/persona-5-data-journalist/references/TOOLS.md)                                        | Investigative reporting, data-driven storytelling, visualization    |
-| **Genomic Analyst**              | [SKILL.md](agents/persona-6-genomic-analyst/SKILL.md) · [Templates](agents/persona-6-genomic-analyst/references/TEMPLATES.md) · [Tools](agents/persona-6-genomic-analyst/references/TOOLS.md)                                        | Variant calling, GWAS, population genomics                          |
-| **Environmental Epidemiologist** | [SKILL.md](agents/persona-7-environmental-epidemiologist/SKILL.md) · [Templates](agents/persona-7-environmental-epidemiologist/references/TEMPLATES.md) · [Tools](agents/persona-7-environmental-epidemiologist/references/TOOLS.md) | Exposure assessment, environmental risk, climate-health modeling    |
-| **Health Economist**             | [SKILL.md](agents/persona-8-health-economist/SKILL.md) · [Templates](agents/persona-8-health-economist/references/TEMPLATES.md) · [Tools](agents/persona-8-health-economist/references/TOOLS.md)                                     | Cost-effectiveness, budget impact, health technology assessment     |
-| **Vaccinologist**                | [SKILL.md](agents/persona-9-vaccinologist/SKILL.md) · [Templates](agents/persona-9-vaccinologist/references/TEMPLATES.md) · [Tools](agents/persona-9-vaccinologist/references/TOOLS.md)                                              | Vaccine development, immunology, clinical trials, safety monitoring |
-
 ---
 
 ## Quick Reference
@@ -153,14 +139,14 @@
 | Metric                       | Value                                                                  |
 | ---------------------------- | ---------------------------------------------------------------------- |
 | **Runtime dependencies**     | 2 (`react`, `react-dom`)                                               |
-| **Test count**               | 117 across 7 files                                                     |
+| **Test count**               | 117 across 8 files                                                     |
 | **Test coverage thresholds** | >80% statements, >75% branches, >85% functions, >80% lines             |
 | **Build size**               | ~90 KB gzip                                                            |
 | **IndexedDB stores**         | 22                                                                     |
 | **Components**               | 25 (5 lazy-loaded)                                                     |
-| **Services**                 | 16                                                                     |
+| **Services**                 | 19                                                                     |
 | **Built-in agents**          | 6 (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian) |
-| **AI providers**             | 6 (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama)                  |
+| **AI providers**             | 10 (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare) |
 | **CDN libraries**            | 5 (Transformers.js, Orama, KaTeX, Mermaid, Leaflet)                    |
 | **License**                  | MIT                                                                    |
 
