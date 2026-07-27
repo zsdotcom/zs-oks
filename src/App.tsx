@@ -7,8 +7,12 @@ import {
   SkillDefinition, ConnectorConfig, WorkspaceProject, LLMProvider,
   PROVIDER_OPTIONS, BUILT_IN_TOOLS,
 } from './types';
+import type { GitHubUser } from './services/githubAuthService';
+import { SEED_TEMPLATES } from './data/templates';
+import { SEED_SKILLS } from './data/skills';
 import { queryLLM, getInitialSuggestions, runA2ADebate, runOrchestratedWorkflow, runSequentialWorkflow } from './services/geminiService';
-import { signInWithGoogle, logoutUser, subscribeAuth, updateUserDoc } from './services/googleAuthService';
+import { signInWithGoogle, logoutUser, subscribeAuth, updateUserDoc, getStoredClientId, loadRuntimeClientId, setRuntimeClientId } from './services/googleAuthService';
+import { signInWithGitHub, pollGitHubToken, logoutGitHub, getGitHubUser, getStoredGitHubToken, loadGitHubClientId, setGitHubClientId, getStoredGitHubClientId } from './services/githubAuthService';
 import { dbGetAll, dbPut, dbDelete, dbGetKey, dbSetKey, migrateLocalStorage, exportAllData, importAllData } from './db/indexedDB';
 import { useFiles } from './hooks/useFiles';
 import { useChat } from './hooks/useChat';
@@ -161,6 +165,11 @@ const INITIAL_SAVED_PROMPTS: SavedPrompt[] = [
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
+  const [gitHubUser, setGitHubUser] = useState<GitHubUser | null>(null);
+  const [googleOAuthClientId, setGoogleOAuthClientId] = useState('');
+  const [gitHubOAuthClientId, setGitHubOAuthClientId] = useState('');
+  const [gitHubDeviceFlow, setGitHubDeviceFlow] = useState<{ uri: string; code: string } | null>(null);
+  const [gitHubPolling, setGitHubPolling] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<string>('dark');
   const [accentColor, setAccentColor] = useState<string>('#8B5CF6');
   const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
@@ -216,7 +225,7 @@ const App: React.FC = () => {
   const [a2aMetrics, setA2aMetrics] = useState<A2AMetric[]>([]);
   const [isA2ALoading, setIsA2ALoading] = useState(false);
   const [activeView, setActiveView] = useState<AppView>('chat');
-  const [templates] = useState<DocumentTemplate[]>(INITIAL_TEMPLATES);
+  const [templates] = useState<DocumentTemplate[]>([...INITIAL_TEMPLATES, ...SEED_TEMPLATES]);
   const [tags] = useState<DocumentTag[]>([
     { id: 'tag-1', name: 'epidemiology', color: '#ef4444' },
     { id: 'tag-2', name: 'architecture', color: '#3b82f6' },
@@ -288,7 +297,7 @@ const App: React.FC = () => {
   const [webhooks, setWebhooks] = useState<WebhookConfig[]>([]);
 
   // Skills state
-  const [skills, setSkills] = useState<SkillDefinition[]>(PRESET_SKILLS.map((s) => ({ ...s })));
+  const [skills, setSkills] = useState<SkillDefinition[]>([...PRESET_SKILLS.map((s) => ({ ...s })), ...SEED_SKILLS.map((s) => ({ ...s }))]);
   const [showSkillBuilder, setShowSkillBuilder] = useState(false);
 
   // Connectors state
@@ -328,6 +337,12 @@ const App: React.FC = () => {
     dbGetAll<any>('workspaceProjects').then((loaded: any[]) => {
       if (loaded.length > 0) setWorkspaceProjects(loaded.map((p: any) => ({ ...p, createdAt: new Date(p.createdAt) })));
     }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    loadRuntimeClientId().then((id) => setGoogleOAuthClientId(id || ''));
+    loadGitHubClientId().then((id) => setGitHubOAuthClientId(id || ''));
+    getGitHubUser().then((u) => setGitHubUser(u));
   }, []);
 
   useEffect(() => {
@@ -714,12 +729,60 @@ const App: React.FC = () => {
             <button onClick={() => setShowSettings(!showSettings)} className="p-1.5 rounded hover:bg-(--bg-hover)" aria-label="Open settings">
               <Settings size={14} className="text-(--text-secondary)" />
             </button>
-            {currentUser ? (
-              <button onClick={logoutUser} className="flex items-center gap-1 text-xs text-(--text-secondary) hover:text-red-400" title={currentUser.email || ''}>
-                {currentUser.photoURL && <img src={currentUser.photoURL} alt="" className="w-5 h-5 rounded-full" />}
-              </button>
+            {currentUser || gitHubUser ? (
+              <div className="flex items-center gap-1">
+                {currentUser && (
+                  <button onClick={logoutUser} className="flex items-center gap-1 text-xs text-(--text-secondary) hover:text-red-400" title={`Google: ${currentUser.email || ''}`}>
+                    {currentUser.photoURL && <img src={currentUser.photoURL} alt="" className="w-5 h-5 rounded-full" />}
+                  </button>
+                )}
+                {gitHubUser && (
+                  <button onClick={async () => { await logoutGitHub(); setGitHubUser(null); }} className="flex items-center gap-1 text-xs text-(--text-secondary) hover:text-red-400" title={`GitHub: ${gitHubUser.login}`}>
+                    {gitHubUser.avatar_url && <img src={gitHubUser.avatar_url} alt="" className="w-5 h-5 rounded-full" />}
+                  </button>
+                )}
+              </div>
             ) : (
-              <button onClick={signInWithGoogle} className="text-xs bg-(--accent) text-white px-2 py-1 rounded hover:bg-(--accent-dark)" aria-label="Sign in with Google">Sign in</button>
+              <div className="flex items-center gap-1">
+                {gitHubDeviceFlow ? (
+                  <div className="flex items-center gap-2 text-[10px] bg-(--bg-primary) border border-(--border) rounded px-2 py-1">
+                    <span>Enter code: <strong>{gitHubDeviceFlow.code}</strong> at {gitHubDeviceFlow.uri}</span>
+                    <button onClick={() => setGitHubDeviceFlow(null)} className="text-(--text-muted) hover:text-red-400"><X size={10} /></button>
+                  </div>
+                ) : (
+                  <>
+                    <button onClick={signInWithGoogle} className="text-xs bg-(--accent) text-white px-2 py-1 rounded hover:bg-(--accent-dark)" aria-label="Sign in with Google">Google</button>
+                    <button
+                      onClick={async () => {
+                        try {
+                          const flow = await signInWithGitHub();
+                          setGitHubDeviceFlow({ uri: flow.verificationUri, code: flow.userCode });
+                          setGitHubPolling(true);
+                          const ghClientId = await loadGitHubClientId();
+                          pollGitHubToken(flow.deviceCode, ghClientId || getStoredGitHubClientId()).then((u) => {
+                            setGitHubUser(u);
+                            setGitHubDeviceFlow(null);
+                            setGitHubPolling(false);
+                          }).catch((err) => {
+                            alert(err.message);
+                            setGitHubDeviceFlow(null);
+                            setGitHubPolling(false);
+                          });
+                        } catch (err: any) {
+                          if (err.message?.includes('not configured')) {
+                            alert('GitHub OAuth Client ID not configured. Set it in Settings.');
+                          } else { alert(err.message); }
+                        }
+                      }}
+                      disabled={gitHubPolling}
+                      className="text-xs bg-(--bg-primary) border border-(--border) text-(--text-secondary) px-2 py-1 rounded hover:border-(--accent)/50"
+                      aria-label="Sign in with GitHub"
+                    >
+                      GitHub
+                    </button>
+                  </>
+                )}
+              </div>
             )}
           </div>
         </header>
@@ -1067,6 +1130,10 @@ const App: React.FC = () => {
             onCreateSkill={handleCreateSkill}
             onDeleteSkill={handleDeleteSkill}
             onTestProvider={handleTestProvider}
+            googleOAuthClientId={googleOAuthClientId}
+            onGoogleOAuthClientIdChange={async (id) => { setGoogleOAuthClientId(id); await setRuntimeClientId(id); }}
+            gitHubOAuthClientId={gitHubOAuthClientId}
+            onGitHubOAuthClientIdChange={async (id) => { setGitHubOAuthClientId(id); await setGitHubClientId(id); }}
           />
         </React.Suspense>
 

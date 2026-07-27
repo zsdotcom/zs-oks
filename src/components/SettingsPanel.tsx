@@ -28,6 +28,10 @@ interface Props {
   onCreateSkill?: () => void;
   onDeleteSkill?: (id: string) => void;
   onTestProvider?: (provider: LLMProvider, apiKey: string) => Promise<boolean>;
+  googleOAuthClientId?: string;
+  onGoogleOAuthClientIdChange?: (id: string) => void;
+  gitHubOAuthClientId?: string;
+  onGitHubOAuthClientIdChange?: (id: string) => void;
 }
 
 const DEFAULT_AGENT_IDS = ['coord', 'research', 'data', 'writer', 'review', 'librarian'];
@@ -39,6 +43,8 @@ const SettingsPanel: React.FC<Props> = ({
   onEditAgent, onCreateAgent, onDeleteAgent,
   webhooks, onAddWebhook, onRemoveWebhook, onUpdateWebhook,
   skills, onCreateSkill, onDeleteSkill, onTestProvider,
+  googleOAuthClientId, onGoogleOAuthClientIdChange,
+  gitHubOAuthClientId, onGitHubOAuthClientIdChange,
 }) => {
   const [tab, setTab] = useState<'general' | 'agents' | 'skills' | 'tools' | 'knowledge' | 'webhooks'>('general');
   const [showMarketplace, setShowMarketplace] = useState(false);
@@ -142,6 +148,32 @@ const SettingsPanel: React.FC<Props> = ({
                 <input type="checkbox" checked={sandboxSettings.showAuditLedger} onChange={(e) => onSandboxChange({ ...sandboxSettings, showAuditLedger: e.target.checked })} className="accent-[var(--accent)]" />
                 <label className="text-xs">Show audit ledger</label>
               </div>
+            </div>
+
+            {/* Google OAuth */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-medium text-[var(--text-secondary)]">Google OAuth</h3>
+              <p className="text-[9px] text-[var(--text-muted)]">Required for Google Workspace integration (Drive, Docs, Sheets, Gmail). Create an OAuth client ID in <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:underline">Google Cloud Console</a>.</p>
+              <input
+                type="text"
+                value={googleOAuthClientId || ''}
+                onChange={(e) => onGoogleOAuthClientIdChange?.(e.target.value)}
+                placeholder="Paste Google OAuth Client ID..."
+                className="w-full bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[var(--accent)]/50"
+              />
+            </div>
+
+            {/* GitHub OAuth */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-medium text-[var(--text-secondary)]">GitHub OAuth</h3>
+              <p className="text-[9px] text-[var(--text-muted)]">Required for GitHub sign-in. Create an OAuth App in <a href="https://github.com/settings/developers" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:underline">GitHub Developer Settings</a> (use device flow — no secret needed).</p>
+              <input
+                type="text"
+                value={gitHubOAuthClientId || ''}
+                onChange={(e) => onGitHubOAuthClientIdChange?.(e.target.value)}
+                placeholder="Paste GitHub OAuth Client ID..."
+                className="w-full bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[var(--accent)]/50"
+              />
             </div>
 
             {/* Data Management */}

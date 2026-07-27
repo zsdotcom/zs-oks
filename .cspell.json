@@ -34,6 +34,7 @@
     "dbaeumer",
     "deepseek",
     "delphi",
+    "devcontainer",
     "devopsariful",
     "docsify",
     "epidata",
@@ -77,6 +78,7 @@
     "mixtral",
     "netlify",
     "nginx",
+    "nojekyll",
     "noninteractive",
     "nvmrc",
     "oauth",
@@ -119,6 +121,7 @@
     "typescript",
     "unpkg",
     "vercel",
+    "vite",
     "vitepress",
     "vitest",
     "wasm",
@@ -132,7 +135,8 @@
     "xenova",
     "xss",
     "xychart",
-    "yzhang"
+    "yzhang",
+    "zarish"
   ],
   "ignorePaths": [
     "node_modules",

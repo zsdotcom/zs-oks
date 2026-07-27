@@ -40,6 +40,7 @@ jobs:
         run: npm run build
         env:
           BASE_PATH: /open-knowledge-studio/
+          VITE_GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
       - name: Copy documentation for docs viewer
         run: |
           cp -r docs dist/docs

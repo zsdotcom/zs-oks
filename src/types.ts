@@ -357,6 +357,10 @@ export const KNOWLEDGE_SOURCES: KnowledgeSource[] = [
   { id: 'ks-gdelt', name: 'gdelt', displayName: 'GDELT Project', baseUrl: 'https://api.gdeltproject.org/api/v2', enabled: true, rateLimit: '20/min', requiresKey: false },
   { id: 'ks-crossref', name: 'crossref', displayName: 'CrossRef', baseUrl: 'https://api.crossref.org', enabled: true, rateLimit: '50/sec', requiresKey: false },
   { id: 'ks-rss', name: 'rss', displayName: 'RSS Feeds', baseUrl: '', enabled: true, rateLimit: 'User-defined', requiresKey: false },
+  { id: 'ks-world-bank', name: 'world-bank', displayName: 'World Bank API', baseUrl: 'https://api.worldbank.org/v2', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
+  { id: 'ks-un-data', name: 'un-data', displayName: 'UN Data API', baseUrl: 'https://data.un.org/ws/rest/data', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
+  { id: 'ks-open-library', name: 'open-library', displayName: 'Open Library', baseUrl: 'https://openlibrary.org', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
+  { id: 'ks-europe-pmc', name: 'europe-pmc', displayName: 'Europe PMC', baseUrl: 'https://www.ebi.ac.uk/europepmc/api', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
 ];
 
 export interface KnowledgeFetchResult {

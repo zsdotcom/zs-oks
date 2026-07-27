@@ -9,15 +9,29 @@
     "cSpell.words": [
       "bradlc",
       "codeandbrain",
+      "cspell",
       "dbaeumer",
+      "devcontainer",
       "esbenp",
       "fluxbox",
+      "gemini",
       "indexeddb",
+      "katex",
+      "leaflet",
+      "mermaid",
       "mikestead",
+      "nojekyll",
       "noninteractive",
+      "npm",
+      "npx",
+      "openai",
       "orama",
       "tamasfe",
-      "yzhang"
+      "typescript",
+      "vite",
+      "vitest",
+      "yzhang",
+      "zarish"
     ],
     "files.associations": {
       "*.css": "tailwindcss"

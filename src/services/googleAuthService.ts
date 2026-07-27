@@ -11,7 +11,24 @@ export interface AppUser {
   photoURL: string | null;
 }
 
-const CLIENT_ID: string = (typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_GOOGLE_OAUTH_CLIENT_ID : '') || '';
+import { dbGetKey, dbSetKey } from '../db/indexedDB';
+
+const ENV_CLIENT_ID: string = (typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_GOOGLE_OAUTH_CLIENT_ID : '') || '';
+let runtimeClientId: string | null = null;
+
+export function getStoredClientId(): string { return runtimeClientId || ENV_CLIENT_ID; }
+
+export async function loadRuntimeClientId(): Promise<string> {
+  try { runtimeClientId = (await dbGetKey('google-oauth-client-id')) as string | null; } catch { runtimeClientId = null; }
+  return getStoredClientId();
+}
+
+export async function setRuntimeClientId(id: string): Promise<void> {
+  runtimeClientId = id;
+  await dbSetKey('google-oauth-client-id', id);
+}
+
+const CLIENT_ID: string = ''; // resolved dynamically in signInWithGoogle
 
 const SCOPES = [
   'openid', 'email', 'profile',
@@ -71,12 +88,13 @@ export const getGoogleAccessToken = (): string | null => cachedAccessToken;
 export const setGoogleAccessToken = (token: string | null): void => { cachedAccessToken = token; };
 
 export const signInWithGoogle = async (): Promise<AppUser | null> => {
-  if (!CLIENT_ID) throw Object.assign(new Error('Google OAuth Client ID is not configured. Set VITE_GOOGLE_OAUTH_CLIENT_ID in .env.'), { code: 'auth/missing-client-id' });
+  const clientId = getStoredClientId();
+  if (!clientId) throw Object.assign(new Error('Google OAuth Client ID is not configured. Set it in Settings or create a .env file with VITE_GOOGLE_OAUTH_CLIENT_ID.'), { code: 'auth/missing-client-id' });
   await loadGisScript();
   return new Promise((resolve, reject) => {
     try {
       const tokenClient = (window as any).google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
+        client_id: clientId,
         scope: SCOPES,
         callback: async (resp: any) => {
           if (resp.error) { reject(Object.assign(new Error(resp.error_description || resp.error), { code: resp.error })); return; }

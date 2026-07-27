@@ -1,0 +1,88 @@
+import type { SkillDefinition } from '../types';
+
+export const SEED_SKILLS: SkillDefinition[] = [
+  {
+    id: 'research-lit-review', name: 'Literature Review', description: 'Guide through systematic literature review with PRISMA workflow', category: 'research',
+    instructions: '1. Define research question and search strategy\n2. Search multiple sources (PubMed, arXiv, OpenAlex, Semantic Scholar)\n3. Screen results by title/abstract\n4. Extract data into synthesis matrix\n5. Generate structured summary with citations',
+    allowedTools: ['search-pubmed', 'search-arxiv', 'search-openalex', 'semantic-search', 'read-file', 'write-file', 'remember', 'recall'],
+    priority: 'high', triggers: ['literature review', 'systematic review', 'prisma', 'search literature', 'find papers', 'research papers'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 'research-citation', name: 'Citation Manager', description: 'Format and manage citations in APA/MLA/Chicago/Vancouver', category: 'research',
+    instructions: '1. Identify citation style (APA default)\n2. Extract citation metadata from provided text\n3. Format each citation per style rules\n4. Order alphabetically or by appearance\n5. Generate full bibliography',
+    allowedTools: ['read-file', 'write-file', 'semantic-search', 'recall'],
+    priority: 'medium', triggers: ['citation', 'reference', 'bibliography', 'apa', 'mla', 'vancouver', 'cite', 'ref'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 'writing-academic-paper', name: 'Academic Paper Writer', description: 'Structure and draft IMRaD academic papers', category: 'writing',
+    instructions: '1. Apply standard IMRaD structure (Introduction, Methods, Results, Discussion)\n2. Draft each section from provided research notes\n3. Include inline citations\n4. Generate abstract and keywords\n5. Apply consistent formatting',
+    allowedTools: ['write-file', 'export-pdf', 'draw-chart', 'draw-diagram', 'render-latex', 'read-file', 'remember'],
+    priority: 'high', triggers: ['write paper', 'academic paper', 'imrad', 'write article', 'manuscript', 'write research'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 'writing-technical-doc', name: 'Technical Documentation', description: 'Create technical documentation with diagrams and examples', category: 'writing',
+    instructions: '1. Identify the audience and purpose\n2. Structure: overview, setup, usage, API reference, troubleshooting\n3. Include code examples where relevant\n4. Generate Mermaid diagrams for architecture\n5. Add Table of Contents',
+    allowedTools: ['write-file', 'export-pdf', 'draw-diagram', 'read-file'],
+    priority: 'medium', triggers: ['technical doc', 'documentation', 'write docs', 'api docs', 'user guide', 'readme'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 'data-statistical-analysis', name: 'Statistical Analysis', description: 'Run statistical tests, interpret results, report findings', category: 'data',
+    instructions: '1. Validate and sanitize input data\n2. Compute descriptive statistics (mean, median, SD, range)\n3. Select and run appropriate statistical tests\n4. Generate visualizations with confidence intervals\n5. Write interpretation of results',
+    allowedTools: ['calculate', 'draw-chart', 'read-file', 'write-file', 'render-latex', 'vectorize'],
+    priority: 'high', triggers: ['statistical analysis', 'statistics', 'test data', 'analyze data', 'p-value', 'regression'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 'data-visualization', name: 'Data Visualization', description: 'Generate charts, maps, and diagrams from tabular data', category: 'data',
+    instructions: '1. Parse and validate the data format\n2. Select appropriate chart type (bar, line, pie, scatter, xy)\n3. Generate Mermaid chart code\n4. Add titles, labels, and legends\n5. Include data annotations where relevant',
+    allowedTools: ['draw-chart', 'draw-diagram', 'read-file', 'render-latex'],
+    priority: 'medium', triggers: ['visualize', 'chart', 'graph', 'plot', 'diagram', 'create chart', 'draw chart', 'dashboard'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 'epi-outbreak-analysis', name: 'Outbreak Analysis', description: 'Investigate disease outbreaks with epi curves, attack rates, and maps', category: 'epidemiology',
+    instructions: '1. Compile case data with onset dates and locations\n2. Calculate attack rates and CFR\n3. Generate epidemic curve\n4. Estimate R0 if sufficient data\n5. Create epi map of case distribution\n6. Cross-reference with WHO/CDC thresholds',
+    allowedTools: ['calculate', 'draw-chart', 'draw-diagram', 'search-who', 'search-cdc', 'semantic-search', 'render-latex', 'write-file'],
+    priority: 'high', triggers: ['outbreak', 'epidemic', 'epi curve', 'attack rate', 'outbreak analysis', 'disease outbreak'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 'epi-icd11-coding', name: 'ICD-11 Coding', description: 'Look up and validate ICD-11 codes with FHIR output', category: 'epidemiology',
+    instructions: '1. Identify the diagnosis or condition from user input\n2. Search ICD-11 for matching code\n3. Return code, title, and description\n4. Format as FHIR CodeableConcept\n5. Validate code against WHO registry',
+    allowedTools: ['read-file', 'write-file', 'semantic-search'],
+    priority: 'high', triggers: ['icd', 'icd-11', 'icd11', 'diagnosis code', 'medical coding', 'fhir'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 'integration-github-sync', name: 'GitHub Sync', description: 'Sync knowledge base with GitHub repositories', category: 'integration',
+    instructions: '1. Connect to GitHub using stored token\n2. Clone or fetch repository contents\n3. Parse README and key documents\n4. Store content in knowledge base\n5. Generate summary of synced content',
+    allowedTools: ['read-file', 'write-file', 'vectorize', 'semantic-search', 'rss-fetch'],
+    priority: 'medium', triggers: ['github', 'sync repo', 'fetch repo', 'github sync', 'repository', 'git'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 'integration-google-workspace', name: 'Google Workspace Export', description: 'Export documents, create sheets, send via Gmail', category: 'integration',
+    instructions: '1. Check Google authentication status\n2. If exporting to Drive, prepare JSON content\n3. If creating Sheets, format data as rows\n4. If sending Gmail, compose with subject and body\n5. Execute via Google REST APIs',
+    allowedTools: ['write-file', 'read-file', 'export-pdf', 'speak'],
+    priority: 'medium', triggers: ['google drive', 'google docs', 'google sheets', 'gmail', 'google workspace', 'export to drive', 'create sheet', 'send email'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 'epi-surveillance-monitor', name: 'Surveillance Monitor', description: 'Monitor disease surveillance data from WHO and CDC', category: 'epidemiology',
+    instructions: '1. Connect to surveillance data sources (WHO GHO, CDC, Delphi)\n2. Set baseline thresholds for selected diseases\n3. Fetch latest surveillance data\n4. Detect anomalies exceeding thresholds\n5. Generate surveillance alert if triggered',
+    allowedTools: ['search-who', 'search-cdc', 'semantic-search', 'calculate', 'draw-chart', 'write-file', 'recall'],
+    priority: 'medium', triggers: ['surveillance', 'monitor', 'disease monitoring', 'alert', 'threshold', 'surveillance data'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+  {
+    id: 'data-public-api-query', name: 'Public API Query', description: 'Fetch and analyze data from free public APIs', category: 'data',
+    instructions: '1. Identify the appropriate public API (WHO, CDC, World Bank, UN, Open-Meteo, GDELT)\n2. Format the query parameters\n3. Request data from the API\n4. Parse and structure the response\n5. Cache results to avoid redundant calls',
+    allowedTools: ['search-who', 'search-cdc', 'semantic-search', 'calculate', 'draw-chart', 'write-file', 'rss-fetch'],
+    priority: 'medium', triggers: ['public data', 'api query', 'fetch data', 'who data', 'cdc data', 'world bank', 'weather data'],
+    createdAt: new Date(), updatedAt: new Date(),
+  },
+];
