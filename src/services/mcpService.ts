@@ -257,6 +257,65 @@ const KNOWN_ENDPOINTS: Record<string, { url: string; method: string; buildQuery:
     method: 'POST',
     buildQuery: (p) => new URLSearchParams(),
   },
+  /* ─── Ejentum MCP — Reasoning & Code Analysis ─── */
+  ejentum_reason: {
+    url: 'https://raw.githubusercontent.com/opencode-ai/open-knowledge-studio/main/docs/data/reasoning.json',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ problem: p.problem || '', context: p.context || '', framework: p.framework || 'chain-of-thought' }),
+  },
+  ejentum_analyze_code: {
+    url: 'https://raw.githubusercontent.com/opencode-ai/open-knowledge-studio/main/docs/data/code-analysis.json',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ code: p.code || '', analysis_type: p.analysis_type || 'security', language: p.language || 'auto' }),
+  },
+  ejentum_anti_deception: {
+    url: 'https://raw.githubusercontent.com/opencode-ai/open-knowledge-studio/main/docs/data/anti-deception.json',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ statement: p.statement || '', confidence: p.confidence || 'medium' }),
+  },
+  ejentum_memory: {
+    url: 'https://raw.githubusercontent.com/opencode-ai/open-knowledge-studio/main/docs/data/ejentum-memory.json',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ action: p.action || 'store', key: p.key || '', value: p.value || '' }),
+  },
+  /* ─── ReliefWeb API ─── */
+  reliefweb_search_reports: {
+    url: 'https://api.reliefweb.int/v1/reports',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ 'filter[field]': 'country', 'filter[value]': p.country || '', 'query[value]': p.query || '', limit: p.limit || '20', offset: p.offset || '0', sort: p.sort || 'date:desc', profile: 'full' }),
+  },
+  reliefweb_get_report: {
+    url: 'https://api.reliefweb.int/v1/reports',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ 'filter[field]': 'id', 'filter[value]': p.id || '', profile: 'full' }),
+  },
+  reliefweb_list_disasters: {
+    url: 'https://api.reliefweb.int/v1/disasters',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ limit: p.limit || '20', sort: p.sort || 'date:desc', profile: 'full' }),
+  },
+  /* ─── WHO data.who.int OData API ─── */
+  who_data_indicator: {
+    url: 'https://data.who.int/api/gho-data/v1/GHO',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ '$filter': `IndicatorCode eq '${p.indicator || ''}'`, '$top': p.limit || '50', ...(p.country ? { '$filter': `SpatialDimension eq '${p.country}'` } : {}) }),
+  },
+  who_data_search: {
+    url: 'https://data.who.int/api/gho-data/v1/GHO',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ '$search': p.query || '', '$top': p.limit || '20' }),
+  },
+  /* ─── Feedbagel RSS MCP ─── */
+  feedbagel_list_feeds: {
+    url: 'https://raw.githubusercontent.com/opencode-ai/open-knowledge-studio/main/docs/data/rss-feeds.json',
+    method: 'GET',
+    buildQuery: () => new URLSearchParams(),
+  },
+  feedbagel_fetch_entries: {
+    url: 'https://raw.githubusercontent.com/opencode-ai/open-knowledge-studio/main/docs/data/rss-entries.json',
+    method: 'GET',
+    buildQuery: (p) => new URLSearchParams({ feed: p.feed || '', limit: p.limit || '20' }),
+  },
 };
 
 export async function executeMCPTool(

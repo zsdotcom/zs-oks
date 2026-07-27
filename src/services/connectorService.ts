@@ -30,9 +30,9 @@ export async function removeConnector(id: string): Promise<void> {
 }
 
 export async function updateConnectorStatus(id: string, status: ConnectorConfig['status'], lastSync?: Date): Promise<void> {
-  connectors = connectors.map((c) => c.id === id ? { ...c, status, lastSync: lastSync || c.lastSync } : c);
+  connectors = connectors.map((c) => c.id === id ? { ...c, status, lastSync: lastSync || (typeof c.lastSync === 'string' ? new Date(c.lastSync) : c.lastSync) } : c);
   const c = connectors.find((c) => c.id === id);
-  if (c) await dbPut('connectors', { ...c, config: JSON.stringify(c.config), lastSync: lastSync?.toISOString() || c.lastSync });
+  if (c) await dbPut('connectors', { ...c, config: JSON.stringify(c.config), lastSync: lastSync ? lastSync.toISOString() : (c.lastSync instanceof Date ? c.lastSync.toISOString() : c.lastSync) });
 }
 
 export async function testGitHubConnection(token: string): Promise<boolean> {
@@ -147,8 +147,7 @@ export async function syncConnector(connector: ConnectorConfig): Promise<{ succe
       case 'slack':
       case 'email':
       case 'webhook':
-        data = [];
-        break;
+        throw new Error(`Connector type '${connector.type}' sync not yet implemented. Only 'github' and 'rss' are currently supported.`);
     }
     await storeData(connector.id, data);
     await updateConnectorStatus(connector.id, data.length > 0 ? 'connected' : connector.status, new Date());

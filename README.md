@@ -2,14 +2,14 @@
 
 # ⬡ Open Knowledge Studio v2.0
 
-**Zero-dependency · Browser-native · 6-Agent A2A Platform**
+**Zero-dependency · Browser-native · 12-Agent A2A Platform**
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![React](https://img.shields.io/badge/React-19-087EA4?style=flat&logo=react&logoColor=white)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-8.1-646CFF?style=flat&logo=vite&logoColor=white)](https://vite.dev)
 [![Tailwind](https://img.shields.io/badge/Tailwind-4.x-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-MIT-10B981?style=flat)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-117-8B5CF6?style=flat)]()
+[![Tests](https://img.shields.io/badge/Tests-227-8B5CF6?style=flat)]()
 [![Build](https://img.shields.io/badge/Build-~90KB_gzip-4CD7F6?style=flat)]()
 
 A private AI research laboratory in your browser — 6 specialized agents collaborate on your work, all data stays local, zero backend required.
@@ -20,21 +20,21 @@ A private AI research laboratory in your browser — 6 specialized agents collab
 
 ## ✦ Overview
 
-A private AI research laboratory in your browser — 6 specialized agents collaborate on your work, all data stays local, zero backend required.
+A private AI research laboratory in your browser — 12 specialized agents collaborate on your work, all data stays local, zero backend required.
 
-Open Knowledge Studio operates entirely within your browser using IndexedDB for persistent memory, Transformers.js for vector embeddings, and Orama JS for semantic search — all ML/search libraries loaded dynamically from CDN. Only `react` + `react-dom` at build time.
+Open Knowledge Studio operates entirely within your browser using IndexedDB for persistent memory, Transformers.js for vector embeddings, and Orama JS for hybrid semantic search — all ML/search libraries loaded dynamically from CDN. Only `react` + `react-dom` at build time. Cross-session memory aggregates agent learnings across all conversations.
 
 ### Core Stats
 
 | Metric | Value |
 |:-------|:------|
 | ⚡ Runtime deps | 2 (`react`, `react-dom`) |
-| 🧪 Tests | 117 across 8 files |
+| 🧪 Tests | 227 across 14 files |
 | 📦 Build size | ~90 KB gzip |
 | 🗄️ IndexedDB stores | 22 |
 | 🧩 Components | 25 (5 lazy-loaded) |
 | 🔧 Services | 19 |
-| 🤖 Built-in agents | 6 + custom |
+| 🤖 Built-in agents | 12 + custom |
 | 🌐 AI providers | 10 (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare) |
 
 ---
@@ -68,8 +68,8 @@ Open Knowledge Studio operates entirely within your browser using IndexedDB for 
 <tr>
 <td width="50%">
 
-### 🤖 6-Agent A2A Debate
-Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian — each with unique color, avatar, and system prompt. All agents respond independently to user prompts.
+### 🤖 12-Agent A2A Debate
+Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planning Agent, Testing Agent, Code Generator, Knowledge Curator — each with unique color, avatar, and system prompt. Cross-session memory aggregates past learnings.
 
 </td>
 <td width="50%">
@@ -124,6 +124,12 @@ Only `react` + `react-dom`. Transformers.js, Orama, KaTeX, Mermaid, Leaflet all 
 | **Writer** | ✍️ | <span style="color:#10B981">■</span> `#10B981` | `--color-writer` | Drafts, templates, formats |
 | **Reviewer** | 🔍 | <span style="color:#EF4444">■</span> `#EF4444` | `--color-review` | QA, citations, compliance |
 | **Librarian** | 📚 | <span style="color:#A855F7">■</span> `#A855F7` | `--color-librarian` | Memory, knowledge, references |
+| **Security Analyst** | 🛡️ | <span style="color:#EF4444">■</span> `#EF4444` | `--color-security` | Code security, vulnerability audit |
+| **Code Reviewer** | 🔎 | <span style="color:#6366F1">■</span> `#6366F1` | `--color-codereview` | Code quality, best practices |
+| **Planning Agent** | 📋 | <span style="color:#14B8A6">■</span> `#14B8A6` | `--color-planner` | Task decomposition, execution plans |
+| **Testing Agent** | 🧪 | <span style="color:#84CC16">■</span> `#84CC16` | `--color-tester` | Test generation, validation |
+| **Code Generator** | ⚡ | <span style="color:#F97316">■</span> `#F97316` | `--color-codegen` | Source code generation |
+| **Knowledge Curator** | 🏛️ | <span style="color:#A855F7">■</span> `#A855F7` | `--color-curator` | Knowledge organization, cross-linking |
 
 </div>
 
@@ -145,7 +151,7 @@ npm run build      # → dist/
 npm run preview
 
 # Tests
-npm test           # 117 tests across 8 files
+npm test           # 227 tests across 14 files
 npm run test:bench # Performance benchmarks
 ```
 
@@ -165,7 +171,7 @@ npm run test:bench # Performance benchmarks
 
 ## ✦ Documentation
 
-Comprehensive documentation is available in the [`docs/`](docs/index.md) directory with **120 files across 12 sections**:
+Comprehensive documentation is available in the [`docs/`](docs/index.md) directory with **130+ files across 13 sections**:
 
 ```
 docs/
@@ -194,7 +200,7 @@ docs/
 │   ├── 010-dependency-removal.md         # Zero-dependency architecture
 │   └── 011-mcp-configuration.md          # MCP server configuration
 │
-├── guides/                               # User guides (12 files)
+├── guides/                               # User guides (14 files)
 │   ├── 000-getting-started.md            # First-time user walkthrough
 │   ├── 001-agents.md                     # A2A agents guide
 │   ├── 002-workflows.md                  # Multi-agent workflows
@@ -206,7 +212,9 @@ docs/
 │   ├── 008-connectors.md                 # Connectors guide
 │   ├── 009-webhooks.md                   # Webhooks guide
 │   ├── 010-public-data.md                # Public data APIs
-│   └── 011-google-oauth-setup.md         # Google OAuth setup guide
+│   ├── 011-google-oauth-setup.md         # Google OAuth setup guide
+│   ├── 012-bd-health-system.md           # Bangladesh Health Ecosystem
+│   └── 013-bd-core-fhir.md               # Bangladesh Core FHIR IG
 │
 ├── architecture/                         # Architecture Decision Records (7 files)
 ├── api/                                  # API reference (5 files)
@@ -218,11 +226,12 @@ docs/
 ├── ops/                                  # Docs operations (2 files)
 ├── agents/                               # Agent docs (66 files)
 │   ├── SKILL.md / references/            # Agent system overview
-│   ├── Built-in (6): coordinator, researcher, data-analyst, writer, reviewer, librarian
+│   ├── Built-in (12): coordinator, researcher, data-analyst, writer, reviewer, librarian, security-analyst, code-reviewer, planner, tester, code-generator, knowledge-curator
 │   ├── Persona guides (9): epistemologist, bioinformatician, field-epidemiologist,
 │   │                      clinical-trialist, data-journalist, genomic-analyst,
 │   │                      environmental-epidemiologist, health-economist, vaccinologist
 │   └── _template/                        # Custom agent template
+├── onboarding/                           # Onboarding journey (15 files)
 └── free-resources.md                     # Free MCPs, Cloudflare, APIs, CDN libs
 ```
 
@@ -235,15 +244,16 @@ docs/
 ```
 open-knowledge-studio/
 ├── .github/workflows/         # CI + Deploy GitHub Actions
-├── docs/                      # 120 files, 12 sections (see above)
+├── docs/                      # 130+ files, 13 sections (see above)
 ├── e2e/                       # Playwright E2E tests (7 spec files)
 ├── public/                    # Static assets (favicon, manifest, sw)
 ├── src/
-│   ├── components/            # 25 React components (5 lazy-loaded)
+│   ├── components/            # 30+ React components (5 lazy-loaded)
 │   ├── services/              # 16 application services
 │   ├── db/                    # IndexedDB: 22 object stores
 │   ├── hooks/                 # useChat, useFiles, usePWAInstall
-│   ├── test/                  # 117 tests across 7 files
+│   ├── data/                  # Extracted constants (mcpServers, navigation)
+│   ├── test/                  # 227 tests across 14 files
 │   └── utils/                 # markdown parser, syntax highlighter
 ├── opencode.jsonc             # OpenCode agent configuration
 ├── AGENTS.md                  # Agent workspace instructions

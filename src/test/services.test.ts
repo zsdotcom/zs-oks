@@ -130,10 +130,12 @@ describe('chartService', () => {
 });
 
 describe('outbreakService', () => {
+  const today = new Date();
+  const daysAgo = (d: number) => new Date(today.getTime() - d * 86400000).toISOString().split('T')[0];
   const sampleData: EpiDataPoint[] = [
-    { id: '1', lat: 0, lng: 0, label: 'CityA', disease: 'Malaria', cases: 100, severity: 'medium', date: '2026-06-01', status: 'active' },
-    { id: '2', lat: 0, lng: 0, label: 'CityA', disease: 'Malaria', cases: 500, severity: 'high', date: '2026-06-15', status: 'active' },
-    { id: '3', lat: 0, lng: 0, label: 'CityB', disease: 'Dengue', cases: 10, severity: 'low', date: '2026-06-01', status: 'active' },
+    { id: '1', lat: 0, lng: 0, label: 'CityA', disease: 'Malaria', cases: 100, severity: 'medium', date: daysAgo(2), status: 'active' },
+    { id: '2', lat: 0, lng: 0, label: 'CityA', disease: 'Malaria', cases: 500, severity: 'high', date: daysAgo(1), status: 'active' },
+    { id: '3', lat: 0, lng: 0, label: 'CityB', disease: 'Dengue', cases: 10, severity: 'low', date: daysAgo(2), status: 'active' },
   ];
 
   it('detectOutbreaks returns alerts for elevated case counts', () => {

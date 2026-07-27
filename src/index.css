@@ -260,6 +260,80 @@
   border-radius: var(--radius-sm);
 }
 
+:root.theme-poimandres {
+  --accent: #a6accd;
+  --accent-light: #c4cae8;
+  --accent-dark: #8a90b0;
+  --accent-subtle: rgba(166, 172, 205, 0.14);
+  --accent-subtler: rgba(166, 172, 205, 0.07);
+  --bg-primary: #10121e;
+  --bg-secondary: #1b1e2b;
+  --bg-tertiary: #252836;
+  --bg-hover: #252836;
+  --text-primary: #e2e8f0;
+  --text-secondary: #a6accd;
+  --text-muted: #767c9d;
+  --border: #2a2d3e;
+  --border-light: #3a3d52;
+  --shadow: rgba(0, 0, 0, 0.4);
+  --color-scheme: dark;
+  --glass-bg: rgba(27, 30, 43, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --elevation-1: 0 1px 3px rgba(0,0,0,0.35);
+  --elevation-2: 0 4px 12px rgba(0,0,0,0.40);
+  --elevation-3: 0 8px 28px rgba(0,0,0,0.45);
+  --elevation-4: 0 12px 48px rgba(0,0,0,0.50);
+  --blur-sm: blur(4px);
+  --blur-md: blur(12px);
+  --blur-lg: blur(24px);
+}
+
+:root.theme-poimandres .hljs-keyword { color: #c4cae8; }
+:root.theme-poimandres .hljs-string { color: #e4d9b0; }
+:root.theme-poimandres .hljs-comment { color: #767c9d; font-style: italic; }
+:root.theme-poimandres .hljs-number { color: #b8b8e8; }
+:root.theme-poimandres .hljs-function { color: #add7ff; }
+:root.theme-poimandres .hljs-type { color: #5de4c7; }
+:root.theme-poimandres .hljs-built_in { color: #5de4c7; }
+
+:root.theme-catppuccin {
+  --accent: #cba6f7;
+  --accent-light: #ddc7ff;
+  --accent-dark: #b48eed;
+  --accent-subtle: rgba(203, 166, 247, 0.14);
+  --accent-subtler: rgba(203, 166, 247, 0.07);
+  --bg-primary: #11111b;
+  --bg-secondary: #1e1e2e;
+  --bg-tertiary: #2a2a3c;
+  --bg-hover: #2a2a3c;
+  --text-primary: #cdd6f4;
+  --text-secondary: #a6adc8;
+  --text-muted: #6c7086;
+  --border: #313244;
+  --border-light: #45475a;
+  --shadow: rgba(0, 0, 0, 0.45);
+  --color-scheme: dark;
+  --glass-bg: rgba(30, 30, 46, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.50);
+  --elevation-1: 0 1px 3px rgba(0,0,0,0.4);
+  --elevation-2: 0 4px 12px rgba(0,0,0,0.45);
+  --elevation-3: 0 8px 28px rgba(0,0,0,0.50);
+  --elevation-4: 0 12px 48px rgba(0,0,0,0.55);
+  --blur-sm: blur(4px);
+  --blur-md: blur(12px);
+  --blur-lg: blur(24px);
+}
+
+:root.theme-catppuccin .hljs-keyword { color: #cba6f7; font-weight: 600; }
+:root.theme-catppuccin .hljs-string { color: #a6e3a1; }
+:root.theme-catppuccin .hljs-comment { color: #6c7086; font-style: italic; }
+:root.theme-catppuccin .hljs-number { color: #fab387; }
+:root.theme-catppuccin .hljs-function { color: #89b4fa; }
+:root.theme-catppuccin .hljs-type { color: #89dceb; }
+:root.theme-catppuccin .hljs-built_in { color: #89dceb; }
+
 :root.theme-solarized {
   --accent: #268BD2;
   --accent-light: #58A9E2;

@@ -64,15 +64,14 @@ async function queryGemini(
   if (!apiKey) throw new Error('Gemini API key is required. Set GEMINI_API_KEY in .env or provider config.');
 
   const systemInstruction = systemPrompt
-    ? { role: 'system', parts: [{ text: systemPrompt }] }
-    : { role: 'system', parts: [{ text: 'You are a helpful research and knowledge assistant.' }] };
+    ? { role: 'user', parts: [{ text: systemPrompt }] }
+    : { role: 'user', parts: [{ text: 'You are a helpful research and knowledge assistant.' }] };
 
   const contextPart = contextDocs
     ? { role: 'user', parts: [{ text: `## Context Documents:\n${contextDocs}\n\nPlease reference these documents when answering.` }] }
     : null;
 
   const contents = [
-    systemInstruction,
     ...(contextPart ? [contextPart] : []),
     ...messages
       .filter((m) => m.sender !== MessageSender.SYSTEM && !m.isLoading)
@@ -82,8 +81,9 @@ async function queryGemini(
       })),
   ];
 
-  const body: GeminiRequest = {
+  const body: GeminiRequest & { system_instruction?: { parts: { text: string }[] } } = {
     contents,
+    ...(systemPrompt ? { system_instruction: { parts: [{ text: systemPrompt }] } } : {}),
     generationConfig: {
       temperature: config.temperature,
       maxOutputTokens: 8192,

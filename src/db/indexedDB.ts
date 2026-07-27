@@ -225,7 +225,7 @@ async function countStore(storeName: StoreName): Promise<number> {
 
 /* ─── Full Export / Import ─── */
 export async function exportAllData(): Promise<string> {
-  const stores: StoreName[] = ['files', 'folders', 'providers', 'urlGroups', 'prompts', 'a2aAgents', 'metrics', 'sandbox', 'sessions', 'versions', 'kanban', 'templates', 'tags', 'appState', 'skills', 'connectors', 'workspaceProjects'];
+  const stores: StoreName[] = ['episodic', 'semantic', 'procedural', 'working', 'long_term', 'files', 'folders', 'providers', 'urlGroups', 'prompts', 'a2aAgents', 'metrics', 'sandbox', 'sessions', 'versions', 'kanban', 'templates', 'tags', 'appState', 'skills', 'connectors', 'workspaceProjects'];
   const exportData: Record<string, any> = {};
   for (const store of stores) {
     exportData[store] = await dbGetAll(store);

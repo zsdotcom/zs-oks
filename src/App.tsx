@@ -10,7 +10,10 @@ import {
 import type { GitHubUser } from './services/githubAuthService';
 import { SEED_TEMPLATES } from './data/templates';
 import { SEED_SKILLS } from './data/skills';
-import { queryLLM, getInitialSuggestions, runA2ADebate, runOrchestratedWorkflow, runSequentialWorkflow } from './services/geminiService';
+import { DEFAULT_MCP_SERVERS } from './data/mcpServers';
+import { NAV_ITEMS } from './data/navigation';
+import { queryLLM, runA2ADebate, runOrchestratedWorkflow, runSequentialWorkflow } from './services/geminiService';
+import { buildCrossSessionContext, getAllMemoryStats } from './services/memoryApi';
 import { signInWithGoogle, logoutUser, subscribeAuth, updateUserDoc, loadRuntimeClientId, setRuntimeClientId } from './services/googleAuthService';
 import { signInWithGitHub, pollGitHubToken, logoutGitHub, getGitHubUser, getStoredGitHubToken, loadGitHubClientId, setGitHubClientId, getStoredGitHubClientId } from './services/githubAuthService';
 import { dbGetAll, dbPut, dbGetKey, dbSetKey, migrateLocalStorage, exportAllData, importAllData } from './db/indexedDB';
@@ -22,7 +25,7 @@ import { ToastContainer } from './components/ToastContainer';
 import { fireWebhooks, getAllWebhooks, addWebhook, removeWebhook as removeWebhookSvc, updateWebhook as updateWebhookSvc } from './services/webhookService';
 import type { WebhookConfig } from './services/webhookService';
 import { loadSkillRegistry, getSkillRegistry, addSkill, removeSkill, PRESET_SKILLS } from './services/skillService';
-import { loadConnectors, getConnectors, addConnector, removeConnector } from './services/connectorService';
+import { loadConnectors, getConnectors } from './services/connectorService';
 import { getLocale, setLocale } from './services/i18nService';
 import type { SupportedLocale } from './services/i18nService';
 import KnowledgeBaseManager from './components/KnowledgeBaseManager';
@@ -236,6 +239,7 @@ const App: React.FC = () => {
   const [showICD11, setShowICD11] = useState(false);
   const [showBdCore, setShowBdCore] = useState(false);
   const [toolsTab, setToolsTab] = useState<'tools' | 'connectors'>('tools');
+  const navItems = NAV_ITEMS;
   const [showEpiMap, setShowEpiMap] = useState(false);
   const [epiDataPoints, setEpiDataPoints] = useState<EpiDataPoint[]>([]);
   const [observabilityTab, setObservabilityTab] = useState<'overview' | 'metrics'>('overview');
@@ -291,7 +295,6 @@ const App: React.FC = () => {
   const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>(INITIAL_SAVED_PROMPTS);
   const [sandboxSettings, setSandboxSettings] = useState<SandboxSettings>({ strictSandbox: true, allowedOutbound: true, showAuditLedger: false });
   const [activeProjectId, setActiveProjectId] = useState<string>('default');
-  const [showComposeEmail, setShowComposeEmail] = useState(false);
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
   const { notifications, dismissNotification } = useNotifications();
@@ -308,86 +311,7 @@ const App: React.FC = () => {
   const { isInstallable, promptInstall } = usePWAInstall();
 
   // MCP state
-  const [mcpServers, setMcpServers] = useState<MCPServer[]>([
-    {
-      id: 'mcp-cdc', name: 'CDC Disease Surveillance', description: 'Real-time CDC notifiable disease surveillance, vaccination rates, and health statistics via Socrata Open Data API', status: 'disconnected',
-      tools: [
-        { name: 'get_nndss_surveillance', description: 'Query NNDSS notifiable disease data by disease type and year', parameters: 'disease: string, year?: number, state?: string', isActive: true },
-        { name: 'get_places_data', description: 'Get PLACES county-level health measures', parameters: 'measure: string, year: number, state?: string', isActive: true },
-        { name: 'search_dataset', description: 'Search across 73 CDC public health datasets', parameters: 'query: string, dataset?: string, limit?: number', isActive: true },
-      ],
-    },
-    {
-      id: 'mcp-who', name: 'WHO Global Health Observatory', description: 'WHO GHO OData API for global health indicators, mortality, disease burden, and SDG tracker data', status: 'disconnected',
-      tools: [
-        { name: 'get_gho_indicator', description: 'Fetch WHO health indicator data by code', parameters: 'indicator: string, country?: string, year?: number', isActive: true },
-        { name: 'search_indicators', description: 'Search available WHO health indicators', parameters: 'query: string', isActive: true },
-        { name: 'get_dimension_values', description: 'Get WHO dimension values (countries, regions)', parameters: 'dimension: string', isActive: true },
-      ],
-    },
-    {
-      id: 'mcp-delphi', name: 'CMU Delphi Epidata', description: 'Carnegie Mellon Delphi Group epidemiological surveillance data including COVID-19, influenza, and dengue', status: 'disconnected',
-      tools: [
-        { name: 'get_fluview', description: 'Get influenza-like illness surveillance data', parameters: 'regions: string, epiweeks: string', isActive: true },
-        { name: 'get_covidcast', description: 'Get COVID-19 surveillance signals', parameters: 'signal: string, geo_type: string, geo_values: string', isActive: true },
-        { name: 'get_dengue_nowcast', description: 'Get dengue nowcast estimates', parameters: 'epiweeks?: string', isActive: true },
-      ],
-    },
-    {
-      id: 'mcp-infectonet', description: 'InfectoNET global viral genomic surveillance for 50+ pathogens with outbreak alerts', status: 'disconnected', name: 'InfectoNET Genomic Surveillance',
-      tools: [
-        { name: 'list_pathogens', description: 'List all tracked viral pathogens with sequence counts', parameters: '', isActive: true },
-        { name: 'get_pathogen_data', description: 'Get genomic sequence records for a specific pathogen', parameters: 'pathogen: string, limit?: number', isActive: true },
-        { name: 'get_outbreak_alerts', description: 'Get live outbreak alerts from WHO/PAHO/ReliefWeb', parameters: 'pathogen?: string', isActive: true },
-      ],
-    },
-    {
-      id: 'mcp-brave', name: 'Brave Search', description: 'Web and local search using Brave Search API (requires API key)', status: 'disconnected',
-      tools: [
-        { name: 'web_search', description: 'Search the web', parameters: 'query: string, count?: number', isActive: true },
-        { name: 'local_search', description: 'Search for local businesses and places', parameters: 'query: string, country?: string', isActive: true },
-      ],
-    },
-    {
-      id: 'mcp-github-api', name: 'GitHub API', description: 'GitHub REST API for repositories, code search, issues, pull requests, and releases', status: 'disconnected',
-      tools: [
-        { name: 'github_user_repos', description: 'List repositories for the authenticated user', parameters: 'perPage?: number, sort?: string, type?: string', isActive: true },
-        { name: 'github_search_code', description: 'Search code across public repositories', parameters: 'query: string, perPage?: number', isActive: true },
-        { name: 'github_search_issues', description: 'Search issues and pull requests', parameters: 'query: string, perPage?: number', isActive: true },
-        { name: 'github_list_commits', description: 'List commits in a repository', parameters: 'owner: string, repo: string, perPage?: number, branch?: string', isActive: true },
-        { name: 'github_list_pulls', description: 'List pull requests in a repository', parameters: 'owner: string, repo: string, state?: string, perPage?: number', isActive: true },
-      ],
-    },
-    {
-      id: 'mcp-world-bank', name: 'World Bank Data', description: 'World Bank API for development indicators, country data, and economic statistics', status: 'disconnected',
-      tools: [
-        { name: 'world_bank_indicator', description: 'Fetch World Bank indicator data for a country', parameters: 'indicator: string, country: string, date?: string, perPage?: number', isActive: true },
-        { name: 'world_bank_countries', description: 'List countries and regions with metadata', parameters: 'perPage?: number, region?: string', isActive: true },
-        { name: 'world_bank_indicators_list', description: 'List all available World Bank indicators', parameters: 'perPage?: number', isActive: true },
-      ],
-    },
-    {
-      id: 'mcp-open-library', name: 'Open Library', description: 'Open Library API for searching books, works, and subjects', status: 'disconnected',
-      tools: [
-        { name: 'open_library_search', description: 'Search for books and works', parameters: 'query: string, limit?: number, page?: number', isActive: true },
-        { name: 'open_library_subjects', description: 'Get books by subject', parameters: 'subject: string, limit?: number', isActive: true },
-      ],
-    },
-    {
-      id: 'mcp-news', name: 'News Headlines', description: 'News API for top headlines and article search across health, science, and technology', status: 'disconnected',
-      tools: [
-        { name: 'newsapi_top_headlines', description: 'Get top news headlines', parameters: 'country?: string, category?: string, pageSize?: number', isActive: true },
-        { name: 'newsapi_everything', description: 'Search all news articles', parameters: 'query: string, sortBy?: string, pageSize?: number', isActive: true },
-      ],
-    },
-    {
-      id: 'mcp-google-books', name: 'Google Books', description: 'Google Books API for searching publications, reviews, and metadata', status: 'disconnected',
-      tools: [
-        { name: 'google_books_search', description: 'Search for books and volumes', parameters: 'query: string, maxResults?: number, lang?: string', isActive: true },
-        { name: 'google_books_volume', description: 'Get details for a specific volume', parameters: 'volumeId: string', isActive: true },
-      ],
-    },
-  ]);
+  const [mcpServers, setMcpServers] = useState<MCPServer[]>(DEFAULT_MCP_SERVERS);
 
   // Agent builder & webhook state
   const [showAgentBuilder, setShowAgentBuilder] = useState(false);
@@ -509,7 +433,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.remove('theme-light', 'theme-sepia', 'theme-forest', 'theme-ocean', 'theme-midnight', 'theme-solarized', 'theme-weweb');
+    root.classList.remove('theme-light', 'theme-sepia', 'theme-forest', 'theme-ocean', 'theme-midnight', 'theme-solarized', 'theme-weweb', 'theme-poimandres', 'theme-catppuccin');
     if (selectedTheme !== 'dark') {
       root.classList.add(`theme-${selectedTheme}`);
     }
@@ -539,84 +463,105 @@ const App: React.FC = () => {
 
   const handleA2ADebate = async (topic: string) => {
     setIsA2ALoading(true);
-    const contextDocs = files.filter((f) => f.isActive).map((f) => `### ${f.name}\n${f.content}`).join('\n\n') || undefined;
-    const responses = await runA2ADebate(topic, a2aAgents, providerConfig, contextDocs, (agentName, response, latency) => {
-      const metric: A2AMetric = {
-        id: `m-${Date.now()}-${agentName}`,
-        timestamp: new Date().toISOString(),
-        topic,
-        agentId: a2aAgents.find((a) => a.name === agentName)?.id || '',
-        agentName,
-        latencyMs: latency,
-        tokensEstimated: Math.round(response.length / 4),
-        status: 'success',
+    try {
+      const memoryContext = await buildCrossSessionContext('coord').catch(() => '');
+      const filesContext = files.filter((f) => f.isActive).map((f) => `### ${f.name}\n${f.content}`).join('\n\n');
+      const contextDocs = [memoryContext, filesContext].filter(Boolean).join('\n\n') || undefined;
+      const responses = await runA2ADebate(topic, a2aAgents, providerConfig, contextDocs, (agentName, response, latency) => {
+        const metric: A2AMetric = {
+          id: `m-${Date.now()}-${agentName}`,
+          timestamp: new Date().toISOString(),
+          topic,
+          agentId: a2aAgents.find((a) => a.name === agentName)?.id || '',
+          agentName,
+          latencyMs: latency,
+          tokensEstimated: Math.round(response.length / 4),
+          status: 'success',
+        };
+        setA2aMetrics((prev) => [...prev, metric]);
+      });
+      void fireWebhooks('a2a:complete', { topic, agentCount: a2aAgents.length });
+      notify({ type: 'success', title: 'A2A Debate complete', message: `${a2aAgents.length} agents responded to "${topic.slice(0, 60)}"` });
+      const summaryMsg: ChatMessage = {
+        id: `debate-${Date.now()}`,
+        text: `## A2A Debate Results\n\n${a2aAgents.map((a, i) => `### ${a.name}\n${responses[i]}`).join('\n\n')}\n\n### Consensus\n${responses[responses.length - 1]}`,
+        sender: MessageSender.MODEL,
+        timestamp: new Date(),
       };
-      setA2aMetrics((prev) => [...prev, metric]);
-    });
-    setIsA2ALoading(false);
-    void fireWebhooks('a2a:complete', { topic, agentCount: a2aAgents.length });
-    notify({ type: 'success', title: 'A2A Debate complete', message: `${a2aAgents.length} agents responded to "${topic.slice(0, 60)}"` });
-    const summaryMsg: ChatMessage = {
-      id: `debate-${Date.now()}`,
-      text: `## A2A Debate Results\n\n${a2aAgents.map((a, i) => `### ${a.name}\n${responses[i]}`).join('\n\n')}\n\n### Consensus\n${responses[responses.length - 1]}`,
-      sender: MessageSender.MODEL,
-      timestamp: new Date(),
-    };
-    setMessages([...messages, summaryMsg]);
+      setMessages([...messages, summaryMsg]);
+    } catch (err) {
+      notify({ type: 'error', title: 'A2A Debate failed', message: `Debate error: ${(err as Error).message}` });
+    } finally {
+      setIsA2ALoading(false);
+    }
   };
 
   const handleOrchestratedDebate = async () => {
     const topic = `Design a comprehensive knowledge management strategy for field researchers`;
     setIsA2ALoading(true);
-    const contextDocs = files.filter((f) => f.isActive).map((f) => `### ${f.name}\n${f.content}`).join('\n\n') || undefined;
-    const response = await runOrchestratedWorkflow(topic, a2aAgents, providerConfig, contextDocs, (agentName, response, latency) => {
-      const metric: A2AMetric = {
-        id: `m-${Date.now()}-${agentName}`,
-        timestamp: new Date().toISOString(), topic,
-        agentId: a2aAgents.find((a) => a.name === agentName)?.id || '',
-        agentName, latencyMs: latency,
-        tokensEstimated: Math.round(response.length / 4),
-        status: 'success',
+    try {
+      const memoryContext = await buildCrossSessionContext('coord').catch(() => '');
+      const filesContext = files.filter((f) => f.isActive).map((f) => `### ${f.name}\n${f.content}`).join('\n\n');
+      const contextDocs = [memoryContext, filesContext].filter(Boolean).join('\n\n') || undefined;
+      const response = await runOrchestratedWorkflow(topic, a2aAgents, providerConfig, contextDocs, (agentName, response, latency) => {
+        const metric: A2AMetric = {
+          id: `m-${Date.now()}-${agentName}`,
+          timestamp: new Date().toISOString(), topic,
+          agentId: a2aAgents.find((a) => a.name === agentName)?.id || '',
+          agentName, latencyMs: latency,
+          tokensEstimated: Math.round(response.length / 4),
+          status: 'success',
+        };
+        setA2aMetrics((prev) => [...prev, metric]);
+      });
+      const summaryMsg: ChatMessage = {
+        id: `orch-${Date.now()}`, text: response,
+        sender: MessageSender.MODEL, timestamp: new Date(),
       };
-      setA2aMetrics((prev) => [...prev, metric]);
-    });
-    setIsA2ALoading(false);
-    const summaryMsg: ChatMessage = {
-      id: `orch-${Date.now()}`, text: response,
-      sender: MessageSender.MODEL, timestamp: new Date(),
-    };
-    setMessages([...messages, summaryMsg]);
+      setMessages([...messages, summaryMsg]);
+    } catch (err) {
+      notify({ type: 'error', title: 'Orchestrated workflow failed', message: (err as Error).message });
+    } finally {
+      setIsA2ALoading(false);
+    }
   };
 
   const handleSequentialDebate = async () => {
     const topic = `Draft a research report on epidemiological trends in emerging infectious diseases`;
     setIsA2ALoading(true);
-    const contextDocs = files.filter((f) => f.isActive).map((f) => `### ${f.name}\n${f.content}`).join('\n\n') || undefined;
-    const rawChain = [
-      a2aAgents.find((a) => a.id === 'research'),
-      a2aAgents.find((a) => a.id === 'writer'),
-      a2aAgents.find((a) => a.id === 'review'),
-      a2aAgents.find((a) => a.id === 'coord'),
-    ].filter((a): a is A2AAgent => a !== undefined);
-    if (rawChain.length < 2) { setIsA2ALoading(false); return; }
-    const workflowChain = rawChain.map((a) => ({ agentId: a.id, name: a.name, systemPrompt: a.systemPrompt }));
-    const response = await runSequentialWorkflow(topic, workflowChain, providerConfig, contextDocs, (agentName, response, latency) => {
-      const metric: A2AMetric = {
-        id: `m-seq-${Date.now()}-${agentName}`,
-        timestamp: new Date().toISOString(), topic,
-        agentId: a2aAgents.find((a) => a.name === agentName)?.id || '',
-        agentName, latencyMs: latency,
-        tokensEstimated: Math.round(response.length / 4),
-        status: 'success',
+    try {
+      const memoryContext = await buildCrossSessionContext('coord').catch(() => '');
+      const filesContext = files.filter((f) => f.isActive).map((f) => `### ${f.name}\n${f.content}`).join('\n\n');
+      const contextDocs = [memoryContext, filesContext].filter(Boolean).join('\n\n') || undefined;
+      const rawChain = [
+        a2aAgents.find((a) => a.id === 'research'),
+        a2aAgents.find((a) => a.id === 'writer'),
+        a2aAgents.find((a) => a.id === 'review'),
+        a2aAgents.find((a) => a.id === 'coord'),
+      ].filter((a): a is A2AAgent => a !== undefined);
+      if (rawChain.length < 2) { return; }
+      const workflowChain = rawChain.map((a) => ({ agentId: a.id, name: a.name, systemPrompt: a.systemPrompt }));
+      const response = await runSequentialWorkflow(topic, workflowChain, providerConfig, contextDocs, (agentName, response, latency) => {
+        const metric: A2AMetric = {
+          id: `m-seq-${Date.now()}-${agentName}`,
+          timestamp: new Date().toISOString(), topic,
+          agentId: a2aAgents.find((a) => a.name === agentName)?.id || '',
+          agentName, latencyMs: latency,
+          tokensEstimated: Math.round(response.length / 4),
+          status: 'success',
+        };
+        setA2aMetrics((prev) => [...prev, metric]);
+      });
+      const summaryMsg: ChatMessage = {
+        id: `seq-${Date.now()}`, text: response,
+        sender: MessageSender.MODEL, timestamp: new Date(),
       };
-      setA2aMetrics((prev) => [...prev, metric]);
-    });
-    setIsA2ALoading(false);
-    const summaryMsg: ChatMessage = {
-      id: `seq-${Date.now()}`, text: response,
-      sender: MessageSender.MODEL, timestamp: new Date(),
-    };
-    setMessages([...messages, summaryMsg]);
+      setMessages([...messages, summaryMsg]);
+    } catch (err) {
+      notify({ type: 'error', title: 'Sequential workflow failed', message: (err as Error).message });
+    } finally {
+      setIsA2ALoading(false);
+    }
   };
 
   const handleSaveAgent = (agent: A2AAgent) => {
@@ -804,22 +749,6 @@ const App: React.FC = () => {
       ...s, tools: s.tools.map((t) => t.name === toolName ? { ...t, isActive: !t.isActive } : t),
     } : s));
   }, []);
-
-  const navItems: { view: AppView; icon: React.ReactNode; label: string }[] = [
-    { view: 'chat', icon: <MessageSquare size={14} />, label: 'Chat' },
-    { view: 'editor', icon: <Edit size={14} />, label: 'Editor' },
-    { view: 'search', icon: <Search size={14} />, label: 'Search' },
-    { view: 'observability', icon: <Activity size={14} />, label: 'Dashboard' },
-    { view: 'kanban', icon: <Kanban size={14} />, label: 'Kanban' },
-    { view: 'templates', icon: <Template size={14} />, label: 'Templates' },
-    { view: 'mcp', icon: <Database size={14} />, label: 'MCP' },
-    { view: 'skills', icon: <BookOpen size={14} />, label: 'Skills' },
-    { view: 'tools', icon: <Wrench size={14} />, label: 'Tools' },
-    { view: 'data', icon: <Database size={14} />, label: 'Data' },
-    { view: 'nlquery', icon: <Target size={14} />, label: 'NL Query' },
-    { view: 'knowledge', icon: <Globe size={14} />, label: 'Knowledge' },
-    { view: 'docs', icon: <BookOpen size={14} />, label: 'Docs' },
-  ];
 
   return (
     <ErrorBoundary>
@@ -1212,12 +1141,15 @@ const App: React.FC = () => {
                       { name: 'PubMed', desc: 'Biomedical literature', rate: '10/sec', icon: '🔬' },
                       { name: 'Semantic Scholar', desc: 'Paper summaries & TLDRs', rate: '100/sec', icon: '🤖' },
                       { name: 'WHO GHO', desc: 'Global health indicators', rate: 'Unlimited', icon: '🌍' },
+                      { name: 'WHO data.who.int', desc: 'WHO OData global health data', rate: 'Unlimited', icon: '🌐' },
                       { name: 'GDELT', desc: 'Global news monitoring', rate: '20/min', icon: '📰' },
                       { name: 'CrossRef', desc: 'DOI lookup & metadata', rate: '50/sec', icon: '🔗' },
                       { name: 'World Bank', desc: 'Development indicators & country data', rate: 'Unlimited', icon: '🏦' },
                       { name: 'Open Library', desc: 'Books, works & subjects', rate: 'Unlimited', icon: '📖' },
                       { name: 'Google Books', desc: 'Books & publications search', rate: '1K/day', icon: '📕' },
                       { name: 'News API', desc: 'Headlines & article search', rate: '500/day', icon: '📰' },
+                      { name: 'ReliefWeb', desc: 'Humanitarian reports & updates', rate: 'Unlimited', icon: '🆘' },
+                      { name: 'HDX Humanitarian', desc: 'Humanitarian datasets', rate: 'Unlimited', icon: '🏕️' },
                       { name: 'Europe PMC', desc: 'Life science literature', rate: 'Unlimited', icon: '🧬' },
                       { name: 'GitHub API', desc: 'Repos, code search & issues', rate: '60/hr', icon: '🐙' },
                     ].map((src) => (

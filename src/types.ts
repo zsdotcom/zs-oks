@@ -174,7 +174,7 @@ export interface ToolDefinition {
   id: string;
   name: string;
   description: string;
-  category: 'search' | 'calculation' | 'visualization' | 'media' | 'file' | 'ai' | 'integration' | 'data';
+  category: 'search' | 'calculation' | 'visualization' | 'media' | 'file' | 'ai' | 'code' | 'integration' | 'data';
   permission: ToolPermission;
   requiresConfirmation: boolean;
   parameters: ToolParameter[];
@@ -243,6 +243,12 @@ export const BUILT_IN_TOOLS: ToolDefinition[] = [
   { id: 'crossref', name: 'CrossRef Search', description: 'Search CrossRef for scholarly works and DOIs', category: 'search', permission: 'standard', requiresConfirmation: false, parameters: [{ name: 'query', type: 'string', description: 'Search query', required: true }, { name: 'rows', type: 'number', description: 'Result count', required: false, defaultValue: 20 }], isBuiltIn: true },
   { id: 'discord-send', name: 'Discord Webhook', description: 'Send a message via Discord webhook', category: 'integration', permission: 'elevated', requiresConfirmation: true, parameters: [{ name: 'webhookUrl', type: 'string', description: 'Full Discord webhook URL', required: true }, { name: 'message', type: 'string', description: 'Message content', required: true }], isBuiltIn: true },
   { id: 'telegram-send', name: 'Telegram Bot', description: 'Send a message via Telegram bot', category: 'integration', permission: 'elevated', requiresConfirmation: true, parameters: [{ name: 'token', type: 'string', description: 'Telegram bot token', required: true }, { name: 'chatId', type: 'string', description: 'Chat ID', required: true }, { name: 'message', type: 'string', description: 'Message text', required: true }], isBuiltIn: true },
+  { id: 'snippet-expand', name: 'Snippet Expand', description: 'Expand #hashtag-style snippets into full text from the snippet library', category: 'media', permission: 'safe', requiresConfirmation: false, parameters: [{ name: 'snippet', type: 'string', description: 'Snippet key or #tag', required: true }], isBuiltIn: true },
+  { id: 'token-estimate', name: 'Token Estimator', description: 'Estimate token count for text across major tokenizers (GPT-4, Claude, Gemini)', category: 'calculation', permission: 'safe', requiresConfirmation: false, parameters: [{ name: 'text', type: 'string', description: 'Text to estimate tokens for', required: true }, { name: 'model', type: 'string', description: 'Model tokenizer (gpt-4/gpt-3.5/claude/gemini)', required: false, defaultValue: 'gpt-4' }], isBuiltIn: true },
+  { id: 'context-prune', name: 'Context Pruner', description: 'Prune and optimize chat context to stay within token limits while preserving key information', category: 'ai', permission: 'standard', requiresConfirmation: true, parameters: [{ name: 'messages', type: 'string', description: 'JSON array of messages to prune', required: true }, { name: 'maxTokens', type: 'number', description: 'Target token limit', required: false, defaultValue: 16000 }], isBuiltIn: true },
+  { id: 'task-schedule', name: 'Task Scheduler', description: 'Schedule recurring tasks with cron-like timing and webhook callbacks', category: 'integration', permission: 'elevated', requiresConfirmation: true, parameters: [{ name: 'name', type: 'string', description: 'Task name', required: true }, { name: 'schedule', type: 'string', description: 'Cron expression or interval (e.g. "*/5 * * * *")', required: true }, { name: 'action', type: 'string', description: 'Action to perform when triggered', required: true }], isBuiltIn: true },
+  { id: 'deep-research', name: 'Deep Research', description: 'Multi-source research across all knowledge sources with synthesis and citation tracking', category: 'search', permission: 'standard', requiresConfirmation: false, parameters: [{ name: 'query', type: 'string', description: 'Research question', required: true }, { name: 'sources', type: 'string', description: 'Comma-separated source names', required: false, defaultValue: 'all' }, { name: 'depth', type: 'string', description: 'Research depth (quick/normal/deep)', required: false, defaultValue: 'normal' }], isBuiltIn: true },
+  { id: 'data-export', name: 'Data Export', description: 'Export data in multiple formats (CSV, JSON, PDF, Markdown)', category: 'data', permission: 'elevated', requiresConfirmation: true, parameters: [{ name: 'data', type: 'string', description: 'Data to export (JSON string)', required: true }, { name: 'format', type: 'string', description: 'Export format (csv/json/pdf/markdown)', required: true }], isBuiltIn: true },
 ];
 
 /* ─── Workspace Project Types ─── */
@@ -388,11 +394,12 @@ export const KNOWLEDGE_SOURCES: KnowledgeSource[] = [
   { id: 'ks-open-library', name: 'open-library', displayName: 'Open Library', baseUrl: 'https://openlibrary.org', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
   { id: 'ks-europe-pmc', name: 'europe-pmc', displayName: 'Europe PMC', baseUrl: 'https://www.ebi.ac.uk/europepmc/api', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
   { id: 'ks-github-docs', name: 'github-docs', displayName: 'GitHub Docs', baseUrl: 'https://docs.github.com/api', enabled: true, rateLimit: '60/hr', requiresKey: false },
-  { id: 'ks-open-library', name: 'open-library', displayName: 'Open Library', baseUrl: 'https://openlibrary.org', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
   { id: 'ks-google-books', name: 'google-books', displayName: 'Google Books', baseUrl: 'https://www.googleapis.com/books/v1', enabled: true, rateLimit: '1000/day', requiresKey: true },
   { id: 'ks-newsapi', name: 'newsapi', displayName: 'NewsAPI', baseUrl: 'https://newsapi.org/v2', enabled: true, rateLimit: '500/day', requiresKey: true },
-  { id: 'ks-world-bank-v2', name: 'world-bank-v2', displayName: 'World Bank v2', baseUrl: 'https://api.worldbank.org/v2', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
   { id: 'ks-github-api', name: 'github-api', displayName: 'GitHub API', baseUrl: 'https://api.github.com', enabled: true, rateLimit: '60/hr', requiresKey: false, requiresToken: true },
+  { id: 'ks-reliefweb', name: 'reliefweb', displayName: 'ReliefWeb', baseUrl: 'https://api.reliefweb.int/v1', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
+  { id: 'ks-who-odata', name: 'who-odata', displayName: 'WHO data.who.int', baseUrl: 'https://data.who.int/api/gho-data/v1', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
+  { id: 'ks-hdx', name: 'hdx', displayName: 'HDX Humanitarian Data', baseUrl: 'https://data.humdata.org/api/3/action', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
 ];
 
 export interface KnowledgeFetchResult {
@@ -456,11 +463,3 @@ export interface AppUser {
   photoURL: string | null;
 }
 
-/* ─── Search Result Type ─── */
-export interface SearchResult {
-  fileId: string;
-  fileName: string;
-  score: number;
-  snippet: string;
-  matchedField: 'name' | 'content' | 'tags';
-}

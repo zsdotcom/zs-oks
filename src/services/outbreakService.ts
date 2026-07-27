@@ -42,7 +42,7 @@ export function detectOutbreaks(data: EpiDataPoint[]): OutbreakAlert[] {
   const now = Date.now();
   const recentThreshold = now - 7 * 86400000;
 
-  const recent = data.filter((p) => new Date(p.date).getTime() > recentThreshold || true);
+  const recent = data.filter((p) => new Date(p.date).getTime() > recentThreshold);
   const older = data.filter((p) => new Date(p.date).getTime() <= recentThreshold);
 
   const byLocation = new Map<string, EpiDataPoint[]>();

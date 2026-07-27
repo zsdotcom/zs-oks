@@ -10,7 +10,7 @@
 | `npm install` | Only deps: `react` + `react-dom` at runtime |
 | `npm run dev` | Vite on `http://localhost:3000`, bound `0.0.0.0` |
 | `npm run typecheck` | Run before build (`tsc -b --noEmit`) |
-| `npm test` | Vitest, 117 tests in `src/test/`, happy-dom + fake-indexeddb |
+| `npm test` | Vitest, 227 tests in `src/test/`, happy-dom + fake-indexeddb |
 | `npm test -- -t "pattern"` | Run single test file or filter by name |
 | `npm run test:e2e` | Playwright (7 specs in `e2e/`); requires `npx playwright install chromium` first |
 | `npm run test:coverage` | V8 coverage; thresholds: statements 80%, branches 75%, functions 85%, lines 80% |
@@ -30,18 +30,18 @@
 - `computeEmbedding()` in `src/services/memoryApi.ts:202` delegates to a Web Worker (`embeddingWorker.ts`) that dynamically loads Transformers.js 3.4.0 from CDN.
 - CDN-only deps in `index.html`: KaTeX 0.18.1, Mermaid 11.16.0 (jsdelivr), Leaflet 1.9.4 (unpkg). Orama JS 3.0.0 loaded dynamically in `oramaService.ts`. **Never use npm for these.**
 - `geminiService.ts` routes 10 providers (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare) in one `queryLLM()` call.
-- 6 A2A UI agents (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian) — product features, not OpenCode agents. See `docs/agents/SKILL.md`.
-- App entrypoint: `src/index.tsx` → `src/App.tsx` (1168 lines, one monolithic component with all state). 5 lazy-loaded panels via `React.lazy()`.
+- 12 A2A UI agents (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planner, Tester, Code Generator, Knowledge Curator) — product features, not OpenCode agents. See `docs/agents/SKILL.md`.
+- App entrypoint: `src/index.tsx` → `src/App.tsx` (1357 lines, one monolithic component with all state). 5 lazy-loaded panels via `React.lazy()`. MCP server definitions extracted to `src/data/mcpServers.ts`; nav items to `src/data/navigation.tsx`.
 
 ## Testing quirks
 - Environment: `happy-dom` + `fake-indexeddb/auto`. Setup in `src/test/setup.ts` mocks `BroadcastChannel`, `Worker` (returns random 384-dim vectors), `crypto.randomUUID` (`test-uuid-N`), `navigator.storage.estimate`.
 - Coverage excludes `src/test/**`, test/spec/bench files, and `src/index.tsx`.
-- 8 test files: `memory.unit.test.ts` (25), `memory.integration.test.ts` (10), `memory.benchmark.ts` (5 bench), `gemini.test.ts` (8), `sandbox.test.ts` (9), `icd11.test.ts` (22), `icf.test.ts` (22), `ichi.test.ts` (22).
+- 14 test files: `memory.unit.test.ts` (25), `memory.integration.test.ts` (10), `memory.benchmark.ts` (5 bench), `gemini.test.ts` (8), `sandbox.test.ts` (9), `icd11.test.ts` (22), `icf.test.ts` (22), `ichi.test.ts` (22), `services.test.ts` (84).
 - E2E: Chromium only; Playwright config auto-starts `npm run dev`; `npx playwright install chromium` first.
 
 ## Key gotchas
 - **Only `react` and `react-dom` as npm dependencies.** All other libraries are CDN-loaded. Never add a third npm runtime dep.
-- **ICD-11 system URI mismatch:** `bdTerminologyService.ts` uses `http://id.who.int/icd/release/11/mms` but `icd11Service.ts:272` uses `http://id.who.int/icd11/mms`. Fix both if touching ICD-11 URI logic.
+- **Cross-session memory**: `memoryApi.ts` exports `buildCrossSessionContext(agentId)` to aggregate Episodic, Semantic, and Long-Term memory across all sessions. Injected into A2A debate contextDocs.
 - **CSP connect-src in dev mode** (`vite.config.ts:22`) must list every API domain the app calls. Most are now included (BD FHIR, GitHub, WHO, CDC, Delphi, Open-Meteo, HDX, OpenRouter, Cerebras, Cloudflare), but add any new external API domain there.
 - **`dbGetByIndex` compound key bug** (`indexedDB.ts:145`): uses `IDBKeyRange.only()` where `bound()` is needed for prefix queries on compound indices.
 - **`webhookService.ts` uses `localStorage`**, not IndexedDB like the rest of the app.

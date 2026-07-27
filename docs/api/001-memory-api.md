@@ -6,7 +6,7 @@ tags: [api, memory, reference]
 
 # Memory API Reference
 
-Source: `src/services/memoryApi.ts` (260 lines)
+Source: `src/services/memoryApi.ts` (312 lines)
 
 The Memory API implements a 6-tier memory system. Each tier has distinct storage backend and retention policy. All tiers except Session Memory are persisted to IndexedDB. The API also provides cross-tier operations (promotion, summarization, maintenance) and embedding computation.
 
@@ -358,6 +358,41 @@ Subscribes to cross-tab memory updates. Returns a cleanup function.
 
 ---
 
+## Cross-Session Memory
+
+### `getAllEpisodicForAgent(agentId, limit?)`
+
+```typescript
+function getAllEpisodicForAgent(agentId: string, limit?: number): Promise<EpisodicMemory[]>
+```
+
+Retrieves the most recent episodic memory entries for a specific agent across all sessions. Used by `buildCrossSessionContext` to provide agents with context from prior conversations.
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `agentId` | `string` | — | Agent ID to filter by |
+| `limit` | `number` | `20` | Maximum entries to return |
+
+### `buildCrossSessionContext(agentId)`
+
+```typescript
+function buildCrossSessionContext(agentId: string): Promise<string>
+```
+
+Aggregates recent Episodic (by agent), Semantic (by topic), and Long-Term memories into a Markdown context string suitable for LLM injection. Called by A2A debate handlers in `App.tsx` to give agents awareness of past session learnings.
+
+**Returns:** A Markdown string with sections "Recent Memories from Previous Sessions", "Learned Knowledge", and "Long-Term References".
+
+### `getAllMemoryStats()`
+
+```typescript
+function getAllMemoryStats(): Promise<{ tier: string; count: number }[]>
+```
+
+Returns the count of entries across all 6 memory tiers. Used by the A2A Observability Dashboard for memory visualization.
+
+---
+
 ## Full Function Summary
 
 | Function | Tier | Async | Persistence |
@@ -391,6 +426,9 @@ Subscribes to cross-tab memory updates. Returns a cleanup function.
 | `getStorageEstimate` | Cross | Yes | Browser API |
 | `broadcastMemoryUpdate` | Cross | No | BroadcastChannel |
 | `subscribeMemoryUpdates` | Cross | No | BroadcastChannel |
+| `getAllEpisodicForAgent` | Cross | Yes | IndexedDB |
+| `buildCrossSessionContext` | Cross | Yes | IndexedDB |
+| `getAllMemoryStats` | Cross | Yes | IndexedDB |
 
 ## See Also
 

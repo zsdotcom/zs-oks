@@ -17,6 +17,8 @@ const THEMES = [
   { id: 'midnight', label: 'Midnight', icon: <span className="text-[11px] opacity-70">🌙</span>, bg: '#0d0d20' },
   { id: 'solarized', label: 'Solarized', icon: <span className="text-[11px] opacity-70">☀️</span>, bg: '#EEE8D5' },
   { id: 'weweb', label: 'WeWeb', icon: <span className="text-[11px] opacity-70" style={{ filter: 'saturate(1.5)' }}>🟧</span>, bg: '#262626' },
+  { id: 'poimandres', label: 'Poimandres', icon: <span className="text-[11px] opacity-70" style={{ filter: 'saturate(1.5)' }}>🌀</span>, bg: '#1b1e2b' },
+  { id: 'catppuccin', label: 'Catppuccin', icon: <span className="text-[11px] opacity-70" style={{ filter: 'saturate(1.5)' }}>🌸</span>, bg: '#1e1e2e' },
 ];
 
 const ACCENT_COLORS = ['#8B5CF6', '#6366F1', '#3B82F6', '#06B6D4', '#14B8A6', '#22C55E', '#10B981', '#84CC16', '#F59E0B', '#F97316', '#EF4444', '#EC4899'];

@@ -281,8 +281,11 @@ export function icd11ToFHIR(entry: ICD11Entry, patientId?: string): FHIRConditio
   };
 }
 
+const ICD11_CANONICAL = 'http://id.who.int/icd/release/11/mms';
+const ICD11_LEGACY = 'http://id.who.int/icd11/mms';
+
 export function FHIRToICD11(condition: FHIRCondition): ICD11Entry | undefined {
-  const ICD11_SYSTEMS = ['http://id.who.int/icd/release/11/mms', 'http://id.who.int/icd11/mms'];
+  const ICD11_SYSTEMS = [ICD11_CANONICAL, ICD11_LEGACY];
   const coding = condition.code.coding.find(c => ICD11_SYSTEMS.some(s => c.system === s));
   if (!coding) return undefined;
   return getICD11ByCode(coding.code);

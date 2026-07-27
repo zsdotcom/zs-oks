@@ -142,6 +142,58 @@ export async function purgeAllLongTerm(): Promise<void> {
   // Long-term memory is never auto-purged — this is a no-op by design
 }
 
+/* ─── Cross-Session Memory ─── */
+export async function getAllEpisodicForAgent(agentId: string, limit = 20): Promise<DBSchema['episodic'][]> {
+  const all = await dbGetAll<DBSchema['episodic']>('episodic');
+  return all
+    .filter((e) => e.agentId === agentId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, limit);
+}
+
+export async function buildCrossSessionContext(agentId: string): Promise<string> {
+  const [episodic, semantic, longTerm] = await Promise.all([
+    getAllEpisodicForAgent(agentId, 10),
+    dbGetAll<DBSchema['semantic']>('semantic').then(all => all.filter(s => s.agentId === agentId).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 10)),
+    dbGetAll<DBSchema['long_term']>('long_term').then(all => all.filter(l => l.text.length > 0).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5)),
+  ]);
+
+  const parts: string[] = [];
+
+  if (episodic.length > 0) {
+    parts.push('## Recent Memories from Previous Sessions\n' + episodic.map((e) =>
+      `- ${e.createdAt.slice(0, 10)} [${e.agentId}]: ${(e.text || '').slice(0, 300)}`
+    ).join('\n'));
+  }
+
+  if (semantic.length > 0) {
+    parts.push('## Learned Knowledge\n' + semantic.map((s) =>
+      `- ${s.topic}: ${(s.text || '').slice(0, 300)}`
+    ).join('\n'));
+  }
+
+  if (longTerm.length > 0) {
+    parts.push('## Long-Term References\n' + longTerm.map((l) =>
+      `- [${l.category}] ${(l.text || '').slice(0, 300)}`
+    ).join('\n'));
+  }
+
+  return parts.join('\n\n');
+}
+
+export async function getAllMemoryStats(): Promise<{ tier: string; count: number }[]> {
+  const stores = [
+    { tier: 'Session', fetch: async () => sessionStore.size },
+    { tier: 'Episodic', fetch: async () => (await dbGetAll('episodic')).length },
+    { tier: 'Semantic', fetch: async () => (await dbGetAll('semantic')).length },
+    { tier: 'Procedural', fetch: async () => (await dbGetAll('procedural')).length },
+    { tier: 'Working', fetch: async () => (await dbGetAll('working')).length },
+    { tier: 'Long-Term', fetch: async () => (await dbGetAll('long_term')).length },
+  ];
+  const results = await Promise.all(stores.map(async (s) => ({ tier: s.tier, count: await s.fetch() })));
+  return results;
+}
+
 /* ─── Cross-Tier Operations ─── */
 export async function promoteWorkingToEpisodic(sessionId: string, projectId: string): Promise<void> {
   const workingData = await getWorking(sessionId);

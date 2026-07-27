@@ -1,5 +1,6 @@
 const OCL_BASE = 'https://tr.ocl.dghs.gov.bd/api/fhir';
-const ICD11_SYSTEM = 'http://id.who.int/icd/release/11/mms';
+const ICD11_CANONICAL = 'http://id.who.int/icd/release/11/mms';
+const ICD11_SYSTEM = ICD11_CANONICAL;
 
 export interface OCLValidateCodeResult {
   valid: boolean;

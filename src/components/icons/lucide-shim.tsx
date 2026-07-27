@@ -438,3 +438,22 @@ export const FlaskConical = make('flask-conical', [
   <path key="2" d="M8.5 2h7" />,
   <line key="3" x1="7" y1="15" x2="17" y2="15" />,
 ]);
+
+export const Trophy = make('trophy', [
+  <path key="1" d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />,
+  <path key="2" d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />,
+  <path key="3" d="M4 22h16" />,
+  <path key="4" d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />,
+  <path key="5" d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />,
+  <path key="6" d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />,
+]);
+
+export const TrendingUp = make('trending-up', [
+  <polyline key="1" points="22 7 13.5 15.5 8.5 10.5 2 17" />,
+  <polyline key="2" points="16 7 22 7 22 13" />,
+]);
+
+export const PieChart = make('pie-chart', [
+  <path key="1" d="M21.21 15.89A10 10 0 1 1 8 2.83" />,
+  <path key="2" d="M22 12A10 10 0 0 0 12 2v10z" />,
+]);

@@ -117,4 +117,58 @@ These expand the 18 knowledge sources already wired into `publicApiService.ts`:
 
 **References:** [github.com/github/awesome-copilot](https://github.com/github/awesome-copilot) · [awesome-copilot.github.com](https://awesome-copilot.github.com/) · [developers.cloudflare.com/docs-for-agents](https://developers.cloudflare.com/docs-for-agents/) · [reliefweb.int/labs](https://reliefweb.int/labs) · [data.humdata.org](https://data.humdata.org/)
 
+---
+
+## 7. Awesome Opencode Ecosystem Integration
+
+The following resources from the [Awesome Opencode](https://github.com/opencode-ai/awesome-opencode) ecosystem have been integrated into Open Knowledge Studio:
+
+| Resource | Source | Integration |
+|---|---|---|
+| **Ejentum MCP** (reasoning, code analysis, anti-deception, memory) | [github.com/lucmsilva651/ejentum-mcp](https://github.com/lucmsilva651/ejentum-mcp) | Built-in MCP server with 4 tools + 47 built-in tools |
+| **Poimandres theme** | [github.com/poimandres/poimandres](https://github.com/poimandres/poimandres) | Theme option in ThemeSwitcher |
+| **Catppuccin theme** | [github.com/catppuccin/catppuccin](https://github.com/catppuccin/catppuccin) | Theme option in ThemeSwitcher |
+| **Snippet expansion** (like opencode-snippets) | [github.com/JakeRoggenbuck/opencode-snippets](https://github.com/JakeRoggenbuck/opencode-snippets) | `snippet-expand` built-in tool |
+| **Token usage tracking** (like opencode-quota) | [github.com/iamsodo/opencode-quota](https://github.com/iamsodo/opencode-quota) | `token-estimate` built-in tool |
+| **Context pruning** | Dynamic context optimization | `context-prune` built-in tool |
+| **Task scheduling** | Cron-like scheduling | `task-schedule` built-in tool |
+| **Deep research** | Multi-source research synthesis | `deep-research` built-in tool |
+| **Safety net** (like cc-safety-net) | Command safety interception | Built into tool permission system |
+| **Event hooks** (like opencode-command-hooks) | Event-driven hooks | Via webhook system |
+
+### Additional MCP Servers Added
+
+| MCP Server | Tools | Purpose |
+|---|---|---|
+| **Ejentum** | `ejentum_reason`, `ejentum_analyze_code`, `ejentum_anti_deception`, `ejentum_memory` | Structured reasoning, code analysis, deception detection, persistent memory |
+| **ReliefWeb** | `reliefweb_search_reports`, `reliefweb_get_report`, `reliefweb_list_disasters` | Humanitarian reports, situation updates, disaster tracking |
+| **WHO data.who.int** | `who_data_indicator`, `who_data_search` | Global health indicators via OData API |
+| **Feedbagel RSS** | `feedbagel_list_feeds`, `feedbagel_fetch_entries` | RSS feed monitoring and entry routing |
+
+### New Built-in Tools (6 added, total: 53)
+
+| Tool | Permission | Description |
+|---|---|---|
+| `snippet-expand` | Safe | Expand #hashtag snippets into full text |
+| `token-estimate` | Safe | Estimate token count across major tokenizers |
+| `context-prune` | Standard | Optimize chat context to stay within token limits |
+| `task-schedule` | Elevated | Schedule recurring tasks with cron timing |
+| `deep-research` | Standard | Multi-source research with synthesis |
+| `data-export` | Elevated | Export data in CSV/JSON/PDF/Markdown |
+
+### New Themes (2 added, total: 10)
+
+| Theme | Style | Accent |
+|---|---|---|
+| **Poimandres** | Dark, blue-gray | #a6accd |
+| **Catppuccin Mocha** | Dark, warm purple | #cba6f7 |
+
+### New Knowledge Sources (3 added, total: 25)
+
+| Source | Type | Rate Limit |
+|---|---|---|
+| **ReliefWeb** (OCHA) | Humanitarian reports | Unlimited |
+| **WHO data.who.int** | Global health OData | Unlimited |
+| **HDX Humanitarian Data** | Humanitarian datasets | Unlimited |
+
 *Last updated: July 27, 2026*

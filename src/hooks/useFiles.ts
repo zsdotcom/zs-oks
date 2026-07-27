@@ -12,16 +12,21 @@ export function useFiles() {
   const [documentVersions, setDocumentVersions] = useState<DocumentVersion[]>([]);
   const [collabPeers, setCollabPeers] = useState<CollabPresence[]>([]);
   const collabActionsRef = useRef<CollabAction[]>([]);
+  const filesRef = useRef<KBFile[]>([]);
 
   useEffect(() => {
     Promise.all([
       dbGetAll<KBFile>('files'),
       dbGetAll<KBFolder>('folders'),
     ]).then(([loadedFiles, loadedFolders]) => {
-      if (loadedFiles.length > 0) setFiles(loadedFiles);
+      if (loadedFiles.length > 0) { setFiles(loadedFiles); filesRef.current = loadedFiles; }
       if (loadedFolders.length > 0) setFolders(loadedFolders);
     }).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    filesRef.current = files;
+  }, [files]);
 
   useEffect(() => {
     initCollaboration();
@@ -38,7 +43,9 @@ export function useFiles() {
           if (!prev || prev.id !== fileId) return prev;
           return { ...prev, content, name: fileName };
         });
-        dbPut('files', { id: fileId, content, name: fileName } as any).catch(() => {});
+        const currentFiles = filesRef.current;
+        const existing = currentFiles.find(f => f.id === fileId);
+        dbPut('files', existing ? { ...existing, content, name: fileName } : { id: fileId, content, name: fileName, type: 'markdown', size: `${(content.length / 1024).toFixed(1)} KB`, isActive: false, createdAt: new Date() }).catch(() => {});
       }
       const peers = getActivePeers(collabActionsRef.current);
       setCollabPeers(peers);
