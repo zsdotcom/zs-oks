@@ -1,17 +1,17 @@
 ---
 title: A2A Debate Agents
-description: Documentation index for all A2A debate agents
+description: Documentation index for all A2A debate agents and persona-based agent guides
 section: agents
 order: 0
 type: agent-system
-skill_count: 6
+skill_count: 15
 ---
 
 # A2A Debate Agents
 
-Open Knowledge Studio ships with **6 built-in A2A debate agents** that provide multi-perspective analysis on user prompts. Each agent has a distinct role, color-coded identity, avatar, and system prompt.
+Open Knowledge Studio ships with **6 built-in A2A debate agents** plus **9 persona-based agent guides** tailored to specific user roles.
 
-## Agent Roster
+## Built-in Agent Roster
 
 | Agent | ID | Avatar | Color | Role |
 | :--- | :--- | :--- | :--- | :--- |
@@ -20,7 +20,23 @@ Open Knowledge Studio ships with **6 built-in A2A debate agents** that provide m
 | [Data Analyst](data-analyst/SKILL.md) | `data` | 📊 | `#F59E0B` | Processes data and statistics |
 | [Writer](writer/SKILL.md) | `writer` | ✍️ | `#10B981` | Drafts documents and formats |
 | [Reviewer](reviewer/SKILL.md) | `review` | 🔍 | `#EF4444` | Quality checks and peer review |
-| [Librarian](librarian/SKILL.md) | `librarian` | 📚 | `#8B5CF6` | Maintains memory and knowledge |
+| [Librarian](librarian/SKILL.md) | `librarian` | 📚 | `#A855F7` | Maintains memory and knowledge |
+
+## Persona-Based Agent Guides
+
+Designed for specific user roles — each guide provides tailored system prompts, skill selections, tool configurations, and workflow patterns for that audience.
+
+| Persona | ID | Avatar | Color | Role |
+| :--- | :--- | :--- | :--- | :--- |
+| [Independent Researcher](independent-researcher/SKILL.md) | `independent-researcher` | 🎓 | `#06B6D4` | Academic literature review, data analysis, and paper drafting |
+| [Public Health Analyst](public-health-analyst/SKILL.md) | `public-health-analyst` | 🏥 | `#F59E0B` | Disease outbreak tracking, ICD-11 coding, epi analysis |
+| [Technical Writer](technical-writer/SKILL.md) | `technical-writer` | ✍️ | `#10B981` | AI-assisted documentation, diagrams, template management |
+| [Data Journalist](data-journalist/SKILL.md) | `data-journalist` | 📰 | `#EF4444` | Data-driven storytelling, public data analysis |
+| [Knowledge Manager](knowledge-manager/SKILL.md) | `knowledge-manager` | 📚 | `#A855F7` | Knowledge base management, taxonomy, reference organization |
+| [Developer](developer/SKILL.md) | `developer` | 🛠️ | `#3B82F6` | MCP servers, custom agents, API integration |
+| [Student](student/SKILL.md) | `student` | 📖 | `#8B5CF6` | Thesis research, literature review, exam prep |
+| [NGO Field Worker](ngo-field-worker/SKILL.md) | `ngo-field-worker` | 🌍 | `#10B981` | Offline field research, health assessments, SitReps |
+| [Privacy-Conscious User](privacy-user/SKILL.md) | `privacy-user` | 🔒 | `#6B7280` | Local-first AI, offline mode, data sovereignty |
 
 ## How Agents Work
 
