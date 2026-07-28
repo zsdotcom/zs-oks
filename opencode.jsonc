@@ -2,21 +2,15 @@
   "$schema": "https://opencode.ai/config.json",
 
   // ─── System Instructions ───
-  // Loads AGENTS.md into the AI's system prompt every launch
+  // Loads AGENTS.md into the AI's system prompt on every launch
   "instructions": ["AGENTS.md"],
 
-  // ─── Skills ───
-  // Register both skill directories so /skill command can discover them
-  "skills": {
-    "paths": [".opencode/skills"]
-  },
-
   // ─── References ───
-  // Local directories available as supporting context via @ alias
+  // Local project directories made available as supporting context (@ alias)
   "references": {
     "docs": {
       "path": "docs",
-      "description": "Product documentation and user guides (105+ files)"
+      "description": "Product documentation and user guides"
     },
     "data": {
       "path": "docs/_data",
@@ -29,18 +23,18 @@
   },
 
   // ─── MCP Servers ───
-  // These connect the AI to external tools and services
-  "mcpServers": {
+  // Connects OpenCode to external tools and services
+  "mcp": {
     "context7": {
-      "command": "npx",
-      "args": ["-y", "@context7/mcp-server"],
-      "env": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      "type": "local",
+      "command": ["npx", "-y", "@context7/mcp-server"],
+      "environment": {
+        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
       }
     },
     "playwright": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-playwright"]
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic/mcp-playwright"]
     }
   },
 
@@ -56,6 +50,8 @@
     "lsp": "allow",
     "skill": "allow",
     "edit": "allow",
+    "webfetch": "allow",
+    "websearch": "allow",
     "bash": {
       "*": "ask",
       "npm *": "allow",
@@ -66,12 +62,6 @@
       "git add *": "allow",
       "git commit *": "ask",
       "git push *": "ask"
-    },
-    "webfetch": "allow",
-    "websearch": "allow",
-    "external_directory": {
-      "${workspaceFolder}/**": "allow",
-      "*": "deny"
     }
   }
 }
