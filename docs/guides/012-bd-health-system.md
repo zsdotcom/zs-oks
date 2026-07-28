@@ -154,6 +154,22 @@ Integrated vaccine registration portal launched 2024.
 
 ---
 
+## Troubleshooting & FAQ
+
+**Q: DGHS data isn't loading.**
+> The DGHS dashboard relies on data from the Directorate General of Health Services, Bangladesh. Try the "Refresh" button. If data still doesn't load, the source server might be under maintenance.
+
+**Q: Some divisions show "No Data".**
+> Not all health indicators are available for every division. Try selecting a different indicator or time period. Data coverage varies by region.
+
+**Q: How current is the data?**
+> The BD Health System data is updated periodically based on DGHS reports. Check the "Last Updated" indicator on each panel for freshness information.
+
+**Q: Can I export this data?**
+> Yes. Use the Export button to download the currently displayed data as CSV or JSON.
+
+---
+
 ## Systems Quick Reference
 
 | System | Type | Scale |

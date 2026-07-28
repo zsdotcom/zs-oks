@@ -12,6 +12,29 @@ audience: "users"
 
 ---
 
+## Webhook Event Flow
+
+```mermaid
+flowchart TD
+    Event{App Event Occurs} -->|Document saved| Trigger[Webhook Trigger]
+    Event -->|Agent responds| Trigger
+    Event -->|Project created| Trigger
+    Event -->|File uploaded| Trigger
+
+    Trigger --> Payload[Build JSON Payload]
+    Payload --> Dispatch[Dispatch to URL]
+
+    Dispatch --> Success{Response?}
+    Success -->|200 OK| Log[Logged as success]
+    Success -->|Timeout / Error| Retry{Retry?}
+    Retry -->|Yes, up to 3x| Dispatch
+    Retry -->|No| Fail[Logged as failed]
+
+    style Event fill:#0b1326,color:#dae2fd
+    style Trigger fill:#1e293b,color:#94a3b8
+    style Dispatch fill:#3b1a4b,color:#d0bcff
+```
+
 ## 1. What are Webhooks?
 
 Webhooks are **HTTP callbacks** that fire when specific events occur in Open Knowledge Studio. They allow the app to send real-time notifications to external services (Discord, Slack, custom APIs, etc.) whenever a relevant action happens — without polling or manual checking.
@@ -191,6 +214,25 @@ Webhook data is stored in `localStorage` under the key `oks-webhooks`.
 | HTTP error response | Invalid URL or endpoint rejected | Test URL with `curl` or `Postman` |
 | No events listed | No webhooks configured | Add a webhook first |
 | Webhook fires but no effect | Method mismatch (expects POST, got GET) | Verify the method matches the endpoint |
+
+---
+
+## Troubleshooting & FAQ
+
+**Q: My webhook isn't firing.**
+> Check that the webhook is enabled and the trigger event is correctly configured. Test the webhook URL directly using a tool like curl or Postman: `curl -X POST https://your-webhook-url -H "Content-Type: application/json" -d '{"test": true}'`
+
+**Q: I get a 404 error when the webhook tries to reach my server.**
+> Verify the webhook URL is correct and publicly accessible. If your server is behind a firewall or VPN, the webhook can't reach it. Use a tunnelling service like ngrok for local testing.
+
+**Q: The webhook payload looks different from what I expected.**
+> Each trigger event sends a specific payload structure. Check the "Payload Example" section in the webhook configuration panel. You can also use the "Test Webhook" button to see the exact payload.
+
+**Q: Are webhooks secure?**
+> Webhooks can include a secret token in the header. Configure a shared secret in the webhook settings and verify it on your receiving server to ensure the request came from this app.
+
+**Q: How many webhooks can I create?**
+> There's no hard limit, but performance may degrade with 50+ active webhooks. Disable webhooks you no longer need.
 
 ---
 

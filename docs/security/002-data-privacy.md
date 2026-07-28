@@ -6,6 +6,35 @@ tags: [security, privacy, data-residency, offline]
 
 # Data Privacy & Trust
 
+## Data Flow Overview
+
+```mermaid
+graph TB
+    subgraph Browser["Your Browser (IndexedDB)"]
+        Chat[Chat Messages]
+        Docs[Documents]
+        Keys[API Keys]
+        Config[Agent Configs]
+        Metrics[Performance Data]
+    end
+
+    subgraph External["External Services"]
+        AI[AI Provider<br/>Gemini / OpenAI / etc.]
+        Google[Google APIs<br/>Drive / Docs / Gmail]
+        CDN[CDN Servers<br/>jsDelivr / unpkg]
+    end
+
+    Chat -->|Sent when you chat| AI
+    Keys -->|Used for auth| AI
+    Docs -->|If Drive connector on| Google
+    Google -->|OAuth tokens| Google
+
+    style Browser fill:#0b1326,color:#dae2fd
+    style External fill:#1e293b,color:#94a3b8
+```
+
+**Green = stays in browser. Blue = leaves only when you act.**
+
 ## Data Residency
 
 **All data is stored in the user's browser, in IndexedDB.** There is no backend server, no cloud sync (unless the user configures a connector), and no data leaves the browser except:

@@ -238,6 +238,25 @@ The Data Analyst agent generates these automatically when asked for visualizatio
 
 ---
 
+## Troubleshooting & FAQ
+
+**Q: My diagram isn't showing up — just a blank box.**
+> Check the browser console (F12 → Console) for errors. Common causes: missing or mismatched Mermaid syntax. Make sure your diagram starts with \`\`\`mermaid on its own line.
+
+**Q: The diagram looks wrong or has garbled text.**
+> Mermaid is loaded dynamically from CDN. If your internet is slow, the library might not have loaded fully. Wait a moment and refresh. You can also click "Try Export" to see if the SVG renders.
+
+**Q: Can I export a diagram as an image?**
+> Yes. Right-click the diagram and select "Copy as SVG" or use the Export button to download as PNG/SVG.
+
+**Q: KaTeX math isn't rendering inside my diagram.**
+> Wrap math in $$...$$ for display math or $...$ for inline math. Make sure the KaTeX library has loaded (check Network tab in DevTools).
+
+**Q: My diagram is too complex and the app slows down.**
+> Break it into smaller sub-diagrams. Mermaid performance degrades with very large graphs (50+ nodes).
+
+---
+
 ## See Also
 
 - [A2A Agents Guide](001-agents.md) — Data Analyst diagram generation

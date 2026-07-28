@@ -12,6 +12,25 @@ audience: "users"
 
 ---
 
+## Execution Flow
+
+```mermaid
+sequenceDiagram
+    participant User as User/Agent
+    participant App as App
+    participant Sandbox as Sandbox Iframe
+    participant Code as Code Runner
+
+    User->>App: Submit code
+    App->>Sandbox: Create iframe (sandbox="allow-scripts")
+    Sandbox->>Code: Execute in isolated scope
+    Code-->>Sandbox: Return result
+    Sandbox-->>App: postMessage result
+    App-->>User: Display output
+
+    Note over Code: 5-second timeout<br/>No DOM access<br/>No network access
+```
+
 ## 1. Overview
 
 The sandbox is a **lightweight JavaScript execution environment** that runs user or agent code in a restricted iframe with no access to the parent page, DOM, cookies, localStorage, or network. It enables safe computation without compromising security.
@@ -160,6 +179,25 @@ Sandbox settings are managed in `SettingsPanel.tsx` under the **Sandbox** sectio
 | Timeout exceeded | Infinite loop or long computation | Increase timeout in Settings or optimize code |
 | `ReferenceError: X is not defined` | Using restricted API | Check the available globals table above |
 | Dead iframe detected | Browser blocked iframe creation | Check browser security settings |
+
+---
+
+## Troubleshooting & FAQ
+
+**Q: My code won't run — nothing happens.**
+> Check that the code language is supported (JavaScript, Python via Pyodide, or shell commands). Make sure you've clicked "Run" and not just written the code. Look for errors in the output panel.
+
+**Q: I get a timeout error.**
+> Sandboxed code has a default timeout of 30 seconds. Long-running loops or large data processing may exceed this. Optimize your code or break it into smaller steps.
+
+**Q: Can I access files from my computer?**
+> No. The sandbox runs entirely in your browser for security. Upload data files through the app's data import feature instead.
+
+**Q: Is the sandbox safe?**
+> Yes. Code runs in a restricted Web Worker with no access to your file system, clipboard, or network. The sandbox can't install software or make outbound connections.
+
+**Q: My Python code says "module not found".**
+> Pyodide includes a limited set of pre-installed Python packages. Common scientific libraries (numpy, pandas, matplotlib) are included. To request packages, use `pyodide.loadPackage()` or check the Pyodide documentation.
 
 ---
 

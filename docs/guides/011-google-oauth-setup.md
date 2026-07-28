@@ -10,6 +10,27 @@ audience: "users"
 
 # Google OAuth Setup Guide
 
+## OAuth Flow
+
+```mermaid
+sequenceDiagram
+    participant User as You
+    participant App as Open Knowledge Studio
+    participant Google as Google Accounts
+    participant API as Google APIs
+
+    User->>App: Click "Sign in with Google"
+    App->>Google: Redirect to OAuth consent
+    Google->>User: Show permissions screen
+    User->>Google: Approve
+    Google-->>App: Return ID token
+    App->>API: Call APIs (Drive/Docs/Gmail)
+    API-->>App: Return data
+    App-->>User: Display in workspace
+
+    Note over App,API: Token stored in memory only<br/>Never persisted to disk
+```
+
 Open Knowledge Studio uses Google OAuth 2.0 to connect to Google Workspace (Drive, Docs, Sheets, Gmail, Tasks). This is a client-side flow using Google Identity Services (GIS) — you only need a **Client ID**, no secret.
 
 ## Quick Setup (3 minutes)

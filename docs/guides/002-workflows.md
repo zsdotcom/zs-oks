@@ -173,6 +173,22 @@ These are pushed to the `A2AMetricsDashboard` via the `onAgentResponse` callback
 
 ---
 
+## Troubleshooting & FAQ
+
+**Q: My workflow is stuck on one step.**
+> Check the status indicators. A 🟡 icon means the step is still running. If it's stuck for more than 30 seconds, the agent might have timed out. Cancel and restart the workflow.
+
+**Q: Agents aren't following the workflow order.**
+> In **Sequential** mode, agents run one after another. In **Orchestrated** mode, the Coordinator decides the order. Make sure you selected the right mode when starting.
+
+**Q: Can I save a workflow for later?**
+> Yes. When you create a custom workflow, it's saved automatically to IndexedDB. It will appear in the workflow list the next time you open the panel.
+
+**Q: How many steps can a workflow have?**
+> There's no hard limit, but workflows with more than 10 steps may take longer to complete. Consider splitting very complex workflows into multiple smaller ones.
+
+---
+
 ## See Also
 
 - [A2A Agents Guide](001-agents.md) — Agent configuration and system prompts

@@ -27,6 +27,7 @@ _Documentation v3.2 · Last updated: July 28, 2026_
 | 004 | [System Architecture](project/004-architecture.md)      | Architecture diagram, component tree, data flow, state management, security       | [Design](project/005-design.md) · [ADR](architecture/000-index.md)                    |
 | 005 | [UI/UX Design](project/005-design.md)                   | Cyber-minimalist design system: colors, typography, layout, elevation, components | [Architecture](project/004-architecture.md) · [Brand](project/006-brand-guidelines.md) |
 | 006 | [Brand Guidelines](project/006-brand-guidelines.md)     | Brand positioning, voice & tone, messaging library, visual identity rules         | [Design](project/005-design.md) · [Overview](project/000-overview.md) |
+| 007 | [GitHub Pages Design](project/007-github-page-design.md) | Visual design plan for the Docsify-powered documentation site                    | [Brand](project/006-brand-guidelines.md) · [Docs Ops](../operations/000-docs-ci-cd.md) |
 
 ## 🛠️ Developer Documentation
 

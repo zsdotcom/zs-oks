@@ -10,7 +10,7 @@ audience: "users"
 
 # A2A Debate Agents
 
-Open Knowledge Studio ships with **6 built-in A2A debate agents** plus **9 persona-based agent guides** tailored to specific user roles.
+Open Knowledge Studio ships with **12 built-in A2A debate agents** plus **9 persona-based agent guides** tailored to specific user roles.
 
 ## Built-in Agent Roster
 
@@ -22,6 +22,12 @@ Open Knowledge Studio ships with **6 built-in A2A debate agents** plus **9 perso
 | [Writer](004-writer.md) | `writer` | ✍️ | `#10B981` | Drafts documents and formats |
 | [Reviewer](005-reviewer.md) | `review` | 🔍 | `#EF4444` | Quality checks and peer review |
 | [Librarian](006-librarian.md) | `librarian` | 📚 | `#A855F7` | Maintains memory and knowledge |
+| [Security Analyst](018-security-analyst.md) | `security` | 🛡️ | `#EF4444` | Analyzes code and configs for vulnerabilities |
+| [Code Reviewer](019-code-reviewer.md) | `code-reviewer` | 🔎 | `#6366F1` | Reviews code quality and best practices |
+| [Planning Agent](020-planner.md) | `planner` | 📋 | `#14B8A6` | Decomposes tasks, creates plans |
+| [Testing Agent](021-tester.md) | `tester` | 🧪 | `#84CC16` | Generates and validates test cases |
+| [Code Generator](022-code-generator.md) | `code-gen` | ⚡ | `#F97316` | Generates code from specifications |
+| [Knowledge Curator](023-knowledge-curator.md) | `knowledge-curator` | 🏛️ | `#A855F7` | Organizes, tags, and links knowledge |
 
 ## Persona-Based Agent Guides
 

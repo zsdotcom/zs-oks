@@ -12,6 +12,26 @@ audience: "users"
 
 ---
 
+## Data Source Overview
+
+```mermaid
+flowchart LR
+    Panel[PublicDataPanel] --> CDC[CDC Socrata<br/>US surveillance data]
+    Panel --> WHO[WHO data.who.int<br/>Global health indicators]
+    Panel --> Flu[FluView<br/>Influenza tracking]
+    Panel --> CV[COVIDcast<br/>Pandemic signals]
+    Panel --> Path[Pathogen Detection<br/>Outbreak monitoring]
+    Panel --> WX[Open-Meteo<br/>Weather data]
+    Panel --> AQ[Air Quality<br/>Pollution levels]
+
+    style Panel fill:#0b1326,color:#dae2fd
+    style CDC fill:#1e293b,color:#94a3b8
+    style WHO fill:#1e293b,color:#94a3b8
+    style WX fill:#1e293b,color:#94a3b8
+```
+
+**All sources are free, no API keys required.**
+
 ## 1. Overview
 
 The **PublicDataPanel** provides access to multiple free public data APIs directly from Open Knowledge Studio. You can query health, epidemiological, weather, and air quality data without API keys — these are all free, publicly accessible endpoints.
@@ -239,6 +259,25 @@ Data is **cached in memory** for 5 minutes (`CACHE_TTL`) to avoid redundant API 
 - Cache duration: 5 minutes (configurable in code via `CACHE_TTL`)
 - Results are not stored permanently — export what you need
 - Some APIs may have downtime or rate limits; errors are handled gracefully
+
+---
+
+## Troubleshooting & FAQ
+
+**Q: A data tab shows "Loading..." forever.**
+> The API endpoint might be down or unreachable. Try switching to a different data source tab and back. If the problem persists, check your internet connection and the service status page for that API.
+
+**Q: No results for my query.**
+> Try broadening your search terms. Some APIs return limited results for very specific queries. Use wildcards or date ranges if available.
+
+**Q: The data looks outdated.**
+> Different APIs update on different schedules. CDC data may lag by 1-2 weeks. WHO data varies by indicator. The "Last Updated" timestamp on each tab shows how recent the data is.
+
+**Q: Can I download the data?**
+> Yes. Use the Export button (usually a download icon) above the data table. CSV and JSON formats are supported.
+
+**Q: Do I need API keys for any of these sources?**
+> No. All sources in the Public Data panel use free, publicly accessible endpoints that require no API keys.
 
 ---
 

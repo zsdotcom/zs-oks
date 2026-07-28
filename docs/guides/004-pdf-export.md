@@ -12,6 +12,26 @@ audience: "users"
 
 ---
 
+## Export Flow
+
+```mermaid
+flowchart LR
+    Doc[Open Document] --> Choice{Export method?}
+    Choice -->|Print to PDF| Print[Browser print dialog<br/>Ctrl/Cmd + P]
+    Choice -->|Export PDF| Export[Client-side PDF generation]
+
+    Print --> Settings[Page setup: margins, scale]
+    Settings --> Save[Save as PDF]
+
+    Export --> Gen[Generate PDF with KaTeX]
+    Gen --> Down[Download .pdf file]
+
+    style Print fill:#0b1326,color:#dae2fd
+    style Export fill:#1e293b,color:#94a3b8
+    style Save fill:#3b1a4b,color:#d0bcff
+    style Down fill:#3b1a4b,color:#d0bcff
+```
+
 ## 1. Overview
 
 The `WorkspaceDocumentEditor` provides **two export methods** for saving documents as PDF or print-ready HTML. Both are accessible from the editor toolbar.
@@ -108,6 +128,22 @@ function exportToPDF(
 - **For Mermaid diagrams**, use Print to PDF while the document is open in the app for the best result
 - **Large documents** may take longer to render in the print dialog — be patient
 - **Page breaks** can be controlled by structuring your markdown with appropriate headings
+
+---
+
+## Troubleshooting & FAQ
+
+**Q: PDF export fails silently.**
+> Check your browser's download permissions. Some browsers block multiple automatic downloads. Also check that your document doesn't contain external images that fail to load.
+
+**Q: The PDF is blank.**
+> The document might not have any content selected for export. Use the selection controls to choose which sections to include. If the document is empty, write some content first.
+
+**Q: Formatting looks different in the PDF vs the screen.**
+> PDF export converts HTML to PDF format. Complex layouts (tables, diagrams, math) may render differently. Use the Print Preview feature first to check.
+
+**Q: Can I export very large documents (100+ pages)?**
+> Yes, but it may take several seconds. The app processes the document in chunks. Watch the progress bar — if it stalls, try exporting in sections.
 
 ---
 

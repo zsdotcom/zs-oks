@@ -7,6 +7,9 @@
   - [Design System](project/005-design.md)
   - [Brand Guidelines](project/006-brand-guidelines.md)
 
+- **GitHub Page Design**
+  - [Page Design Plan](project/007-github-page-design.md)
+
 - **Getting Started**
   - [Quickstart](developers/000-quickstart.md)
   - [Setup Guide](developers/001-setup.md)
@@ -119,3 +122,9 @@
   - [Privacy User](agents/015-privacy-user.md)
   - [Template](agents/016-template.md)
   - [Docs Manager Agent](agents/017-docs-manager-agent.md)
+  - [Security Analyst](agents/018-security-analyst.md)
+  - [Code Reviewer](agents/019-code-reviewer.md)
+  - [Planner](agents/020-planner.md)
+  - [Tester](agents/021-tester.md)
+  - [Code Generator](agents/022-code-generator.md)
+  - [Knowledge Curator](agents/023-knowledge-curator.md)

@@ -7,6 +7,33 @@ tags: [adr, pwa, offline, service-worker, caching]
 
 # ADR-006: PWA & Offline Architecture
 
+## Online vs Offline Behavior
+
+```mermaid
+flowchart TD
+    User[User opens app] --> Online{Has internet?}
+
+    Online -->|Yes| Full[Full experience:<br/>Chat + ML + Maps + Diagrams]
+    Online --> SW[Service Worker caches assets]
+
+    Full --> SW
+
+    Online -->|No| Offline[Offline mode]
+    Offline --> Core[Core features work:<br/>Chat history, documents, settings]
+    Offline --> Degraded[Features degraded:]
+    Offline --> Degrade1[Semantic search → keyword match]
+    Offline --> Degrade2[Embeddings → zero vectors]
+    Offline --> Degrade3[Diagrams → code block display]
+    Offline --> Degrade4[Maps → unavailable]
+
+    style Full fill:#0b1326,color:#dae2fd
+    style Offline fill:#1e293b,color:#94a3b8
+    style Degrade1 fill:#3b1a4b,color:#d0bcff
+    style Degrade2 fill:#3b1a4b,color:#d0bcff
+    style Degrade3 fill:#3b1a4b,color:#d0bcff
+    style Degrade4 fill:#3b1a4b,color:#d0bcff
+```
+
 ## Status
 
 Accepted

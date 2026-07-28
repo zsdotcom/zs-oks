@@ -139,6 +139,22 @@ The component cleans up (destroys the map instance) on unmount to prevent memory
 
 ---
 
+## Troubleshooting & FAQ
+
+**Q: The map doesn't load — shows a grey area.**
+> The Leaflet map tiles are loaded from a CDN. Check your internet connection. If tiles fail, look for CORS errors in the browser console (F12 → Console).
+
+**Q: No data appears on the map.**
+> Make sure you've loaded a dataset that contains geographic data (country names, coordinates, or region codes). The map needs at least one column with location information.
+
+**Q: The markers are in the wrong location.**
+> Check your data's coordinate format. Latitude should be between -90 and 90, longitude between -180 and 180. If your data uses a different format (e.g., UTM), convert it first.
+
+**Q: Can I export the map as an image?**
+> Yes. Use the Export button above the map to download as PNG. You can also take a screenshot.
+
+---
+
 ## See Also
 
 - [ICD-11 Lookup Guide](007-icd11.md) — Medical code browser for epidemiological data

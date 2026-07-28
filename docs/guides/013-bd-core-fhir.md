@@ -111,6 +111,22 @@ FHIR Tester UI: https://sandbox.fhir.dghs.gov.bd
 
 ---
 
+## Troubleshooting & FAQ
+
+**Q: The FHIR server isn't responding.**
+> The BD Core FHIR server might be temporarily unavailable. Wait a few minutes and try again. If the problem persists, check the service status page for BD Core.
+
+**Q: Patient search returns no results.**
+> Make sure you're using the correct Patient ID format. BD Core FHIR uses a specific identifier format. Try searching by NID (National ID) or date of birth if available.
+
+**Q: Resource validation fails.**
+> Check that your FHIR resource follows the BD Core profile. Some fields that are optional in standard FHIR are required in BD Core. The validation error message should indicate which field is missing.
+
+**Q: Can I use BD Core FHIR offline?**
+> No. The FHIR server requires an active internet connection. For offline work, export patient records beforehand.
+
+---
+
 ## Source Files
 
 ```

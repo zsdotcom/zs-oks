@@ -7,6 +7,31 @@ tags: [adr, code-splitting, react-lazy, performance, bundle]
 
 # ADR-004: Code Splitting Strategy
 
+## Lazy Loading Flow
+
+```mermaid
+flowchart TD
+    Start[User loads app] --> Eager[Eager-loaded:<br/>ChatInterface, KnowledgeBase, Search]
+    Eager --> Suspense[React.Suspense boundary]
+
+    Suspense --> Choice{User navigates to...}
+    Choice -->|Metrics tab| M[A2AMetricsDashboard<br/>~15KB gzip]
+    Choice -->|Opens document| D[WorkspaceDocumentEditor<br/>~25KB gzip]
+    Choice -->|Settings gear| S[SettingsPanel<br/>~12KB gzip]
+    Choice -->|MCP tab| P[MCPServerPanel<br/>~8KB gzip]
+    Choice -->|Google panel| G[GoogleWorkspacePanel<br/>~20KB gzip]
+
+    M --> Loaded[Lazy-loaded chunks<br/>loaded on demand]
+    D --> Loaded
+    S --> Loaded
+    P --> Loaded
+    G --> Loaded
+
+    style Eager fill:#0b1326,color:#dae2fd
+    style Suspense fill:#1e293b,color:#94a3b8
+    style Loaded fill:#3b1a4b,color:#d0bcff
+```
+
 ## Status
 
 Accepted

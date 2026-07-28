@@ -22,6 +22,7 @@
 - `docs/project/004-architecture.md` — Architecture diagram, component tree, data flow
 - `docs/project/005-design.md` — Cyber-minimalist design system (colors, typography, layout)
 - `docs/project/006-brand-guidelines.md` — Brand positioning, voice & tone, visual identity
+- `docs/project/007-github-page-design.md` — Visual design plan for the Docsify-powered documentation site
 
 ### 2. Architecture Decisions (Developers/Architects)
 - `docs/architecture/000-index.md` — ADR index and status roster

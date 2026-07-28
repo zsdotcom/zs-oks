@@ -10,6 +10,26 @@ audience: "developers"
 
 # 009 — Deployment Guide
 
+## Deployment Options
+
+```mermaid
+flowchart TD
+    Build[npm run build] --> Choice{Choose platform}
+
+    Choice -->|Static hosting| GH[GitHub Pages<br/>Free, auto-deploy on push]
+    Choice -->|Server + Docker| DK[Docker<br/>nginx container, port 8080]
+    Choice -->|Serverless| VC[Vercel<br/>Connect repo, auto-deploy]
+    Choice -->|Serverless| NF[Netlify<br/>Connect repo, auto-deploy]
+
+    GH --> Live[App goes live!]
+    DK --> Live
+    VC --> Live
+    NF --> Live
+
+    style Build fill:#0b1326,color:#dae2fd
+    style Live fill:#3b1a4b,color:#d0bcff
+```
+
 Deploy Open Knowledge Studio using **Docker**, **Vercel**, **Netlify**, or **GitHub Pages**.
 
 ---

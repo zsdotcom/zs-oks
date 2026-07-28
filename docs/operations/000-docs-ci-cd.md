@@ -10,7 +10,9 @@ last_updated: "2026-07-27"
 
 ## Strategy Overview
 
-This document outlines the strategy for publishing the `docs/` directory as a browsable static documentation site. No pipeline is currently implemented — this document is the plan.
+This document outlines the strategy for publishing the `docs/` directory as a browsable static documentation site.
+
+> ✅ **Docsify `index.html` has been created** at `docs/index.html`. Deploy this alongside the existing Markdown files — no build step required. See [Usage](#usage) below.
 
 ## Option Comparison
 
@@ -92,10 +94,26 @@ Docsify is recommended because:
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Docsify entry point (single HTML file) |
-| `_sidebar.md` | Sidebar navigation definition |
-| `_coverpage.md` | Optional landing page cover |
-| `_navbar.md` | Optional top navigation bar |
+| `index.html` | ✅ Created — Docsify entry point (single HTML file) |
+| `_sidebar.md` | ⬜ Not yet created — sidebar will fall back to `[**]()` links from headings |
+| `_coverpage.md` | ⬜ Optional landing page cover |
+| `_navbar.md` | ⬜ Optional top navigation bar |
+
+### Usage
+
+The `docs/index.html` is configured with:
+
+- **Dark mode** by default (toggleable) via `docsify-dark-mode`
+- **Full-text search** across all Markdown files
+- **Image zoom** on click
+- **Copy code** button on code blocks
+- **GitHub corner** linking to the repo
+
+To preview locally:
+```bash
+npx docsify serve docs/
+# Opens at http://localhost:3000
+```
 
 ### GitHub Actions Integration
 

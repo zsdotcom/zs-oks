@@ -12,6 +12,26 @@ audience: "users"
 
 ---
 
+## Connector Architecture
+
+```mermaid
+flowchart LR
+    App[Open Knowledge Studio] --> Connectors{Connector Hub}
+
+    Connectors --> GitHub[GitHub<br/>repos / issues / PRs]
+    Connectors --> Slack[Slack<br/>messages / channels]
+    Connectors --> RSS[RSS Feeds<br/>article monitoring]
+    Connectors --> Email[Email<br/>send / receive]
+    Connectors --> Discord[Discord<br/>webhook messages]
+    Connectors --> Telegram[Telegram<br/>bot messages]
+
+    Connectors --> Webhook[Webhook System<br/>event-driven dispatch]
+
+    style App fill:#0b1326,color:#dae2fd
+    style Connectors fill:#1e293b,color:#94a3b8
+    style Webhook fill:#3b1a4b,color:#d0bcff
+```
+
 ## 1. Overview
 
 Connectors allow Open Knowledge Studio to integrate with external services — fetching data, sending notifications, and interacting with third-party platforms. Connectors are configured through the **ConnectorPanel** and stored in IndexedDB.
@@ -149,6 +169,22 @@ Removed connectors are deleted from IndexedDB via `removeConnector()`.
 | Slack test fails | Webhook URL is wrong or app uninstalled | Check URL and reinstall the Slack app |
 | RSS not fetching | Feed URL is invalid or feed changed | Verify URL in a browser first |
 | Connector shows "Disconnected" | Never tested or credentials changed | Click test or re-enter credentials |
+
+---
+
+## Troubleshooting & FAQ
+
+**Q: The connector says "Connection Failed".**
+> Check your API key or authentication credentials in Settings. Many connectors require a valid key. Also verify the service is reachable from your network.
+
+**Q: A connector is installed but not showing up.**
+> Some connectors need to be activated individually. Go to Settings → Connectors and toggle the connector to active. It should appear in the tools panel immediately.
+
+**Q: Data from the connector looks incomplete.**
+> Some APIs have rate limits or return paginated results. The connector fetches a default page size (usually 100). Use the "Load More" button if available.
+
+**Q: Can I create my own connector?**
+> Custom connectors aren't supported through the UI yet. You can extend the source code — see the Developer Guide for the connector interface.
 
 ---
 

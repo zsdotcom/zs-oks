@@ -30,6 +30,12 @@ Agents are defined in `DEFAULT_A2A_AGENTS` at `src/App.tsx:108-151`.
 | `writer` | **Writer** | Drafts documents, applies templates, formats outputs | ✍️ | `#10B981` | Session | Gemini | 2.5 Flash | Active |
 | `review` | **Reviewer** | Quality checks, citation audit, compliance | 🔍 | `#EF4444` | Session | Gemini | 2.5 Flash | Active |
 | `librarian` | **Librarian** | Maintains memory, organizes knowledge, references | 📚 | `#A855F7` | Full | Gemini | 2.5 Flash | Active |
+| `security` | **Security Analyst** | Analyzes code and configs for vulnerabilities | 🛡️ | `#EF4444` | Persistent | Gemini | 2.5 Flash | Active |
+| `code-reviewer` | **Code Reviewer** | Reviews code quality and best practices | 🔎 | `#6366F1` | Session | Gemini | 2.5 Flash | Active |
+| `planner` | **Planning Agent** | Decomposes tasks and creates execution plans | 📋 | `#14B8A6` | Full | Gemini | 2.5 Pro | Active |
+| `tester` | **Testing Agent** | Generates and validates test cases | 🧪 | `#84CC16` | Session | Groq | Llama 3.3 70B | Active |
+| `code-gen` | **Code Generator** | Generates source code from specifications | ⚡ | `#F97316` | Session | Gemini | 2.5 Flash | Active |
+| `knowledge-curator` | **Knowledge Curator** | Organizes, tags, and interlinks knowledge assets | 🏛️ | `#A855F7` | Full | Gemini | 2.5 Flash | Active |
 
 ### Memory Types
 
@@ -62,6 +68,24 @@ Each agent has a detailed system prompt that defines its behavior. Below are the
 
 ### Librarian
 > "You are the Librarian Agent of Open Knowledge Studio. Your role is to maintain all six memory tiers: Session, Episodic, Semantic, Procedural, Working, and Long-Term. Run periodic knowledge refresh cycles using free sources (Wikipedia, OpenAlex, WHO, CDC). Rebuild the semantic search index when new documents are added. Manage references and build project-specific glossaries. Compress episodic memory by summarizing old sessions. Never delete memories without user confirmation. Always cite the source when refreshing knowledge."
+
+### Security Analyst
+> "You are the Security Analyst Agent of Open Knowledge Studio. Your role is to analyze source code, configuration files, and dependencies for security vulnerabilities. Check for common weaknesses: hardcoded secrets, SQL injection, XSS, CSRF, insecure deserialization, dependency vulnerabilities. Review CSP headers and API key handling. Check for exposed endpoints and authentication bypasses. Provide CVSS-style severity scoring (Critical/High/Medium/Low) for each finding. Recommend remediation steps with code examples. Never flag false positives without explanation."
+
+### Code Reviewer
+> "You are the Code Reviewer Agent of Open Knowledge Studio. Your role is to review source code for quality, maintainability, and adherence to best practices. Check for code smells, anti-patterns, naming conventions, documentation coverage, test coverage, error handling, and type safety. Use established style guides (TypeScript, React, Tailwind conventions). Provide line-level feedback with severity: Error, Warning, Suggestion. Include before/after code examples for each recommendation. Rate code quality on a scale of 1-10 with justification."
+
+### Planner
+> "You are the Planning Agent of Open Knowledge Studio. Your role is to decompose complex tasks into manageable sub-tasks with clear dependencies. Create structured execution plans using the Mermaid Gantt chart format. Estimate time and resource requirements for each step. Identify critical path items and parallelizable work. Assign tasks to appropriate agents based on their capabilities. Track progress against the plan and suggest adjustments. Always include risk assessment and contingency strategies."
+
+### Tester
+> "You are the Testing Agent of Open Knowledge Studio. Your role is to design and execute comprehensive test strategies. Generate unit tests, integration tests, and end-to-end test scenarios. Validate edge cases, error states, and boundary conditions. Check test coverage and identify untested code paths. Use the project's existing testing framework (Vitest + happy-dom). Follow Test-Driven Development (TDD) principles: test first, then implement. Report test results with pass/fail status, coverage metrics, and regression risk assessment."
+
+### Code Generator
+> "You are the Code Generator Agent of Open Knowledge Studio. Your role is to generate production-quality source code from specifications. Write clean, typed, documented code following the project's conventions (TypeScript, React, Tailwind CSS v4). Never add runtime dependencies beyond react and react-dom. Use native browser APIs and CDN-loaded libraries instead of npm packages. Include error handling and edge case coverage. Provide usage examples for all generated functions and components."
+
+### Knowledge Curator
+> "You are the Knowledge Curator Agent of Open Knowledge Studio. Your role is to organize, tag, and interlink knowledge assets across the workspace. Create taxonomies and tag hierarchies. Detect duplicate or overlapping content and suggest merges. Build cross-reference links between related documents. Generate knowledge graphs showing concept relationships. Maintain glossary entries with definitions, synonyms, and related terms. Suggest content refresh cycles for stale information. Track knowledge coverage gaps and recommend new content."
 
 ---
 
@@ -129,8 +153,58 @@ Each agent has a detailed system prompt that defines its behavior. Below are the
 | `memory-maintenance` — Manage tiers | `remember`, `recall`, `forget` |
 | `knowledge-refresh` — Update from sources | `vectorize` — Embed documents |
 | `index-rebuild` — Rebuild search index | `semantic-search` — Query by meaning |
-| `reference-manager` — Manage citations | `search-wikipedia`, `search-openalex` |
-| `glossary-build` — Create term glossaries | `read-file`, `write-file` |
+| `reference-manager` — Manage citations | `read-file`, `write-file` |
+| `glossary-build` — Create term glossaries | `recall` — Retrieve context |
+
+### Security Analyst
+
+| Skills | Tools |
+|:---|:---|
+| `vuln-scan` — Scan code/configs for weaknesses | `read-file`, `grep-source` |
+| `secret-detect` — Find hardcoded secrets | `regex-scan` — Pattern matching |
+| `csp-audit` — Check Content Security Policy | `fetch-url` — Validate external refs |
+| `dependency-check` — Scan npm deps for CVEs | `recall` — Retrieve known vulnerabilities |
+| `remediation` — Suggest fixes with code examples | `send-message` — Report findings |
+
+### Code Reviewer
+
+| Skills | Tools |
+|:---|:---|
+| `code-smell-detect` — Identify anti-patterns | `read-file`, `diff-check` |
+| `style-enforce` — Check naming/style conventions | `semantic-search` — Similar code patterns |
+| `coverage-check` — Review test coverage gaps | `calculate` — Complexity metrics |
+| `error-handling-audit` — Check try/catch coverage | `recall` — Best practice references |
+| `docs-review` — Verify inline docs accuracy | `send-message` — Line-level feedback |
+
+### Planner
+
+| Skills | Tools |
+|:---|:---|
+| `task-decompose` — Break work into sub-tasks | `draw-diagram` — Gantt charts |
+| `dependency-map` — Identify task ordering | `spawn-agent` — Assign sub-tasks |
+| `resource-estimate` — Time/complexity estimates | `status-track` — Monitor progress |
+| `risk-assess` — Flag risks and contingencies | `read-file`, `write-file` |
+| `progress-track` — Track against plan | `send-message`, `recall` |
+
+### Tester
+
+| Skills | Tools |
+|:---|:---|
+| `test-generate` — Create unit/integration tests | `read-file`, `write-file` |
+| `edge-case-find` — Identify boundary conditions | `calculate` — Test assertions |
+| `coverage-analyze` — Find untested paths | `semantic-search` — Similar tests |
+| `regression-check` — Flag regression risks | `spawn-agent` — Run test suites |
+| `mock-generate` — Create test fixtures/mocks | `recall` — Known failure patterns |
+
+### Code Generator
+
+| Skills | Tools |
+|:---|:---|
+| `component-gen` — Generate React components | `read-file`, `write-file` |
+| `hook-gen` — Generate custom React hooks | `semantic-search` — Existing patterns |
+| `util-gen` — Generate utility functions | `fetch-url` — API docs reference |
+| `style-gen` — Generate Tailwind CSS classes | `calculate` — Type validation |
+| `type-gen` — Generate TypeScript types | `recall` — Project conventions |
 
 ---
 
@@ -147,22 +221,34 @@ The A2A debate panel operates as follows:
 
 ```mermaid
 flowchart LR
-  U[User Prompt] --> A2A{A2A Debate}
+  U[User Prompt] --> A2A{A2A Debate Panel}
   A2A --> C[Coordinator]
   A2A --> R[Researcher]
   A2A --> D[Data Analyst]
   A2A --> W[Writer]
   A2A --> V[Reviewer]
   A2A --> L[Librarian]
-  
-  C --> |Decompose| S[Synthesize]
-  R --> |Research| S
-  D --> |Analysis| S
-  W --> |Draft| S
-  V --> |Audit| S
-  L --> |Knowledge| S
-  
-  S --> Out[Final Response]
+  A2A --> S[Security Analyst]
+  A2A --> CR[Code Reviewer]
+  A2A --> P[Planner]
+  A2A --> T[Tester]
+  A2A --> CG[Code Generator]
+  A2A --> KC[Knowledge Curator]
+
+  C -->|Orchestrate| Synth[Synthesize Results]
+  R -->|Find Sources| Synth
+  D -->|Analyze| Synth
+  W -->|Draft| Synth
+  V -->|Review| Synth
+  L -->|Reference| Synth
+  S -->|Audit Security| Synth
+  CR -->|Check Quality| Synth
+  P -->|Plan| Synth
+  T -->|Test| Synth
+  CG -->|Generate Code| Synth
+  KC -->|Curate| Synth
+
+  Synth --> Out[Final Combined Response]
 
   style C fill:#8B5CF6,color:#fff
   style R fill:#06B6D4,color:#fff
@@ -170,6 +256,12 @@ flowchart LR
   style W fill:#10B981,color:#fff
   style V fill:#EF4444,color:#fff
   style L fill:#A855F7,color:#fff
+  style S fill:#EF4444,color:#fff
+  style CR fill:#6366F1,color:#fff
+  style P fill:#14B8A6,color:#fff
+  style T fill:#84CC16,color:#fff
+  style CG fill:#F97316,color:#fff
+  style KC fill:#A855F7,color:#fff
 ```
 
 ---
@@ -222,6 +314,25 @@ The `A2AMetricsDashboard` (lazy-loaded component) provides:
 - Historical performance data
 
 Access it from the tools panel after running an A2A debate.
+
+---
+
+## Troubleshooting & FAQ
+
+**Q: Some agents don't respond.**
+> Open the A2A panel and check which agents are active. Inactive agents (grayed out) won't respond. Click them to toggle back on.
+
+**Q: The A2A panel isn't showing.**
+> Make sure you're in the Chat Interface. The A2A panel appears at the top of the chat area. If it's still missing, try refreshing the page.
+
+**Q: Can I change which provider an agent uses?**
+> Yes. Open Settings → A2A Agents, select an agent, and change its provider/model. Note: the Coordinator and Planner work best with a stronger model like Gemini 2.5 Pro.
+
+**Q: How do I create my own agent?**
+> Open Settings → A2A Agents → Add Custom Agent. Give it a name, avatar emoji, color, and system prompt describing its expertise.
+
+**Q: Do custom agents persist?**
+> Yes. They're saved in your browser's IndexedDB. Clearing your browser data will delete them — use the Export feature first.
 
 ---
 

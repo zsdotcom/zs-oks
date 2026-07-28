@@ -156,6 +156,22 @@ Click the **Moon/Sun** icon in the header to toggle between dark and light theme
 
 ---
 
+## Troubleshooting & FAQ
+
+**Q: I get a blank screen when I open the app.**
+> Try a hard refresh (Ctrl+Shift+R or Cmd+Shift+R). If that doesn't work, clear your browser cache for this site. The app runs entirely in your browser — no server-side issues.
+
+**Q: None of the AI providers respond.**
+> Open Settings and check that at least one provider is configured with a valid API key. See the [Environment Setup](../developers/002-environment.md) guide for where to get keys.
+
+**Q: My data isn't saved between sessions.**
+> Open Knowledge Studio saves data to your browser's IndexedDB. If you use Incognito or Private Browsing mode, data is cleared when you close the window. Switch to normal browsing or use the Export feature.
+
+**Q: How do I update the app?**
+> Refresh the page — the app is a single-page application (SPA) served from your deployment. If you deployed via Docker, pull the latest image and restart.
+
+---
+
 ## See Also
 
 - [A2A Agents Guide](001-agents.md) — Full agent roster and configuration

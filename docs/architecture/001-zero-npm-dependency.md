@@ -7,6 +7,38 @@ tags: [adr, dependencies, cdn, bundle-size]
 
 # ADR-001: Zero NPM Dependency Decision
 
+## Loading Strategy Overview
+
+```mermaid
+flowchart LR
+    subgraph Build["Build Time (npm install)"]
+        React[react + react-dom<br/>~6KB gzip]
+    end
+
+    subgraph Runtime["Runtime (CDN)"]
+        TF[Transformers.js<br/>~20MB WASM]
+        O[Orama JS<br/>~200KB]
+        M[Mermaid<br/>~800KB]
+        K[KaTeX<br/>~300KB]
+        L[Leaflet<br/>~150KB]
+    end
+
+    subgraph Bundle["Final Bundle"]
+        App[App code + React<br/>~90KB gzip]
+    end
+
+    React --> App
+    TF -.->|dynamic import| App
+    O -.->|dynamic import| App
+    M -.->|script tag| App
+    K -.->|script tag| App
+    L -.->|script tag| App
+
+    style Build fill:#1e293b,color:#94a3b8
+    style Runtime fill:#0b1326,color:#dae2fd
+    style Bundle fill:#3b1a4b,color:#d0bcff
+```
+
 ## Status
 
 Accepted
