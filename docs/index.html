@@ -4,205 +4,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Open Knowledge Studio — Documentation</title>
-  <meta name="description" content="Open Knowledge Studio documentation — a zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis.">
-  <meta name="keywords" content="open knowledge studio, a2a agents, documentation, AI platform, offline AI, research tool">
-
-  <!-- Open Graph / Social Sharing -->
+  <meta name="description" content="Documentation for Open Knowledge Studio — a zero-dependency, browser-native, 12-agent A2A platform.">
+  <meta name="keywords" content="open knowledge studio, a2a agents, documentation">
   <meta property="og:title" content="Open Knowledge Studio — Documentation">
-  <meta property="og:description" content="Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis.">
+  <meta property="og:description" content="Zero-dependency, browser-native, 12-agent A2A platform.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://zsdotcom.github.io/zs-oks/">
-
-  <!-- AI / LLM Discovery -->
   <link rel="alternate" type="text/plain" href="llms.txt" title="LLM documentation index">
-
-  <!-- Favicon with custom SVG logo -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='6' fill='%231a1a2e'/%3E%3Cpath d='M8 10c0-2 2-4 4-4h8c2 0 4 2 4 4v12c0 2-2 4-4 4h-8c-2 0-4-2-4-4V10z' stroke='%234f46e5' stroke-width='1.5' fill='none'/%3E%3Ccircle cx='16' cy='14' r='3' fill='%234f46e5'/%3E%3Cpath d='M12 20h8' stroke='%234f46e5' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M13 23h6' stroke='%234f46e5' stroke-width='1.5' stroke-linecap='round' opacity='0.5'/%3E%3C/svg%3E">
-
-  <!-- Docsify Theme -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-
-  <!-- Custom Styles -->
-  <style>
-    :root {
-      --brand-primary: #8B5CF6;
-      --brand-primary-light: #A78BFA;
-      --brand-accent: #06B6D4;
-      --brand-green: #10B981;
-      --brand-amber: #F59E0B;
-      --sidebar-bg: #0f1117;
-      --sidebar-text: #94a3b8;
-      --content-max-width: 1000px;
-    }
-    .sidebar .app-name-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--brand-primary) !important;
-      font-weight: 700;
-      text-decoration: none;
-    }
-    .sidebar .app-name-link .logo-svg {
-      width: 32px; height: 32px; flex-shrink: 0;
-    }
-    .sidebar .app-name-link .logo-text { line-height: 1.2; }
-    .sidebar .app-name-link .logo-sub {
-      display: block; font-size: 0.65em; font-weight: 400;
-      color: var(--sidebar-text); letter-spacing: 0.3px;
-    }
-    .sidebar {
-      background: var(--sidebar-bg);
-      border-right: 1px solid rgba(139, 92, 246, 0.15);
-    }
-    .sidebar ul li a {
-      color: var(--sidebar-text); font-size: 0.9em;
-      transition: color 0.2s, padding-left 0.2s;
-    }
-    .sidebar ul li a:hover { color: var(--brand-primary-light); }
-    .sidebar ul li.active > a {
-      color: var(--brand-primary);
-      border-right: 2px solid var(--brand-primary);
-      font-weight: 600;
-    }
-    .sidebar ul li ul {
-      border-left: 1px solid rgba(139, 92, 246, 0.1);
-    }
-    .sidebar-nav > ul > li > a {
-      font-weight: 600; color: #cbd5e1;
-      text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px;
-    }
-    .markdown-section { max-width: var(--content-max-width); }
-    .markdown-section h1 {
-      color: var(--brand-primary);
-      border-bottom: 2px solid rgba(139, 92, 246, 0.2);
-      padding-bottom: 0.3em;
-    }
-    .markdown-section h2 {
-      color: var(--brand-primary-light);
-      border-bottom: 1px solid rgba(139, 92, 246, 0.1);
-      padding-bottom: 0.2em;
-    }
-    .markdown-section h3 { color: var(--brand-accent); }
-    .markdown-section h4 { color: var(--brand-green); }
-    .markdown-section a { color: var(--brand-primary-light); }
-    .markdown-section a:hover { color: var(--brand-primary); }
-    .markdown-section code {
-      color: var(--brand-amber);
-      background: rgba(245, 158, 11, 0.1);
-      border-radius: 3px; padding: 0.1em 0.3em;
-    }
-    .markdown-section pre {
-      background: #0a0a0f !important;
-      border: 1px solid rgba(139, 92, 246, 0.15);
-      border-radius: 8px;
-    }
-    .markdown-section pre code { color: #e2e8f0; background: transparent; }
-    .markdown-section blockquote {
-      border-left: 4px solid var(--brand-primary);
-      background: rgba(139, 92, 246, 0.05);
-      padding: 0.5em 1em; border-radius: 0 8px 8px 0;
-    }
-    .markdown-section table { display: table; width: 100%; }
-    .markdown-section th {
-      background: rgba(139, 92, 246, 0.1);
-      color: var(--brand-primary-light); font-weight: 600;
-    }
-    .markdown-section th, .markdown-section td {
-      border: 1px solid rgba(139, 92, 246, 0.1);
-      padding: 8px 12px;
-    }
-    .markdown-section tr:nth-child(even) {
-      background: rgba(139, 92, 246, 0.03);
-    }
-    .markdown-section img { max-width: 100%; border-radius: 8px; }
-    .markdown-section hr { border-top: 1px solid rgba(139, 92, 246, 0.15); }
-    .cover {
-      background: linear-gradient(135deg, #0a0a0f 0%, #1a1035 50%, #0a0a0f 100%) !important;
-    }
-    .cover-main { color: #e2e8f0 !important; }
-    .cover-main h1 { color: var(--brand-primary) !important; font-size: 2.5em !important; }
-    .cover-main blockquote {
-      border-left: none !important; background: transparent !important;
-      font-size: 1.1em; color: #94a3b8 !important;
-    }
-    .cover-main .cover-logo { width: 80px; height: 80px; margin-bottom: 20px; }
-    .sidebar .search input {
-      background: #1a1a2e;
-      border: 1px solid rgba(139, 92, 246, 0.2);
-      border-radius: 6px; color: #e2e8f0; padding: 8px 12px;
-    }
-    .sidebar .search input:focus {
-      border-color: var(--brand-primary);
-      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-    }
-    .sidebar-toggle { background: var(--sidebar-bg); }
-    .sidebar-toggle span { background: var(--brand-primary); }
-    .mermaid svg { max-width: 100%; height: auto; }
-    .github-corner svg { fill: var(--brand-primary); color: #0a0a0f; }
-  </style>
 </head>
 <body>
   <div id="app"></div>
 
-  <!-- Docsify + Plugins -->
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2/dist/docsify-copy-code.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify-dark-mode@3/dist/docsify-dark-mode.min.js"></script>
 
   <script>
     window.$docsify = {
-      name: '',
-      nameLink: '/',
-      repo: 'https://github.com/zsdotcom/zs-oks',
       basePath: '/',
       homepage: 'index.md',
-      relativePath: true,
-      auto2top: true,
-      search: {
-        maxAge: 86400000,
-        paths: 'auto',
-        placeholder: 'Search documentation...',
-        noData: 'No matching documents found',
-        depth: 4,
-        namespace: 'docs-search',
-      },
       loadSidebar: '_sidebar.md',
       loadNavbar: '_navbar.md',
       coverpage: '_coverpage.md',
-      maxLevel: 4,
-      subMaxLevel: 2,
-      autoHeader: true,
-      executeScript: true,
-      formatUpdated: '{YYYY}-{MM}-{DD}',
-      darkMode: {
-        dark: true,
-        light: true,
-        defaultTheme: 'dark',
-        buttonPosition: 'bottom-right',
-        buttonTextDark: '☀️ Light',
-        buttonTextLight: '🌙 Dark',
+      name: 'Open Knowledge Studio',
+      repo: 'https://github.com/zsdotcom/zs-oks',
+      search: {
+        maxAge: 86400000,
+        paths: 'auto',
+        placeholder: 'Search docs...',
+        noData: 'No results',
+        depth: 4,
       },
-      plugins: [
-        DocsifyDarkMode,
-        function(hook, vm) {
-          hook.doneEach(function() {
-            var appName = document.querySelector('.sidebar .app-name-link');
-            if (appName && !appName.querySelector('.logo-svg')) {
-              appName.innerHTML =
-                '<svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-                '<rect width="32" height="32" rx="6" fill="#1a1a2e"/>' +
-                '<path d="M8 10c0-2 2-4 4-4h8c2 0 4 2 4 4v12c0 2-2 4-4 4h-8c-2 0-4-2-4-4V10z" stroke="#8B5CF6" stroke-width="1.5" fill="none"/>' +
-                '<circle cx="16" cy="14" r="3" fill="#8B5CF6"/>' +
-                '<path d="M12 20h8" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/>' +
-                '<path d="M13 23h6" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>' +
-                '</svg>' +
-                '<span class="logo-text">Open Knowledge Studio<span class="logo-sub">Documentation</span></span>';
-            }
-          });
-        },
-      ],
+      autoHeader: true,
+      formatUpdated: '{YYYY}-{MM}-{DD}',
     };
   </script>
 </body>
