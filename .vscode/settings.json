@@ -8,7 +8,7 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
-    "js/ts.tsserver.automaticTypeAcquisition.enabled": false,
+  "js/ts.tsserver.automaticTypeAcquisition.enabled": false,
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "tailwindCSS.experimental.classRegex": [],
   "tailwindCSS.validate": true,
@@ -28,5 +28,30 @@
     "**/node_modules": true,
     "**/dist": true,
     "**/coverage": true
-  }
+  },
+  "errorLens.enabledDiagnosticLevels": ["error", "warning", "info"],
+  "errorLens.messageMaxLines": 3,
+  "color-highlight.markerType": "dot-before",
+  "color-highlight.enablePurple": true,
+  "cSpell.words": [
+    "tailwindcss",
+    "zarishsphere",
+    "zsdotcom",
+    "codeandbrain",
+    "arwazarish",
+    "devopsariful",
+    "healthbgd",
+    "opencode",
+    "vitest",
+    "playwright",
+    "vite"
+  ],
+  "markdownlint.config": {
+    "MD013": false,
+    "MD033": false
+  },
+  "liveServer.settings.root": "/dist",
+  "liveServer.settings.donotShowInfoMsg": true,
+  "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true
 }

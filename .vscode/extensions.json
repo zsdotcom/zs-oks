@@ -2,16 +2,24 @@
   "recommendations": [
     "bradlc.vscode-tailwindcss",
     "dbaeumer.vscode-eslint",
+    "biomejs.biome",
     "esbenp.prettier-vscode",
-    "ms-playwright.playwright",
     "vitest.explorer",
+    "ms-playwright.playwright",
     "github.vscode-github-actions",
     "ms-azuretools.vscode-docker",
-    "biomejs.biome",
-    "yzhang.markdown-all-in-one",
+    "ms-vscode.vscode-typescript-next",
+    "usernamehw.errorlens",
+    "yoavbls.pretty-ts-errors",
+    "DavidAnson.vscode-markdownlint",
     "streetsidesoftware.code-spell-checker",
+    "naumovs.color-highlight",
+    "bierner.color-info",
+    "antfu.iconify",
+    "yzhang.markdown-all-in-one",
     "EditorConfig.EditorConfig",
     "tamasfe.even-better-toml",
-    "mikestead.dotenv"
+    "mikestead.dotenv",
+    "ms-vscode.live-server"
   ]
 }
