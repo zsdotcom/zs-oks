@@ -12,6 +12,17 @@
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "tailwindCSS.experimental.classRegex": [],
   "tailwindCSS.validate": true,
+  "tailwindCSS.diagnostics": {
+    "suggestCanonicalClasses": false
+  },
+  "tailwindCSS.files.exclude": [
+    "**/.git/**",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/coverage/**",
+    "**/Downloads/**",
+    "**/Open Knowledge Studio.html"
+  ],
   "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
@@ -22,7 +33,9 @@
   "files.exclude": {
     "**/.git": true,
     "**/node_modules": false,
-    "**/dist": false
+    "**/dist": false,
+    "_github_docs-main": true,
+    "tmp": true
   },
   "search.exclude": {
     "**/node_modules": true,
@@ -44,7 +57,9 @@
     "opencode",
     "vitest",
     "playwright",
-    "vite"
+    "vite",
+    "Tesseract",
+    "tesseract.js"
   ],
   "markdownlint.config": {
     "MD013": false,
