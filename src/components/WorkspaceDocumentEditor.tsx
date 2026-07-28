@@ -2,19 +2,15 @@
  * WorkspaceDocumentEditor — Split-pane editor with live preview, TOC, version history, and export.
  * @license SPDX-License-Identifier: Apache-2.0
  */
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { KBFile, DocumentVersion } from '../types';
-import { parse, generateTOC } from '../utils/markdown';
+import { parse, generateTOC, sanitizeOutput } from '../utils/markdown';
 import { Edit, Download, Clock, Plus, X, Eye, Layout, Copy, Printer, Users } from './icons/lucide-shim';
 import type { CollabPresence } from '../services/collaborationService';
 import DiffView from './DiffView';
 
 function exportToPDF(fileName: string, html: string, isDownload: boolean): void {
-  const mathElements = document.querySelectorAll('.katex-math, .katex-inline');
-  const katexRendered = html;
-  const finalHtml = katexRendered.includes('katex')
-    ? katexRendered
-    : katexRendered;
+  const finalHtml = html;
 
   const doc = `<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><title>${fileName}</title>
@@ -326,7 +322,7 @@ export const WorkspaceDocumentEditor: React.FC<Props> = ({ file, onSave, version
 
         {/* Right half: Preview */}
         <div className="flex-1 min-w-0 border-l border-[var(--border)] overflow-y-auto" aria-label="Preview" role="region">
-          <div ref={previewRef} className="prose px-5 py-4" dangerouslySetInnerHTML={{ __html: renderedHTML }} />
+          <div ref={previewRef} className="prose px-5 py-4" dangerouslySetInnerHTML={{ __html: sanitizeOutput(renderedHTML) }} />
         </div>
       </div>
     </div>

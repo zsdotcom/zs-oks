@@ -27,7 +27,7 @@ function getTabId(): string {
   if (!tabId) {
     const stored = sessionStorage.getItem('oks-tab-id');
     if (stored) { tabId = stored; return tabId; }
-    tabId = `tab-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    tabId = `tab-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
     sessionStorage.setItem('oks-tab-id', tabId);
   }
   return tabId;
@@ -55,7 +55,7 @@ function stopPresenceBroadcast(): void {
 }
 
 export function initCollaboration(name?: string): void {
-  userName = name || `User-${Math.random().toString(36).slice(2, 6)}`;
+  userName = name || `User-${crypto.randomUUID().slice(0, 8)}`;
   try {
     channel = new BroadcastChannel(CHANNEL_NAME);
     channel.onmessage = (event: MessageEvent) => {

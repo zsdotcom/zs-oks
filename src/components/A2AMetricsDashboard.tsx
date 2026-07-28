@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { A2AMetric } from '../types';
 import { BarChart, LineChart, StatCard } from './charts/SimpleCharts';
-import { Activity, Zap, Clock, AlertTriangle, Trophy, TrendingUp, PieChart } from './icons/lucide-shim';
+import { Activity, Zap, Clock, Trophy, TrendingUp, PieChart } from './icons/lucide-shim';
 
 interface Props {
   metrics: A2AMetric[];

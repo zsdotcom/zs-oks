@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { WebhookConfig } from '../services/webhookService';
 import { fireWebhooks } from '../services/webhookService';
-import { X, Plus, Trash, Zap, Check } from './icons/lucide-shim';
+import { Plus, Trash, Zap, Check } from './icons/lucide-shim';
 
 const ALL_EVENTS = ['chat:message', 'file:created', 'memory:stored', 'a2a:complete'];
 

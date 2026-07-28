@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ChatSession } from '../types';
 import { MessageSquare, Plus, Trash, X } from './icons/lucide-shim';
 

@@ -38,13 +38,13 @@ function getSandboxIframe(): HTMLIFrameElement {
     '        return eval(code);',
     '      })();',
     '      var output = result !== undefined ? String(result) : "";',
-    '      self.parent.postMessage({ type: "sandbox:result", success: true, output: output + (logs.length ? "\\n" + logs.join("\\n") : ""), logs: logs }, "*");',
+    '      self.parent.postMessage({ type: "sandbox:result", success: true, output: output + (logs.length ? "\\n" + logs.join("\\n") : ""), logs: logs }, self.origin);',
     '    } catch (err) {',
-    '      self.parent.postMessage({ type: "sandbox:result", success: false, output: "", error: err.message, logs: logs }, "*");',
+    '      self.parent.postMessage({ type: "sandbox:result", success: false, output: "", error: err.message, logs: logs }, self.origin);',
     '    }',
     '  }',
     '});',
-    'self.parent.postMessage({ type: "sandbox:ready" }, "*");',
+    'self.parent.postMessage({ type: "sandbox:ready" }, self.origin);',
   ].join('\n');
 
   win.document.open();
@@ -75,6 +75,7 @@ export function executeCode(code: string, timeoutMs: number = 5000): Promise<San
       const startTime = performance.now();
 
       const messageHandler = (e: MessageEvent) => {
+        if (e.origin !== 'null' && e.origin !== window.origin) return;
         if (!e.data || e.data.type !== 'sandbox:result') return;
         window.removeEventListener('message', messageHandler);
         if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
@@ -94,7 +95,7 @@ export function executeCode(code: string, timeoutMs: number = 5000): Promise<San
         resolve({ success: false, output: '', error: 'Execution timed out after ' + timeoutMs + 'ms', durationMs: timeoutMs });
       }, timeoutMs);
 
-      win.postMessage({ type: 'sandbox:execute', code }, '*');
+      win.postMessage({ type: 'sandbox:execute', code }, 'about:blank');
     } catch (err) {
       resolve({ success: false, output: '', error: (err as Error).message, durationMs: 0 });
     }

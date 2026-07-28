@@ -1,6 +1,6 @@
 import React from 'react';
 import { A2AMetric, KBFile, KBFolder, ChatMessage, WorkspaceProject } from '../types';
-import { BarChart, LineChart, PieChart, StatCard, Heatmap, StatusBadge } from './charts/SimpleCharts';
+import { BarChart, LineChart, PieChart, StatCard, StatusBadge } from './charts/SimpleCharts';
 import { Activity, Zap, Clock, AlertTriangle, FileText, MessageSquare, Folder, Users } from './icons/lucide-shim';
 
 interface Props {

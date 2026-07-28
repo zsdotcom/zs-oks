@@ -1,4 +1,4 @@
-import { SkillDefinition, SkillCategory } from '../types';
+import { SkillDefinition } from '../types';
 import { dbGetAll, dbPut, dbDelete } from '../db/indexedDB';
 
 let skillRegistry: SkillDefinition[] = [];

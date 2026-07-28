@@ -1,4 +1,4 @@
-import { dbGet, dbPut, dbDelete, dbGetAll, dbClear, dbGetByIndex, dbSetKey, dbGetKey } from '../db/indexedDB';
+import { dbGet, dbPut, dbDelete, dbGetAll, dbClear, dbGetByIndex, dbSetKey } from '../db/indexedDB';
 import type { DBSchema } from '../db/indexedDB';
 
 /* ─── Tier 1: Session Memory (in-memory, cleared on refresh) ─── */

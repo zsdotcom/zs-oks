@@ -6,7 +6,7 @@ import {
   listPathogens, fetchPathogenData, fetchOutbreakAlerts,
   fetchWeatherData, fetchAirQuality,
 } from '../services/publicApiService';
-import { Search, Database, Globe, MapPin, Activity, BarChart, Cloud, Loader2, AlertTriangle, RefreshCw, Target } from './icons/lucide-shim';
+import { Search, Database, Globe, MapPin, Activity, BarChart, Cloud, Loader2, AlertTriangle, Target } from './icons/lucide-shim';
 
 type ApiTab = 'cdc' | 'who' | 'delphi' | 'infectonet' | 'weather';
 

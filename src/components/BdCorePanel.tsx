@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Search, MapPin, FlaskConical, ShieldCheck } from './icons/lucide-shim';
-import { oclValidateCode, oclLookup, oclValueSetValidateCode, validateICD11Cluster, CONDITION_VALUESET_URL, type OCLValidateCodeResult, type OCLLookupResult, type ClusterValidationResult } from '../services/bdTerminologyService';
-import { getAllDivisions, getDistrictsByDivision, getUpazilasByDistrict, getAllDistricts, searchGeography, getFullGeoPath, type BDDivision, type BDDistrict, type BDUpazila, type BDGeoEntry } from '../services/bdGeographyService';
-import { getAllVaccines, getEpiSchedule, searchVaccines, type BDVaccineEntry as VaccineEntry, type BDEpiScheduleEntry, type BDVaccineCode } from '../services/bdVaccineService';
+import { oclValidateCode, oclLookup, validateICD11Cluster, type OCLValidateCodeResult, type OCLLookupResult, type ClusterValidationResult } from '../services/bdTerminologyService';
+import { getAllDivisions, getDistrictsByDivision, getUpazilasByDistrict, searchGeography, type BDDivision, type BDDistrict, type BDGeoEntry } from '../services/bdGeographyService';
+import { getAllVaccines, getEpiSchedule, searchVaccines, type BDVaccineEntry as VaccineEntry } from '../services/bdVaccineService';
 import { searchDrugs, getDrugClasses, getDrugsByClass, type DrugEntry } from '../services/bdDrugRegistryService';
 
 type BdTab = 'terminology' | 'geography' | 'vaccines' | 'drugs';
@@ -222,7 +222,7 @@ function GeographyTab() {
 
   const addDivisionMarkers = () => {
     clearMarkers();
-    import('../services/bdGeoMapData').then(({ DIVISION_COORDS, getDivisionCoord }) => {
+    import('../services/bdGeoMapData').then(({ getDivisionCoord }) => {
       divisions.forEach((div) => {
         const coord = getDivisionCoord(div.code);
         const marker = L.circleMarker([coord.lat, coord.lng], {

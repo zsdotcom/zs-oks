@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { AppUser } from '../types';
 import { signInWithGoogle, logoutUser, googleDriveListFiles, googleCreateSheet, googleCreateDoc, getGoogleAccessToken, subscribeAuth } from '../services/googleAuthService';
-import { Cloud, X, FileText, Download, Upload, Globe, Mail, CheckSquare, LogIn, LogOut } from './icons/lucide-shim';
+import { Cloud, X, FileText, Upload, Globe, LogIn, LogOut } from './icons/lucide-shim';
 
 interface Props {
   currentFile?: { name: string; content: string };

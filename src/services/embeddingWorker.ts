@@ -14,6 +14,7 @@ async function initEmbedder() {
 }
 
 self.onmessage = async (e: MessageEvent<{ type: 'embed'; texts: string[]; id: number }>) => {
+  if (e.origin !== '' && e.origin !== self.origin) return;
   const { texts, id } = e.data;
   const pipe = await initEmbedder();
   if (!pipe) {

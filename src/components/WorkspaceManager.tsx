@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { KBFile, KBFolder, A2AAgent, DocumentTag, WorkspaceProject } from '../types';
-import { Plus, Trash, Folder, FileText, Users, Tag, Settings, BookOpen, Wrench, Database, Download, ChevronRight, ChevronDown } from './icons/lucide-shim';
+import { Plus, Trash, Folder, FileText, Users, Tag, BookOpen, Wrench, Database, ChevronRight, ChevronDown } from './icons/lucide-shim';
 
 interface Props {
   files: KBFile[];

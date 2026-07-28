@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ConnectorConfig } from '../types';
-import { loadConnectors, getConnectors, addConnector, removeConnector, testGitHubConnection, testSlackWebhook, fetchRSSFeed, syncConnector, getConnectorData, updateConnectorStatus } from '../services/connectorService';
+import { loadConnectors, getConnectors, addConnector, removeConnector, testGitHubConnection, testSlackWebhook, fetchRSSFeed, syncConnector, getConnectorData } from '../services/connectorService';
 
 const CONNECTOR_TYPES: { type: ConnectorConfig['type']; icon: string; fields: { key: string; label: string; type: string; placeholder: string }[] }[] = [
   {

@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChatMessage, MessageSender, ProviderConfig, KBFile, MCPServer } from '../types';
 import { queryLLM, queryLLMStream, getInitialSuggestions } from '../services/geminiService';
-import { parse } from '../utils/markdown';
-import { Search, Send, Mic, MicOff, Sparkles, Loader2, Download, Bold, Italic, Code, Link, List, Heading } from './icons/lucide-shim';
+import { parse, sanitizeOutput } from '../utils/markdown';
+import { Send, Mic, MicOff, Sparkles, Loader2, Download, Bold, Italic, Code, Link, List, Heading } from './icons/lucide-shim';
 import { executeMCPTool, buildActiveToolsContext, parseToolCall } from '../services/mcpService';
 
 interface Props {
@@ -58,7 +58,7 @@ const ChatInterface: React.FC<Props> = ({
         const pre = el.closest('pre');
         if (pre && (window as any).mermaid) {
           try {
-            const uid = 'mermaid-' + Math.random().toString(36).slice(2, 8);
+            const uid = 'mermaid-' + crypto.randomUUID().slice(0, 8);
             const svg = document.createElement('div');
             svg.id = uid;
             svg.className = 'mermaid';
@@ -333,9 +333,11 @@ const ChatInterface: React.FC<Props> = ({
                 <div
                   className="text-sm prose prose-invert max-w-none"
                   dangerouslySetInnerHTML={{
-                    __html: msg.sender === MessageSender.MODEL && !msg.isLoading
-                      ? parse(msg.text)
-                      : msg.text.replace(/\n/g, '<br>')
+                    __html: sanitizeOutput(
+                      msg.sender === MessageSender.MODEL && !msg.isLoading
+                        ? parse(msg.text)
+                        : msg.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')
+                    )
                   }}
                 />
               )}

@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import type { ProviderConfig } from '../types';
 import type { NLQueryResult } from '../services/nlQueryService';
-import { Search, Loader2, MessageSquare, X } from './icons/lucide-shim';
+import { Search, Loader2, MessageSquare } from './icons/lucide-shim';
 
 interface Props {
   config: ProviderConfig;

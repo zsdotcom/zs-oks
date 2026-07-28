@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { KBFile } from '../types';
-import { SearchResult, buildSearchIndex, searchAll, clearSearchIndex } from '../services/searchService';
+import { SearchResult, buildSearchIndex, searchAll } from '../services/searchService';
 import { Search, FileText, X, Code, Brain, MessageSquare, RefreshCw } from './icons/lucide-shim';
 
 interface Props {

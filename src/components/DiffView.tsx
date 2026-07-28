@@ -1,5 +1,5 @@
 import React from 'react';
-import { computeDiff, DiffLine } from '../utils/diff';
+import { computeDiff } from '../utils/diff';
 import { X } from './icons/lucide-shim';
 
 interface Props {

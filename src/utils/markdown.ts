@@ -1,10 +1,3 @@
-/**
- * Zero-dependency Markdown parser (CommonMark subset).
- * Supports: headings, emphasis, lists, tables, code fences, links, images, blockquotes, hr.
- * Routes code blocks through highlight.ts for syntax highlighting.
- * @license SPDX-License-Identifier: Apache-2.0
- */
-
 import { highlight, getLanguage } from './highlight';
 import { sanitizeURL } from './sanitize';
 
@@ -12,28 +5,41 @@ function escapeHtml(str: string): string {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function escapeHtmlAttr(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+}
+
 function renderInline(text: string): string {
-  // Images ![alt](url)
   text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, url) => {
     const safe = sanitizeURL(url);
-    return safe ? `<img src="${safe}" alt="${alt}" style="max-width:100%;border-radius:6px;margin:0.4em 0;">` : alt;
+    return safe
+      ? `<img src="${safe}" alt="${escapeHtmlAttr(alt)}" style="max-width:100%;border-radius:6px;margin:0.4em 0;">`
+      : escapeHtmlAttr(alt);
   });
-  // Links [text](url)
   text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) => {
     const safe = sanitizeURL(url);
-    return safe ? `<a href="${safe}" target="_blank" rel="noopener">${text}</a>` : text;
+    return safe
+      ? `<a href="${safe}" target="_blank" rel="noopener">${escapeHtmlAttr(text)}</a>`
+      : escapeHtmlAttr(text);
   });
-  // Inline code `code`
-  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
-  // Bold **text** or __text__
-  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  text = text.replace(/__(.+?)__/g, '<strong>$1</strong>');
-  // Italic *text* or _text_
-  text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  text = text.replace(/_(.+?)_/g, '<em>$1</em>');
-  // Strikethrough ~~text~~
-  text = text.replace(/~~(.+?)~~/g, '<del>$1</del>');
+  text = text.replace(/`([^`]+)`/g, (_, c) => '<code>' + escapeHtml(c) + '</code>');
+  text = text.replace(/\*\*(.+?)\*\*/g, (_, t) => '<strong>' + escapeHtml(t) + '</strong>');
+  text = text.replace(/__(.+?)__/g, (_, t) => '<strong>' + escapeHtml(t) + '</strong>');
+  text = text.replace(/\*(.+?)\*/g, (_, t) => '<em>' + escapeHtml(t) + '</em>');
+  text = text.replace(/_(.+?)_/g, (_, t) => '<em>' + escapeHtml(t) + '</em>');
+  text = text.replace(/~~(.+?)~~/g, (_, t) => '<del>' + escapeHtml(t) + '</del>');
   return text;
+}
+
+export function sanitizeOutput(html: string): string {
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
+    .replace(/<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi, '')
+    .replace(/\bon\w+\s*=\s*"[^"]*"/gi, '')
+    .replace(/\bon\w+\s*=\s*'[^']*'/gi, '')
+    .replace(/javascript\s*:/gi, '');
 }
 
 export function parse(markdown: string): string {
@@ -46,13 +52,11 @@ export function parse(markdown: string): string {
   while (i < lines.length) {
     const line = lines[i];
 
-    // Blank line
     if (line.trim() === '') {
       i++;
       continue;
     }
 
-    // Code fence
     const codeFence = line.match(/^```(\w*)$/);
     if (codeFence) {
       const lang = codeFence[1] || '';
@@ -62,7 +66,7 @@ export function parse(markdown: string): string {
         codeLines.push(lines[i]);
         i++;
       }
-      if (i < lines.length) i++; // skip closing ```
+      if (i < lines.length) i++;
       const rawCode = codeLines.join('\n');
       const langClass = lang ? getLanguage(lang) : '';
       const highlighted = lang ? highlight(rawCode, lang) : escapeHtml(rawCode);
@@ -70,7 +74,6 @@ export function parse(markdown: string): string {
       continue;
     }
 
-    // KaTeX display math $$...$$
     if (line.trim().startsWith('$$')) {
       const mathLines: string[] = [line.trim().replace(/^\$\$/, '')];
       i++;
@@ -87,7 +90,6 @@ export function parse(markdown: string): string {
       continue;
     }
 
-    // Inline KaTeX $...$
     const inlineMath = line.match(/\$([^\$\n]+)\$/g);
     let processedLine = line;
     if (inlineMath) {
@@ -97,7 +99,6 @@ export function parse(markdown: string): string {
       }
     }
 
-    // Heading
     const headingMatch = processedLine.match(/^(#{1,6})\s+(.+)$/);
     if (headingMatch) {
       const level = headingMatch[1].length;
@@ -107,14 +108,12 @@ export function parse(markdown: string): string {
       continue;
     }
 
-    // Horizontal rule
     if (line.match(/^(-{3,}|\*{3,}|_{3,})\s*$/)) {
       html.push('<hr>');
       i++;
       continue;
     }
 
-    // Blockquote
     if (line.startsWith('> ')) {
       const quoteLines: string[] = [];
       while (i < lines.length && lines[i].startsWith('> ')) {
@@ -125,7 +124,6 @@ export function parse(markdown: string): string {
       continue;
     }
 
-    // Unordered list
     if (line.match(/^\s*[-*+]\s+/)) {
       const listItems: string[] = [];
       while (i < lines.length && lines[i].match(/^\s*[-*+]\s+/)) {
@@ -136,7 +134,6 @@ export function parse(markdown: string): string {
       continue;
     }
 
-    // Ordered list
     if (line.match(/^\s*\d+\.\s+/)) {
       const listItems: string[] = [];
       while (i < lines.length && lines[i].match(/^\s*\d+\.\s+/)) {
@@ -147,7 +144,6 @@ export function parse(markdown: string): string {
       continue;
     }
 
-    // Task list
     if (line.match(/^\s*[-*+]\s+\[[ x]\]\s+/)) {
       const taskItems: string[] = [];
       while (i < lines.length && lines[i].match(/^\s*[-*+]\s+\[[ x]\]\s+/)) {
@@ -160,10 +156,9 @@ export function parse(markdown: string): string {
       continue;
     }
 
-    // Table
     if (line.includes('|') && lines[i + 1]?.match(/^\|?\s*[-:]+[-| :\s]*$/)) {
       const headerCells = line.split('|').map((c) => c.trim()).filter(Boolean);
-      i += 2; // skip header and separator
+      i += 2;
       const rows: string[][] = [];
       while (i < lines.length && lines[i].includes('|')) {
         const cells = lines[i].split('|').map((c) => c.trim()).filter(Boolean);
@@ -182,15 +177,13 @@ export function parse(markdown: string): string {
       continue;
     }
 
-    // Regular paragraph
     html.push(`<p>${renderInline(processedLine)}</p>`);
     i++;
   }
 
-  return html.join('\n');
+  return sanitizeOutput(html.join('\n'));
 }
 
-/* ─── Table of Contents Generator ─── */
 export function generateTOC(markdown: string): { id: string; text: string; level: number }[] {
   const lines = markdown.split('\n');
   const toc: { id: string; text: string; level: number }[] = [];

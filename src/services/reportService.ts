@@ -1,6 +1,4 @@
-import { getAllICD11Codes, getICD11ByCode } from './icd11Service';
-import { getAllICFCodes } from './icfService';
-import { getAllICHICodes } from './ichiService';
+import { getICD11ByCode } from './icd11Service';
 import type { EpiDataPoint } from '../components/EpiMap';
 import type { SurveillanceSummary } from './surveillanceService';
 import type { OutbreakAlert, OutbreakStats } from './outbreakService';

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { searchICD11, searchICD11WithFallback, getAllICD11Codes, icd11ToFHIR, type ICD11Entry } from '../services/icd11Service';
-import { searchICF, getAllICFCodes, getICFByComponent, type ICFEntry } from '../services/icfService';
-import { searchICHI, getAllICHICodes, getICHIBySection, type ICHIEntry } from '../services/ichiService';
+import { searchICF, getAllICFCodes, type ICFEntry } from '../services/icfService';
+import { searchICHI, getAllICHICodes, type ICHIEntry } from '../services/ichiService';
 import type { WhoFicType } from '../services/whoFicIndex';
 import { X, Search, ChevronDown, ChevronRight, Copy } from './icons/lucide-shim';
 
