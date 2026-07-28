@@ -5,20 +5,88 @@ on:
     branches: [main]
     paths:
       - 'docs/**'
+      - 'docs/_data/**'
       - '.github/workflows/deploy-docs.yml'
+      - 'AGENTS.md'
+      - 'README.md'
   workflow_dispatch:
 
+# Sets the GITHUB_TOKEN permissions for GitHub Pages deployment
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Only one deployment at a time; don't cancel running ones (let them finish)
 concurrency:
   group: pages-docs
   cancel-in-progress: false
 
 jobs:
+  # ─── Validation — check docs integrity before deploying ───
+  validate:
+    name: Validate docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      status: ${{ steps.validation.outputs.status }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: validation
+        run: |
+          echo "Checking docs for basic integrity..."
+          errors=0
+
+          # Check .nojekyll exists
+          if [ ! -f "docs/.nojekyll" ]; then
+            echo "::warning::Missing docs/.nojekyll — GitHub Pages may try Jekyll"
+            ((errors++))
+          fi
+
+          # Check index.md exists
+          if [ ! -f "docs/index.md" ]; then
+            echo "::error::Missing docs/index.md — no landing page"
+            ((errors++))
+          fi
+
+          # Check 404.md exists
+          if [ ! -f "docs/404.md" ]; then
+            echo "::warning::Missing docs/404.md — no custom error page"
+            ((errors++))
+          fi
+
+          # Check frontmatter on all doc files
+          for f in $(find docs -name "*.md" -not -path "docs/_data/*" -not -path "docs/_progress/*" | sort); do
+            if [ "$(head -1 "$f")" != "---" ]; then
+              echo "::warning::Missing frontmatter in $f"
+            fi
+          done
+
+          # Check all internal links resolve
+          echo "Checking internal links..."
+          grep -rohP '\]\([^)]+\.md\)' docs/ --include="*.md" | sed 's/](//' | sed 's/)//' | while read -r link; do
+            # Skip external URLs
+            if echo "$link" | grep -qE '^https?://'; then
+              continue
+            fi
+            # Resolve relative to docs/ and check if target exists
+            target="docs/$link"
+            if [ ! -f "$target" ]; then
+              echo "::warning::Broken link: $link (target not found)"
+            fi
+          done || true
+
+          if [ "$errors" -gt 0 ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "Found $errors issue(s) — deploy will continue but review recommended"
+          else
+            echo "status=passed" >> $GITHUB_OUTPUT
+          fi
+
+  # ─── Deploy — publish to GitHub Pages ───
   deploy:
+    name: Deploy to Pages
+    needs: validate
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

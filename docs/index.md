@@ -1,7 +1,12 @@
-# Open Knowledge Studio — Documentation Index
+<div align="center">
 
-**Documentation Version:** 3.2
-**Last Updated:** July 28, 2026
+# ⬡ Open Knowledge Studio — Documentation
+
+**Zero-dependency · Browser-native · 12-Agent A2A Platform**
+
+_Documentation v3.2 · Last updated: July 28, 2026_
+
+</div>
 
 ---
 
