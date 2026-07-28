@@ -18,71 +18,47 @@
 
   <!-- Favicon with custom SVG logo -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='6' fill='%231a1a2e'/%3E%3Cpath d='M8 10c0-2 2-4 4-4h8c2 0 4 2 4 4v12c0 2-2 4-4 4h-8c-2 0-4-2-4-4V10z' stroke='%234f46e5' stroke-width='1.5' fill='none'/%3E%3Ccircle cx='16' cy='14' r='3' fill='%234f46e5'/%3E%3Cpath d='M12 20h8' stroke='%234f46e5' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M13 23h6' stroke='%234f46e5' stroke-width='1.5' stroke-linecap='round' opacity='0.5'/%3E%3C/svg%3E">
-  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAMVJREFUWEft1rENwjAQBdD/FYyAWIAJYAQKOkZgBEZgBDoWYARGYARGYAQKRoACI0AACKTIsiVf4sSK4uKKu/fvTmfZclx+jssP4H9XoAjgGNd7j/d4ewLPuI6b+4BbO47ruI0bOOcLwO2b8e8u4PFpYAjguJ7+DQTwjuvp30AA77iefgMBvON6+g0E8I7r6TcQwDuup99AAO+4nn4DAbzjevoNBHCO6+k3ENAxruOnVb8E0DGuv62eA76N6+33BwL0BuTfLtC6OwR47vYPjp0Oy1E8EoAAAAAASUVORK5CYII=">
 
-  <!-- Docsify Themes -->
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" id="docsify-theme">
-  <link id="dark-mode-theme" rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-dark-mode@3/dist/docsify-dark-mode.min.css">
+  <!-- Docsify Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
 
   <!-- Custom Styles -->
   <style>
-    /* ── Brand Colors ── */
     :root {
       --brand-primary: #8B5CF6;
       --brand-primary-light: #A78BFA;
-      --brand-primary-dark: #7C3AED;
       --brand-accent: #06B6D4;
       --brand-green: #10B981;
       --brand-amber: #F59E0B;
-      --brand-red: #EF4444;
       --sidebar-bg: #0f1117;
       --sidebar-text: #94a3b8;
-      --sidebar-active: #8B5CF6;
       --content-max-width: 1000px;
     }
-
-    /* ── Logo / App Name ── */
     .sidebar .app-name-link {
       display: flex;
       align-items: center;
       gap: 10px;
       color: var(--brand-primary) !important;
       font-weight: 700;
-      font-size: 1em;
       text-decoration: none;
     }
     .sidebar .app-name-link .logo-svg {
-      width: 32px;
-      height: 32px;
-      flex-shrink: 0;
+      width: 32px; height: 32px; flex-shrink: 0;
     }
-    .sidebar .app-name-link .logo-text {
-      line-height: 1.2;
-    }
+    .sidebar .app-name-link .logo-text { line-height: 1.2; }
     .sidebar .app-name-link .logo-sub {
-      display: block;
-      font-size: 0.65em;
-      font-weight: 400;
-      color: var(--sidebar-text);
-      letter-spacing: 0.3px;
+      display: block; font-size: 0.65em; font-weight: 400;
+      color: var(--sidebar-text); letter-spacing: 0.3px;
     }
-    .sidebar .search .clear-button {
-      cursor: pointer;
-    }
-
-    /* ── Sidebar ── */
     .sidebar {
       background: var(--sidebar-bg);
       border-right: 1px solid rgba(139, 92, 246, 0.15);
     }
     .sidebar ul li a {
-      color: var(--sidebar-text);
-      font-size: 0.9em;
+      color: var(--sidebar-text); font-size: 0.9em;
       transition: color 0.2s, padding-left 0.2s;
     }
-    .sidebar ul li a:hover {
-      color: var(--brand-primary-light);
-    }
+    .sidebar ul li a:hover { color: var(--brand-primary-light); }
     .sidebar ul li.active > a {
       color: var(--brand-primary);
       border-right: 2px solid var(--brand-primary);
@@ -92,17 +68,10 @@
       border-left: 1px solid rgba(139, 92, 246, 0.1);
     }
     .sidebar-nav > ul > li > a {
-      font-weight: 600;
-      color: #cbd5e1;
-      text-transform: uppercase;
-      font-size: 0.75em;
-      letter-spacing: 0.5px;
+      font-weight: 600; color: #cbd5e1;
+      text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px;
     }
-
-    /* ── Content Area ── */
-    .markdown-section {
-      max-width: var(--content-max-width);
-    }
+    .markdown-section { max-width: var(--content-max-width); }
     .markdown-section h1 {
       color: var(--brand-primary);
       border-bottom: 2px solid rgba(139, 92, 246, 0.2);
@@ -113,49 +82,30 @@
       border-bottom: 1px solid rgba(139, 92, 246, 0.1);
       padding-bottom: 0.2em;
     }
-    .markdown-section h3 {
-      color: var(--brand-accent);
-    }
-    .markdown-section h4 {
-      color: var(--brand-green);
-    }
-    .markdown-section a {
-      color: var(--brand-primary-light);
-    }
-    .markdown-section a:hover {
-      color: var(--brand-primary);
-      text-decoration: underline;
-    }
+    .markdown-section h3 { color: var(--brand-accent); }
+    .markdown-section h4 { color: var(--brand-green); }
+    .markdown-section a { color: var(--brand-primary-light); }
+    .markdown-section a:hover { color: var(--brand-primary); }
     .markdown-section code {
       color: var(--brand-amber);
       background: rgba(245, 158, 11, 0.1);
-      border-radius: 3px;
-      padding: 0.1em 0.3em;
+      border-radius: 3px; padding: 0.1em 0.3em;
     }
     .markdown-section pre {
       background: #0a0a0f !important;
       border: 1px solid rgba(139, 92, 246, 0.15);
       border-radius: 8px;
     }
-    .markdown-section pre code {
-      color: #e2e8f0;
-      background: transparent;
-    }
+    .markdown-section pre code { color: #e2e8f0; background: transparent; }
     .markdown-section blockquote {
       border-left: 4px solid var(--brand-primary);
       background: rgba(139, 92, 246, 0.05);
-      padding: 0.5em 1em;
-      border-radius: 0 8px 8px 0;
+      padding: 0.5em 1em; border-radius: 0 8px 8px 0;
     }
-    .markdown-section table {
-      display: table;
-      width: 100%;
-      border-collapse: collapse;
-    }
+    .markdown-section table { display: table; width: 100%; }
     .markdown-section th {
       background: rgba(139, 92, 246, 0.1);
-      color: var(--brand-primary-light);
-      font-weight: 600;
+      color: var(--brand-primary-light); font-weight: 600;
     }
     .markdown-section th, .markdown-section td {
       border: 1px solid rgba(139, 92, 246, 0.1);
@@ -164,194 +114,90 @@
     .markdown-section tr:nth-child(even) {
       background: rgba(139, 92, 246, 0.03);
     }
-    .markdown-section img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-    .markdown-section hr {
-      border: none;
-      border-top: 1px solid rgba(139, 92, 246, 0.15);
-    }
-    .markdown-section .tip {
-      border-left-color: var(--brand-green);
-    }
-    .markdown-section .warn {
-      border-left-color: var(--brand-amber);
-    }
-
-    /* ── Cover Page ── */
+    .markdown-section img { max-width: 100%; border-radius: 8px; }
+    .markdown-section hr { border-top: 1px solid rgba(139, 92, 246, 0.15); }
     .cover {
       background: linear-gradient(135deg, #0a0a0f 0%, #1a1035 50%, #0a0a0f 100%) !important;
     }
-    .cover-main {
-      color: #e2e8f0 !important;
-    }
-    .cover-main h1 {
-      color: var(--brand-primary) !important;
-      font-size: 2.5em !important;
-    }
+    .cover-main { color: #e2e8f0 !important; }
+    .cover-main h1 { color: var(--brand-primary) !important; font-size: 2.5em !important; }
     .cover-main blockquote {
-      border-left: none !important;
-      background: transparent !important;
-      font-size: 1.1em;
-      color: #94a3b8 !important;
+      border-left: none !important; background: transparent !important;
+      font-size: 1.1em; color: #94a3b8 !important;
     }
-    .cover-main .cover-logo {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 20px;
-    }
-
-    /* ── Search Box ── */
+    .cover-main .cover-logo { width: 80px; height: 80px; margin-bottom: 20px; }
     .sidebar .search input {
       background: #1a1a2e;
       border: 1px solid rgba(139, 92, 246, 0.2);
-      border-radius: 6px;
-      color: #e2e8f0;
-      padding: 8px 12px;
+      border-radius: 6px; color: #e2e8f0; padding: 8px 12px;
     }
     .sidebar .search input:focus {
       border-color: var(--brand-primary);
-      outline: none;
       box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
     }
-
-    /* ── Responsive ── */
-    @media (max-width: 768px) {
-      .markdown-section {
-        padding: 15px;
-      }
-      .sidebar-toggle {
-        background: var(--sidebar-bg);
-        border-bottom: 1px solid rgba(139, 92, 246, 0.15);
-      }
-      .sidebar-toggle span {
-        background: var(--brand-primary);
-      }
-      .cover-main h1 {
-        font-size: 1.8em !important;
-      }
-    }
-
-    /* ── Mermaid Diagrams ── */
-    .mermaid svg {
-      max-width: 100%;
-      height: auto;
-    }
-
-    /* ── Dark Mode Toggle ── */
-    .dark-mode-toggle {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 100;
-      background: var(--sidebar-bg);
-      border: 1px solid rgba(139, 92, 246, 0.2);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #94a3b8;
-      font-size: 18px;
-      transition: all 0.3s;
-    }
-    .dark-mode-toggle:hover {
-      border-color: var(--brand-primary);
-      color: var(--brand-primary);
-    }
-
-    /* ── GitHub Corner ── */
-    .github-corner svg {
-      fill: var(--brand-primary);
-      color: #0a0a0f;
-    }
+    .sidebar-toggle { background: var(--sidebar-bg); }
+    .sidebar-toggle span { background: var(--brand-primary); }
+    .mermaid svg { max-width: 100%; height: auto; }
+    .github-corner svg { fill: var(--brand-primary); color: #0a0a0f; }
   </style>
 </head>
 <body>
   <div id="app"></div>
 
-  <!-- Docsify Core -->
-  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-
-  <!-- Docsify Plugins -->
-  <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@2/dist/docsify-copy-code.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-dark-mode@3/dist/docsify-dark-mode.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+  <!-- Docsify + Plugins -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2/dist/docsify-copy-code.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-dark-mode@3/dist/docsify-dark-mode.min.js"></script>
 
   <script>
-    // ── Custom logo component for sidebar ──
-    window.logoSvg = `
-      <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="32" height="32" rx="6" fill="#1a1a2e"/>
-        <path d="M8 10c0-2 2-4 4-4h8c2 0 4 2 4 4v12c0 2-2 4-4 4h-8c-2 0-4-2-4-4V10z" stroke="#8B5CF6" stroke-width="1.5" fill="none"/>
-        <circle cx="16" cy="14" r="3" fill="#8B5CF6"/>
-        <path d="M12 20h8" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M13 23h6" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-      </svg>`;
-
     window.$docsify = {
-      // ── Site Identity ──
       name: '',
       nameLink: '/',
       repo: 'https://github.com/zsdotcom/zs-oks',
-
-      // ── Routing ──
       basePath: '/',
+      homepage: 'index.md',
       relativePath: true,
       auto2top: true,
-
-      // ── Search ──
       search: {
         maxAge: 86400000,
         paths: 'auto',
         placeholder: 'Search documentation...',
         noData: 'No matching documents found',
         depth: 4,
-        hideOtherSidebarContent: false,
         namespace: 'docs-search',
       },
-
-      // ── Sidebar ──
       loadSidebar: '_sidebar.md',
       loadNavbar: '_navbar.md',
       coverpage: '_coverpage.md',
       maxLevel: 4,
       subMaxLevel: 2,
-
-      // ── Behavior ──
       autoHeader: true,
       executeScript: true,
-      mergeNavbar: false,
       formatUpdated: '{YYYY}-{MM}-{DD}',
-
-      // ── Dark Mode ──
       darkMode: {
         dark: true,
         light: true,
         defaultTheme: 'dark',
-        siteFont: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         buttonPosition: 'bottom-right',
-        buttonTextDark: '☀️',
-        buttonTextLight: '🌙',
+        buttonTextDark: '☀️ Light',
+        buttonTextLight: '🌙 Dark',
       },
-
-      // ── Plugins ──
       plugins: [
         DocsifyDarkMode,
         function(hook, vm) {
-          // Inject custom logo into sidebar app-name
-          hook.afterEach(function(html) {
-            return html;
-          });
           hook.doneEach(function() {
-            const appName = document.querySelector('.sidebar .app-name-link');
+            var appName = document.querySelector('.sidebar .app-name-link');
             if (appName && !appName.querySelector('.logo-svg')) {
-              appName.innerHTML = window.logoSvg +
+              appName.innerHTML =
+                '<svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                '<rect width="32" height="32" rx="6" fill="#1a1a2e"/>' +
+                '<path d="M8 10c0-2 2-4 4-4h8c2 0 4 2 4 4v12c0 2-2 4-4 4h-8c-2 0-4-2-4-4V10z" stroke="#8B5CF6" stroke-width="1.5" fill="none"/>' +
+                '<circle cx="16" cy="14" r="3" fill="#8B5CF6"/>' +
+                '<path d="M12 20h8" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/>' +
+                '<path d="M13 23h6" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>' +
+                '</svg>' +
                 '<span class="logo-text">Open Knowledge Studio<span class="logo-sub">Documentation</span></span>';
             }
           });
