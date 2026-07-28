@@ -68,8 +68,8 @@ The Data Analyst is configured via the Settings Panel. Key settings include:
 - [Agent System](000-index.md) — All agent documentation
 - [A2A Agents Guide](../guides/001-agents.md) — Agent configuration and management
 - [Multi-Agent Workflows](../guides/002-workflows.md) — Orchestrated and sequential workflows
-- [Diagram Generation Guide](../guides/092-diagrams.md) — KaTeX math and Mermaid diagrams
-- [Sandboxed Execution](../guides/094-sandbox.md) — Secure code execution
+- [Diagram Generation Guide](../guides/003-diagrams.md) — KaTeX math and Mermaid diagrams
+- [Sandboxed Execution](../guides/005-sandbox.md) — Secure code execution
 
 ---
 
@@ -86,7 +86,7 @@ You are the Data Analyst Agent of Open Knowledge Studio. Your role is to process
 ## Usage
 
 - The **Default System Prompt** is loaded automatically when the Data Analyst is activated in an A2A debate.
-- The prompt instructs the agent to use **Mermaid** for diagrams and **KaTeX** for mathematical formulas. See the [Diagram Generation Guide](../guides/092-diagrams.md) for supported syntax.
+- The prompt instructs the agent to use **Mermaid** for diagrams and **KaTeX** for mathematical formulas. See the [Diagram Generation Guide](../guides/003-diagrams.md) for supported syntax.
 
 
 ## Workflow Patterns

@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# 040 — PDF Export Guide
+# 004 — PDF Export Guide
 
 ---
 
@@ -113,8 +113,8 @@ function exportToPDF(
 
 ## See Also
 
-- [Diagram Generation](030-diagrams.md) — KaTeX and Mermaid in documents
-- [A2A Agents Guide](010-agents.md) — Writer agent document generation
+- [Diagram Generation](003-diagrams.md) — KaTeX and Mermaid in documents
+- [A2A Agents Guide](001-agents.md) — Writer agent document generation
 - [Getting Started](000-getting-started.md) — Creating and editing documents
 - [Developer Guide: Development](../developers/004-development.md) — Document editor implementation
 - [Portal Overview](../index.md) — Full documentation index

@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "developers"
 ---
 
-# 110 — MCP Server Configuration Guide
+# 011 — MCP Server Configuration Guide
 
 Configure **Model Context Protocol (MCP)** servers to extend agent capabilities with external data sources and tools.
 
@@ -272,10 +272,10 @@ MCP servers are managed in `src/App.tsx` with state stored in the `sandbox` Inde
 
 ## See Also
 
-- [Development Guidelines](040-development.md) — State management and component patterns
-- [Code Splitting & Performance](070-code-splitting.md) — MCPServerPanel is lazy-loaded
-- [Environment Variables](020-environment.md) — API key configuration
-- [Setup Guide](010-setup.md) — Running the application
+- [Development Guidelines](004-development.md) — State management and component patterns
+- [Code Splitting & Performance](007-code-splitting.md) — MCPServerPanel is lazy-loaded
+- [Environment Variables](002-environment.md) — API key configuration
+- [Setup Guide](001-setup.md) — Running the application
 
 ---
 

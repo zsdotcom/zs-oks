@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# 030 — Diagram Generation Guide
+# 003 — Diagram Generation Guide
 
 ---
 
@@ -240,9 +240,9 @@ The Data Analyst agent generates these automatically when asked for visualizatio
 
 ## See Also
 
-- [A2A Agents Guide](010-agents.md) — Data Analyst diagram generation
-- [PDF Export Guide](040-pdf-export.md) — Exporting diagrams to PDF
-- [Multi-Agent Workflows](020-workflows.md) — Workflows that generate diagrams
+- [A2A Agents Guide](001-agents.md) — Data Analyst diagram generation
+- [PDF Export Guide](004-pdf-export.md) — Exporting diagrams to PDF
+- [Multi-Agent Workflows](002-workflows.md) — Workflows that generate diagrams
 - [Developer Guide: Development](../developers/004-development.md) — Markdown parser implementation
 - [Portal Overview](../index.md) — Full documentation index
 

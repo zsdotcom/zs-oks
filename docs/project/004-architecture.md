@@ -229,9 +229,9 @@ searchSemantic(query, topK=10)
 - [002 — Technical Specification](002-specification.md) — Detailed component/service specs
 - [003 — Blueprint](003-blueprint.md) — Tech stack and success metrics
 - [005 — Design](005-design.md) — UI/UX design system
-- [Index](index.md) — Full documentation index
-- [Memory Architecture](developers/005-memory-architecture.md) — 6-tier memory deep dive
-- [Dependency Removal](developers/010-dependency-removal.md) — Zero-dependency architecture
+- [Index](../index.md) — Full documentation index
+- [Memory Architecture](../developers/005-memory-architecture.md) — 6-tier memory deep dive
+- [Dependency Removal](../developers/010-dependency-removal.md) — Zero-dependency architecture
 
 ---
 

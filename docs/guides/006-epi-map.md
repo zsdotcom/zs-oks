@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# 060 — Epidemiological Map Guide
+# 006 — Epidemiological Map Guide
 
 ---
 
@@ -104,7 +104,7 @@ Sample data is defined in `src/App.tsx:175-184`. In the future, this data could 
 
 - Manual entry by the user
 - Data loaded from CSV datasets
-- Public API queries (CDC, WHO) via the [Public Data APIs](100-public-data.md)
+- Public API queries (CDC, WHO) via the [Public Data APIs](010-public-data.md)
 - Agent-generated analysis
 
 ---
@@ -141,9 +141,9 @@ The component cleans up (destroys the map instance) on unmount to prevent memory
 
 ## See Also
 
-- [ICD-11 Lookup Guide](070-icd11.md) — Medical code browser for epidemiological data
-- [Public Data APIs Guide](100-public-data.md) — Fetching real-world data
-- [Diagram Generation](030-diagrams.md) — Creating charts and graphs
+- [ICD-11 Lookup Guide](007-icd11.md) — Medical code browser for epidemiological data
+- [Public Data APIs Guide](010-public-data.md) — Fetching real-world data
+- [Diagram Generation](003-diagrams.md) — Creating charts and graphs
 - [Developer Guide: Architecture](../developers/004-development.md) — Component architecture
 - [Portal Overview](../index.md) — Full documentation index
 

@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "developers"
 ---
 
-# 010 — Complete Setup & Installation
+# 001 — Complete Setup & Installation
 
 This guide covers everything needed to set up the Open Knowledge Studio development environment from scratch.
 
@@ -93,7 +93,7 @@ VITE_GOOGLE_OAUTH_CLIENT_ID=your_google_client_id_here
 
 ```bash
 npm run typecheck   # TypeScript type checking (should pass with 0 errors)
-npm test            # 74 tests across 6 files (should all pass)
+npm test            # 227 tests across 14 files (should all pass)
 ```
 
 ---
@@ -127,7 +127,7 @@ npm run analyze     # Builds with rollup-plugin-visualizer, generates dist/stats
 
 | Command | Description |
 | :--- | :--- |
-| `npm test` | All unit + integration tests (74 cases) |
+| `npm test` | All unit + integration tests (227 cases) |
 | `npm run test:watch` | Watch mode for development |
 | `npm run test:coverage` | Generate V8 coverage report |
 | `npm run test:bench` | Performance benchmarks (4 cases) |
@@ -224,10 +224,10 @@ open-knowledge-studio/
 ## See Also
 
 - [5-Minute Quick Start](000-quickstart.md) — Faster setup for experienced developers
-- [Environment Variables](020-environment.md) — All VITE_* vars reference
-- [Non-Coder Guide](030-non-coder-guide.md) — Step-by-step for non-developers
-- [Development Guidelines](040-development.md) — Coding standards
-- [Deployment Guide](090-deployment.md) — Docker, Vercel, Netlify
+- [Environment Variables](002-environment.md) — All VITE_* vars reference
+- [Non-Coder Guide](003-non-coder-guide.md) — Step-by-step for non-developers
+- [Development Guidelines](004-development.md) — Coding standards
+- [Deployment Guide](009-deployment.md) — Docker, Vercel, Netlify
 
 ---
 

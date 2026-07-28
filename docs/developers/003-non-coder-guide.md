@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "developers"
 ---
 
-# 030 — Guide for Non-Coder Developers
+# 003 — Guide for Non-Coder Developers
 
 This guide is written for **people who are not software developers**. If you can use a web browser and a text editor, you can get Open Knowledge Studio running on your computer. Follow each step carefully.
 
@@ -316,9 +316,9 @@ The app automatically chooses the best AI provider. To test:
 ## See Also
 
 - [5-Minute Quick Start](000-quickstart.md) — For experienced developers
-- [Complete Setup & Installation](010-setup.md) — Detailed technical setup
-- [Environment Variables & API Keys](020-environment.md) — All API keys reference
-- [Development Guidelines](040-development.md) — For when you're ready to code
+- [Complete Setup & Installation](001-setup.md) — Detailed technical setup
+- [Environment Variables & API Keys](002-environment.md) — All API keys reference
+- [Development Guidelines](004-development.md) — For when you're ready to code
 
 ---
 

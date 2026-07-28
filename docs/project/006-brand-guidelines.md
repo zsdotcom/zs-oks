@@ -17,8 +17,8 @@ audience: "stakeholders"
 |---|---|
 | Product name | Open Knowledge Studio |
 | Version | v2.0 |
-| Tagline | Zero-dependency · Browser-native · 6-Agent A2A Platform |
-| Elevator line | A private AI research laboratory in your browser — 6 specialized agents collaborate on your work, all data stays local, zero backend required. |
+| Tagline | Zero-dependency · Browser-native · 12-Agent A2A Platform |
+| Elevator line | A private AI research laboratory in your browser — 12 specialized agents collaborate on your work, all data stays local, zero backend required. |
 | License | MIT |
 | Design metaphor | Cyber-minimalism — terminal austerity + high-end hardware sophistication |
 | Primary audience | Field epidemiologists, public health analysts, researchers, NGO workers |
@@ -35,7 +35,7 @@ audience: "stakeholders"
 |---|---|
 | **Zero backend / zero-dependency** | Only two runtime npm packages (`react`, `react-dom`). This is a constitutional rule (ADR-001), not a marketing flourish. |
 | **Local-first / privacy-preserving** | All computation and storage happen in IndexedDB and a Web Worker. No telemetry, no analytics, no third-party data sharing outside the AI provider the user configures. |
-| **Multi-agent, not single-chat** | Six named, color-coded agents debate/collaborate on a prompt in parallel — not a single-thread chat assistant. |
+| **Multi-agent, not single-chat** | Twelve named, color-coded agents debate/collaborate on a prompt in parallel — not a single-thread chat assistant. |
 
 ### Center of Gravity
 
@@ -122,7 +122,7 @@ See [005-design.md](005-design.md) §4–6, §9 for full grid, elevation, shape,
 
 ## 9. Agent System as a Brand Device
 
-The 6-agent roster is the primary storytelling device. Each agent has a four-part identity contract:
+The 12-agent roster is the primary storytelling device. Each agent has a four-part identity contract:
 
 1. A single emoji avatar (never combined, never photographic).
 2. A fixed hex color (never reused).
@@ -145,21 +145,21 @@ The 6-agent roster is the primary storytelling device. Each agent has a four-par
 ## 11. Messaging Library (Pre-Approved Copy)
 
 **Tagline (short):**
-> Zero-dependency · Browser-native · 6-Agent A2A Platform
+> Zero-dependency · Browser-native · 12-Agent A2A Platform
 
 **Elevator pitch (one sentence):**
-> A private AI research laboratory in your browser — 6 specialized agents collaborate on your work, all data stays local, zero backend required.
+> A private AI research laboratory in your browser — 12 specialized agents collaborate on your work, all data stays local, zero backend required.
 
 **Mission (long-form):**
 > A world where every researcher, writer, and analyst has access to a private AI-powered research laboratory that runs entirely in their browser — no cloud costs, no data leaks, no vendor lock-in.
 
 **Feature soundbites (do not alter wording):**
-> 🤖 6-Agent A2A Debate — Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian — each with unique color, avatar, and system prompt.
+> 🤖 12-Agent A2A Debate — Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planning Agent, Testing Agent, Code Generator, Knowledge Curator — each with unique color, avatar, and system prompt.
 > 🧠 Vector Embeddings — Transformers.js (all-MiniLM-L6-v2) in a Web Worker generates 384-dim vectors for all semantic memory entries. Zero-cost, privacy-preserving.
 > 📦 Zero NPM Deps — Only react + react-dom. Transformers.js, Orama, KaTeX, Mermaid, Leaflet all loaded dynamically from CDN.
 
 **Stat line:**
-> 2 runtime deps · 117 tests · ~90 KB gzip · 22 IndexedDB stores · 6 built-in agents · 10 AI providers
+> 2 runtime deps · 227 tests · ~90 KB gzip · 22 IndexedDB stores · 12 built-in agents · 10 AI providers
 
 ## 12. Do's and Don'ts
 

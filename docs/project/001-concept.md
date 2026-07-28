@@ -40,7 +40,7 @@ The product is a **single-page application** that replaces a suite of tools (cha
 
 | For | Value |
 | :--- | :--- |
-| **Researchers** | A private AI research lab in the browser. 6 specialized agents collaborate on your work. Zero cost for ML compute (local embeddings). |
+| **Researchers** | A private AI research lab in the browser. 12 specialized agents collaborate on your work. Zero cost for ML compute (local embeddings). |
 | **Public Health Analysts** | Integrated epidemiological tools: ICD-11 coding, disease mapping, statistical analysis, report generation — all in one app. |
 | **Technical Writers** | AI-assisted drafting with Mermaid diagrams, KaTeX math, markdown editing, and one-click PDF export. |
 | **Developers** | Extensible architecture: MCP protocol, custom agents, skills registry, connector system, sandboxed code execution. |
@@ -52,7 +52,7 @@ The product is a **single-page application** that replaces a suite of tools (cha
 | :--- | :--- | :--- |
 | **Local ML** | Transformers.js in a Web Worker — zero-cost, privacy-preserving embeddings | Cloud APIs charge per token or per query |
 | **Zero Backend** | Entire app runs client-side. No servers, no databases, no DevOps | Most AI tools require backend infrastructure |
-| **Multi-Agent A2A** | 6 specialized agents debate and collaborate on user prompts | Single-chat models with no role specialization |
+| **Multi-Agent A2A** | 12 specialized agents debate and collaborate on user prompts | Single-chat models with no role specialization |
 | **6-Tier Memory** | Structured memory architecture with vector search | Flat chat history or no persistent memory |
 | **Offline-First** | PWA with service worker caching. Installable, works without internet | Web-only, require constant connectivity |
 | **CDN-Dynamic ML** | Heavy libraries loaded from CDN at runtime, not bundled | Bundled ML libraries bloat initial load |
@@ -99,7 +99,7 @@ The product is a **single-page application** that replaces a suite of tools (cha
 - [000 — Project Overview](000-overview.md) — High-level introduction and quick start
 - [002 — Technical Specification](002-specification.md) — Detailed features and capabilities
 - [003 — Blueprint](003-blueprint.md) — Tech stack and success metrics
-- [Index](index.md) — Full documentation index
+- [Index](../index.md) — Full documentation index
 
 ---
 

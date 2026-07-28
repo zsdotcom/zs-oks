@@ -75,7 +75,7 @@ Congratulations on completing the onboarding journey! This guide covers how to w
 | MCP servers | [MCP Configuration](../developers/011-mcp-configuration.md) | Advanced MCP server setup |
 | Memory system | [Memory Architecture](../developers/005-memory-architecture.md) | 6-tier memory deep dive |
 | Public data APIs | [Public Data Guide](../guides/010-public-data.md) | CDC, WHO, weather, and more |
-| Skills system | [Skills Reference](../agents/references/index.md) | Complete skill documentation |
+| Skills system | [Skills Reference](../agents/000-index.md) | Complete skill documentation |
 | Development | [Quickstart](../developers/000-quickstart.md) | For developers extending the app |
 
 ## Feature Summary

@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "developers"
 ---
 
-# 090 — Deployment Guide
+# 009 — Deployment Guide
 
 Deploy Open Knowledge Studio using **Docker**, **Vercel**, **Netlify**, or **GitHub Pages**.
 
@@ -263,10 +263,10 @@ npx gh-pages -d dist
 
 ## See Also
 
-- [Setup & Installation](010-setup.md) — Prerequisites and dev environment
-- [CI/CD Pipeline](080-ci-cd.md) — GitHub Actions automation
-- [Environment Variables](020-environment.md) — API keys reference
-- [Development Guidelines](040-development.md) — Build commands
+- [Setup & Installation](001-setup.md) — Prerequisites and dev environment
+- [CI/CD Pipeline](008-ci-cd.md) — GitHub Actions automation
+- [Environment Variables](002-environment.md) — API keys reference
+- [Development Guidelines](004-development.md) — Build commands
 
 ---
 

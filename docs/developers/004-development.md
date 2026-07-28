@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "developers"
 ---
 
-# 040 — Development Guidelines
+# 004 — Development Guidelines
 
 This document defines the coding standards, git workflow, and contribution guidelines for Open Knowledge Studio.
 
@@ -58,7 +58,7 @@ This document defines the coding standards, git workflow, and contribution guide
 | File access | `File System Access API` |
 
 - Dynamic CDN imports are allowed for heavy libraries (Transformers.js, Orama JS)
-- See [Zero-Dependency Architecture](100-dependency-removal.md) for full details
+- See [Zero-Dependency Architecture](010-dependency-removal.md) for full details
 
 ### 1.5 Code Style
 
@@ -238,11 +238,11 @@ src/
 ## See Also
 
 - [5-Minute Quick Start](000-quickstart.md) — Quick setup for contributors
-- [Memory Architecture Deep Dive](050-memory-architecture.md) — 6-tier memory design
-- [Test Suite Documentation](060-test-suite.md) — Full test architecture
-- [Code Splitting](070-code-splitting.md) — Performance optimization
-- [Zero-Dependency Architecture](100-dependency-removal.md) — Dependency rules
-- [CI/CD Pipeline](080-ci-cd.md) — GitHub Actions workflows
+- [Memory Architecture Deep Dive](005-memory-architecture.md) — 6-tier memory design
+- [Test Suite Documentation](006-test-suite.md) — Full test architecture
+- [Code Splitting](007-code-splitting.md) — Performance optimization
+- [Zero-Dependency Architecture](010-dependency-removal.md) — Dependency rules
+- [CI/CD Pipeline](008-ci-cd.md) — GitHub Actions workflows
 
 ---
 

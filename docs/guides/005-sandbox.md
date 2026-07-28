@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# 050 — Sandboxed Code Execution
+# 005 — Sandboxed Code Execution
 
 ---
 
@@ -165,10 +165,10 @@ Sandbox settings are managed in `SettingsPanel.tsx` under the **Sandbox** sectio
 
 ## See Also
 
-- [A2A Agents Guide](010-agents.md) — Data Analyst agent using the sandbox
-- [Public Data APIs Guide](100-public-data.md) — Fetching data for sandbox analysis
-- [Multi-Agent Workflows](020-workflows.md) — Sandbox usage in complex workflows
-- [Developer Guide: Test Suite](../developers/080-test-suite.md) — Sandbox test coverage
+- [A2A Agents Guide](001-agents.md) — Data Analyst agent using the sandbox
+- [Public Data APIs Guide](010-public-data.md) — Fetching data for sandbox analysis
+- [Multi-Agent Workflows](002-workflows.md) — Sandbox usage in complex workflows
+- [Developer Guide: Test Suite](../developers/006-test-suite.md) — Sandbox test coverage
 - [Portal Overview](../index.md) — Full documentation index
 
 ---

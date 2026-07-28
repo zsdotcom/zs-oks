@@ -1,7 +1,10 @@
 ---
 title: Security Documentation — Index
+category: "security"
 order: 0
 tags: [security, index, trust-model]
+last_updated: "2026-07-28"
+audience: "stakeholders"
 ---
 
 # Security Documentation

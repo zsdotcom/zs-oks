@@ -1,7 +1,10 @@
 ---
 title: API Documentation — Index
+category: "api"
 order: 0
 tags: [api, index, reference]
+last_updated: "2026-07-28"
+audience: "developers"
 ---
 
 # API Documentation

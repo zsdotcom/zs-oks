@@ -14,7 +14,7 @@ audience: "users"
 
 ## 1. What is Open Knowledge Studio?
 
-Open Knowledge Studio is a **zero-dependency, browser-native, offline-first** research platform powered by 6 A2A debate agents. It combines AI chat, document editing, knowledge management, data analysis, and epidemiological tools in a single application — with no backend server and no data leaving your browser.
+Open Knowledge Studio is a **zero-dependency, browser-native, offline-first** research platform powered by 12 A2A debate agents. It combines AI chat, document editing, knowledge management, data analysis, and epidemiological tools in a single application — with no backend server and no data leaving your browser.
 
 All data is stored locally in IndexedDB. AI providers (Gemini, Groq, etc.) are called directly from the browser using API keys you configure.
 
@@ -97,7 +97,7 @@ You can mention specific agents by name (e.g., "@Researcher find recent papers o
 
 ## 6. Using A2A Agents
 
-The 6 built-in agents work in parallel to analyze your prompts from different perspectives:
+The 12 built-in agents work in parallel to analyze your prompts from different perspectives:
 
 | Agent | What It Does |
 |:---|:---|
@@ -110,7 +110,7 @@ The 6 built-in agents work in parallel to analyze your prompts from different pe
 
 Toggle agents on/off in the chat interface — click the agent indicator to see which are active.
 
-For a full guide, see [A2A Agents Guide](010-agents.md).
+For a full guide, see [A2A Agents Guide](001-agents.md).
 
 ---
 
@@ -149,19 +149,19 @@ Click the **Moon/Sun** icon in the header to toggle between dark and light theme
 
 ## 10. Next Steps
 
-- Learn about the [A2A Agents](010-agents.md) in detail
-- Explore [Multi-Agent Workflows](020-workflows.md) for complex tasks
-- Generate [Diagrams](030-diagrams.md) and math with KaTeX
-- Configure [Connectors](080-connectors.md) to external services
+- Learn about the [A2A Agents](001-agents.md) in detail
+- Explore [Multi-Agent Workflows](002-workflows.md) for complex tasks
+- Generate [Diagrams](003-diagrams.md) and math with KaTeX
+- Configure [Connectors](008-connectors.md) to external services
 
 ---
 
 ## See Also
 
-- [A2A Agents Guide](010-agents.md) — Full agent roster and configuration
-- [Multi-Agent Workflows](020-workflows.md) — Orchestrated and sequential modes
-- [Diagram Generation](030-diagrams.md) — Mermaid and KaTeX in chat
-- [PDF Export Guide](040-pdf-export.md) — Exporting documents
+- [A2A Agents Guide](001-agents.md) — Full agent roster and configuration
+- [Multi-Agent Workflows](002-workflows.md) — Orchestrated and sequential modes
+- [Diagram Generation](003-diagrams.md) — Mermaid and KaTeX in chat
+- [PDF Export Guide](004-pdf-export.md) — Exporting documents
 - [Portal Overview](../index.md) — Full documentation index
 
 ---

@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "developers"
 ---
 
-# 100 — Zero-Dependency Architecture
+# 010 — Zero-Dependency Architecture
 
 The architectural philosophy, removed dependencies, CDN strategy, and native browser API alternatives that keep Open Knowledge Studio's runtime footprint minimal.
 
@@ -168,10 +168,10 @@ Before adding any new npm dependency, evaluate against these criteria:
 
 ## See Also
 
-- [Development Guidelines](040-development.md) — Zero-dependency coding standard
-- [Code Splitting & Performance](070-code-splitting.md) — Lazy loading and bundle optimization
-- [Memory Architecture](050-memory-architecture.md) — CDN-loaded embedding and search
-- [Setup Guide](010-setup.md) — Dependencies installation
+- [Development Guidelines](004-development.md) — Zero-dependency coding standard
+- [Code Splitting & Performance](007-code-splitting.md) — Lazy loading and bundle optimization
+- [Memory Architecture](005-memory-architecture.md) — CDN-loaded embedding and search
+- [Setup Guide](001-setup.md) — Dependencies installation
 
 ---
 

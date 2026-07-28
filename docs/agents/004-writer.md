@@ -68,7 +68,7 @@ The Writer is configured via the Settings Panel. Key settings include:
 - [Agent System](000-index.md) — All agent documentation
 - [A2A Agents Guide](../guides/001-agents.md) — Agent configuration and management
 - [Multi-Agent Workflows](../guides/002-workflows.md) — Orchestrated and sequential workflows
-- [PDF Export Guide](../guides/093-pdf-export.md) — Client-side PDF generation
+- [PDF Export Guide](../guides/004-pdf-export.md) — Client-side PDF generation
 
 ---
 

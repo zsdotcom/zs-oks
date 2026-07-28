@@ -43,7 +43,7 @@ npm list --production
 | **Web Worker ML** | Transformers.js runs in a background thread to keep UI responsive. |
 | **Code Splitting** | Heavy panels lazy-loaded via `React.lazy()`. Initial bundle under 300 KB. |
 | **PWA** | Service Worker caches all assets. App installable on device. |
-| **Multi-Provider AI** | Unified API over Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama. |
+| **Multi-Provider AI** | Unified API over Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare. |
 
 ## 3. Success Metrics
 
@@ -56,7 +56,7 @@ npm list --production
 | **Initial Load** | <300 KB total JS | Vite build output |
 | **TypeScript Errors** | 0 (`tsc -b --noEmit` clean) | CI check |
 | **Runtime Dependencies** | 2 (react, react-dom) | `npm ls --production` |
-| **Test Count** | 74+ | Vitest run |
+| **Test Count** | 227+ | Vitest run |
 | **IndexedDB Stores** | 22 | Schema definition |
 
 ## 4. Build & Test Pipeline
@@ -70,14 +70,14 @@ graph LR
     D --> E[dist/]
     B --> F[vitest run]
     F --> G{Tests}
-    G -->|74/74 Pass| H[Coverage Report]
+    G -->|227/227 Pass| H[Coverage Report]
     G -->|Fail| A
 ```
 
 ### CI Order (`.github/workflows/ci.yml`)
 
 1. **TypeCheck** — `tsc -b --noEmit`
-2. **Test** — `vitest run` (74 tests)
+2. **Test** — `vitest run` (227 tests)
 3. **Build** — `vite build` (outputs to `dist/`)
 4. **E2E** — Playwright (PRs only)
 5. **Bundle Analysis** — `ANALYZE=true vite build` (produces `dist/stats.html`)
@@ -97,14 +97,14 @@ graph LR
 | Embedding generation | <100ms per text | Web Worker, WASM backend |
 | Chat response (first token) | <500ms | Streaming configurable via provider |
 | Document save (IndexedDB) | <50ms | Async, non-blocking |
-| A2A debate (6 agents) | <10s total | Parallel agent execution |
+| A2A debate (12 agents) | <10s total | Parallel agent execution |
 
 ## 6. Roadmap
 
 | Phase | Features | Status |
 | :--- | :--- | :--- |
 | **v1.0** | Core chat, basic memory, single AI provider | ✅ Archived |
-| **v2.0** | 6-agent A2A, vector embeddings, semantic search, 22-store IndexedDB, zero-dependency architecture, PWA, ICD-11, Epi Map, diagrams, PDF export, sandbox, skills, connectors, code splitting | ✅ Current |
+| **v2.0** | 12-agent A2A, vector embeddings, semantic search, 22-store IndexedDB, zero-dependency architecture, PWA, ICD-11, Epi Map, diagrams, PDF export, sandbox, skills, connectors, code splitting | ✅ Current |
 | **v2.1** | Full-text i18n, collaborative real-time editing | 🔜 Planned |
 | **v2.2** | Plugin marketplace, advanced data visualization dashboard, export/import wizards | 🔮 Future |
 
@@ -124,13 +124,13 @@ graph LR
 - [000 — Project Overview](000-overview.md) — High-level introduction
 - [002 — Technical Specification](002-specification.md) — Detailed feature specifications
 - [004 — Architecture](004-architecture.md) — System architecture and data model
-- [Index](index.md) — Full documentation index
-- [Developer Guide: Setup](../developers/050-setup.md) — Getting started
+- [Index](../index.md) — Full documentation index
+- [Developer Guide: Setup](../developers/000-quickstart.md) — Getting started
 - [Developer Guide: CI/CD](../developers/008-ci-cd.md) — Pipeline configuration
 
 ---
 
-*Last updated: July 27, 2026*
+*Last updated: July 28, 2026*
 
 ---
 

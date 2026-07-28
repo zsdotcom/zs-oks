@@ -121,7 +121,7 @@ Detailed results for each benchmark defined in [`src/test/memory.benchmark.ts`](
 
 - [Benchmarks Overview](000-index.md) — Summary table and run instructions
 - [Memory Architecture](../developers/005-memory-architecture.md) — The 6-tier memory system under test
-- [Test Suite](../developers/080-test-suite.md) — Coverage thresholds and test organization
+- [Test Suite](../developers/006-test-suite.md) — Coverage thresholds and test organization
 - [`src/test/memory.benchmark.ts`](../../src/test/memory.benchmark.ts) — Source file for all benchmarks
 
 

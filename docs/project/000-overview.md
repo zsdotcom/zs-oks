@@ -9,7 +9,7 @@ audience: "stakeholders"
 ---
 # 000 — Project Overview
 
-**Open Knowledge Studio v2.0** is a zero-npm-dependency, browser-native, 6-agent A2A platform for offline-first research, writing, and data analysis. It operates entirely within the browser using IndexedDB for persistent memory, Transformers.js for vector embeddings, and Orama JS for semantic search — all loaded dynamically from CDN with only two build-time dependencies: `react` and `react-dom`.
+**Open Knowledge Studio v2.0** is a zero-npm-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. It operates entirely within the browser using IndexedDB for persistent memory, Transformers.js for vector embeddings, and Orama JS for semantic search — all loaded dynamically from CDN with only two build-time dependencies: `react` and `react-dom`.
 
 ---
 
@@ -24,7 +24,7 @@ Democratize access to powerful AI tooling for research and knowledge management 
 | **Zero Backend** | Entire application runs client-side. No servers, no databases to manage. |
 | **Local-First** | All data persists in IndexedDB. Works offline. Privacy-preserving by design. |
 | **Zero Deps** | Only `react` + `react-dom` at build time. ML, search, math, and diagram libraries load dynamically from CDN. |
-| **Multi-Provider AI** | Unified router for Gemini, OpenAI, Anthropic, DeepSeek, Groq, and local Ollama. |
+| **Multi-Provider AI** | Unified router for Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, and Cloudflare. |
 | **Multi-Agent A2A** | 6 debate agents with distinct roles, colors, and system prompts for collaborative analysis. |
 | **Vector-Native Memory** | 384-dim embeddings via Transformers.js (Web Worker) for semantic search across a 6-tier memory architecture. |
 
@@ -32,7 +32,7 @@ Democratize access to powerful AI tooling for research and knowledge management 
 
 | Capability | Description |
 | :--- | :--- |
-| **6-Agent A2A Debate** | Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian — all respond independently to user prompts. |
+| **12-Agent A2A Debate** | Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planning Agent, Testing Agent, Code Generator, Knowledge Curator — all respond independently to user prompts. |
 | **Vector Embeddings** | Transformers.js (`all-MiniLM-L6-v2`) in a Web Worker generates 384-dim vectors. |
 | **Hybrid Semantic Search** | Orama JS provides vector + keyword search with fallback to token matching. |
 | **6-Tier Memory** | Session, Episodic, Semantic (vector-indexed), Procedural, Working, Long-Term. |
@@ -71,14 +71,14 @@ npm run preview    # serve dist/ locally
 | Metric | Value |
 | :--- | :--- |
 | Runtime dependencies | 2 (`react`, `react-dom`) |
-| Test count | 74 across 6 files |
+| Test count | 227 across 14 files |
 | Test coverage | >80% statements, >75% branches, >85% functions, >80% lines |
 | Build size | ~90 KB gzip |
 | IndexedDB stores | 22 |
 | Components | 25 |
 | Services | 12 |
-| Agents | 6 (built-in) + custom |
-| AI providers | 6 (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama) |
+| Agents | 12 (built-in) + custom |
+| AI providers | 10 (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare) |
 
 ---
 
@@ -89,7 +89,7 @@ npm run preview    # serve dist/ locally
 - [003 — Blueprint](003-blueprint.md) — Tech stack, metrics, roadmap
 - [004 — Architecture](004-architecture.md) — System architecture, directory structure, data model
 - [005 — Design](005-design.md) — UI/UX design system and visual language
-- [Index](index.md) — Full documentation index
+- [Index](../index.md) — Full documentation index
 
 ---
 

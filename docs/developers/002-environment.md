@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "developers"
 ---
 
-# 020 — Environment Variables & API Keys
+# 002 — Environment Variables & API Keys
 
 Complete reference for all environment variables used by Open Knowledge Studio.
 

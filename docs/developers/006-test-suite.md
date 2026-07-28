@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "developers"
 ---
 
-# 060 — Test Suite Documentation
+# 006 — Test Suite Documentation
 
 Complete documentation of the testing infrastructure, test files, mocking strategy, and coverage requirements.
 
@@ -407,10 +407,10 @@ start coverage/index.html  # Windows
 
 ## See Also
 
-- [Development Guidelines](040-development.md) — Testing strategy and writing tests
-- [Memory Architecture](050-memory-architecture.md) — Memory tiers under test
-- [CI/CD Pipeline](080-ci-cd.md) — GitHub Actions workflow running tests
-- [Setup Guide](010-setup.md) — Environment prerequisites
+- [Development Guidelines](004-development.md) — Testing strategy and writing tests
+- [Memory Architecture](005-memory-architecture.md) — Memory tiers under test
+- [CI/CD Pipeline](008-ci-cd.md) — GitHub Actions workflow running tests
+- [Setup Guide](001-setup.md) — Environment prerequisites
 
 ---
 

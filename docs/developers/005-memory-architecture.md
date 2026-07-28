@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "developers"
 ---
 
-# 050 — Memory Architecture Deep Dive
+# 005 — Memory Architecture Deep Dive
 
 Complete documentation of the **6-tier memory architecture**, vector embedding pipeline, and search system.
 
@@ -281,10 +281,10 @@ Uses `navigator.storage.estimate()` to report browser storage usage. Most browse
 
 ## See Also
 
-- [Development Guidelines](040-development.md) — State management rules
-- [Test Suite Documentation](060-test-suite.md) — Memory test coverage and benchmarks
-- [Zero-Dependency Architecture](100-dependency-removal.md) — CDN loading philosophy
-- [Setup Guide](010-setup.md) — Environment configuration
+- [Development Guidelines](004-development.md) — State management rules
+- [Test Suite Documentation](006-test-suite.md) — Memory test coverage and benchmarks
+- [Zero-Dependency Architecture](010-dependency-removal.md) — CDN loading philosophy
+- [Setup Guide](001-setup.md) — Environment configuration
 
 ---
 

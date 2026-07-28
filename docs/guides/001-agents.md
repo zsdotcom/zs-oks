@@ -8,13 +8,13 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# 010 — A2A Agents Guide
+# 001 — A2A Agents Guide
 
 ---
 
 ## 1. Overview
 
-Open Knowledge Studio ships with **6 A2A (Agent-to-Agent) debate agents** that provide multi-perspective analysis on user prompts. Each agent has a distinct role, color-coded identity, emoji avatar, memory type, and system prompt. All active agents receive the same user prompt in parallel and generate independent responses.
+Open Knowledge Studio ships with **12 A2A (Agent-to-Agent) debate agents** that provide multi-perspective analysis on user prompts. Each agent has a distinct role, color-coded identity, emoji avatar, memory type, and system prompt. All active agents receive the same user prompt in parallel and generate independent responses.
 
 Agents are defined in `DEFAULT_A2A_AGENTS` at `src/App.tsx:108-151`.
 
@@ -208,7 +208,7 @@ Users can create custom agents through the **Settings Panel**:
 
 The custom agent is persisted in IndexedDB's `a2aAgents` store alongside the defaults and will appear in the chat interface as an additional participant.
 
-Custom agents can be assigned to workflows just like built-in agents. See [Multi-Agent Workflows](020-workflows.md) for details.
+Custom agents can be assigned to workflows just like built-in agents. See [Multi-Agent Workflows](002-workflows.md) for details.
 
 ---
 
@@ -228,9 +228,9 @@ Access it from the tools panel after running an A2A debate.
 ## See Also
 
 - [Getting Started](000-getting-started.md) — First-time user walkthrough
-- [Multi-Agent Workflows](020-workflows.md) — Orchestrated and sequential modes
-- [Sandboxed Code Execution](050-sandbox.md) — How agents run code safely
-- [Connectors Guide](080-connectors.md) — External service connectors for agents
+- [Multi-Agent Workflows](002-workflows.md) — Orchestrated and sequential modes
+- [Sandboxed Code Execution](005-sandbox.md) — How agents run code safely
+- [Connectors Guide](008-connectors.md) — External service connectors for agents
 - [Developer Guide: Memory Architecture](../developers/005-memory-architecture.md) — 6-tier memory system
 - [Portal Overview](../index.md) — Full documentation index
 

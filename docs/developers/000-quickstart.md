@@ -65,7 +65,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 ## 5. Run Tests
 
 ```bash
-npm test            # 74 tests across 6 files
+npm test            # 227 tests across 14 files
 npm run typecheck   # TypeScript type checking
 ```
 
@@ -84,19 +84,19 @@ npm run preview     # Serve dist/ locally
 
 | Topic | Guide |
 | :--- | :--- |
-| Full setup details | [Complete Setup & Installation](010-setup.md) |
-| API keys reference | [Environment Variables](020-environment.md) |
-| Non-coder guide | [Guide for Non-Developers](030-non-coder-guide.md) |
-| Development standards | [Development Guidelines](040-development.md) |
-| Deployment | [Deployment Guide](090-deployment.md) |
+| Full setup details | [Complete Setup & Installation](001-setup.md) |
+| API keys reference | [Environment Variables](002-environment.md) |
+| Non-coder guide | [Guide for Non-Developers](003-non-coder-guide.md) |
+| Development standards | [Development Guidelines](004-development.md) |
+| Deployment | [Deployment Guide](009-deployment.md) |
 
 ---
 
 ## See Also
 
-- [Complete Setup & Installation](010-setup.md) — Prerequisites and detailed setup
-- [Environment Variables & API Keys](020-environment.md) — All VITE_* vars and where to get keys
-- [Development Guidelines](040-development.md) — Coding standards and contribution guide
+- [Complete Setup & Installation](001-setup.md) — Prerequisites and detailed setup
+- [Environment Variables & API Keys](002-environment.md) — All VITE_* vars and where to get keys
+- [Development Guidelines](004-development.md) — Coding standards and contribution guide
 
 ---
 

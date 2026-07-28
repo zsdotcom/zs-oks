@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "developers"
 ---
 
-# 080 — CI/CD Pipeline
+# 008 — CI/CD Pipeline
 
 Complete reference for the GitHub Actions CI/CD pipeline, including type checking, testing, building, E2E tests, bundle analysis, and deployment.
 
@@ -344,10 +344,10 @@ git commit -m "chore: update package-lock.json"
 
 ## See Also
 
-- [Development Guidelines](040-development.md) — Git workflow and PR guidelines
-- [Deployment Guide](090-deployment.md) — Docker, Vercel, Netlify deployment
-- [Test Suite Documentation](060-test-suite.md) — Test architecture and coverage
-- [Environment Variables](020-environment.md) — All VITE_* vars reference
+- [Development Guidelines](004-development.md) — Git workflow and PR guidelines
+- [Deployment Guide](009-deployment.md) — Docker, Vercel, Netlify deployment
+- [Test Suite Documentation](006-test-suite.md) — Test architecture and coverage
+- [Environment Variables](002-environment.md) — All VITE_* vars reference
 
 ---
 

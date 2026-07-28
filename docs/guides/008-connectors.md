@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# 080 — Connectors Guide
+# 008 — Connectors Guide
 
 ---
 
@@ -154,9 +154,9 @@ Removed connectors are deleted from IndexedDB via `removeConnector()`.
 
 ## See Also
 
-- [Webhooks Guide](090-webhooks.md) — Event-driven webhook system
-- [Public Data APIs Guide](100-public-data.md) — Free data source queries
-- [A2A Agents Guide](010-agents.md) — How agents use connectors
+- [Webhooks Guide](009-webhooks.md) — Event-driven webhook system
+- [Public Data APIs Guide](010-public-data.md) — Free data source queries
+- [A2A Agents Guide](001-agents.md) — How agents use connectors
 - [Getting Started](000-getting-started.md) — Configuring settings
 - [Portal Overview](../index.md) — Full documentation index
 

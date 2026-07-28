@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# 020 — Multi-Agent Workflows
+# 002 — Multi-Agent Workflows
 
 ---
 
@@ -175,10 +175,10 @@ These are pushed to the `A2AMetricsDashboard` via the `onAgentResponse` callback
 
 ## See Also
 
-- [A2A Agents Guide](010-agents.md) — Agent configuration and system prompts
+- [A2A Agents Guide](001-agents.md) — Agent configuration and system prompts
 - [Getting Started](000-getting-started.md) — First-time user walkthrough
-- [Diagram Generation](030-diagrams.md) — Agents generating visualizations
-- [Sandboxed Code Execution](050-sandbox.md) — Safe code execution in workflows
+- [Diagram Generation](003-diagrams.md) — Agents generating visualizations
+- [Sandboxed Code Execution](005-sandbox.md) — Safe code execution in workflows
 - [Developer Guide: Memory Architecture](../developers/005-memory-architecture.md) — Memory tiers used in workflows
 - [Portal Overview](../index.md) — Full documentation index
 

@@ -42,16 +42,16 @@ Results are written to `benchmark-results.json` (gitignored).
 
 | Benchmark | Target | Iterations | Status |
 |-----------|--------|------------|--------|
-| [IndexedDB Write Throughput](010-results.md#1-indexeddb-write-throughput) | <50ms/record | 5 | Meets target |
-| [Vector Search Performance](010-results.md#2-vector-search-performance) | <100ms/query | 5 | Meets target |
-| [Key Generation Speed](010-results.md#3-key-generation-speed) | <1ms total | 5 | Meets target |
-| [Batch Write Performance](010-results.md#4-batch-write-performance) | <100ms total | 5 | Meets target |
-| [Embedding Generation](010-results.md#5-embedding-generation) | <100ms/text | 5 | Meets target |
+| [IndexedDB Write Throughput](001-results.md#1-indexeddb-write-throughput) | <50ms/record | 5 | Meets target |
+| [Vector Search Performance](001-results.md#2-vector-search-performance) | <100ms/query | 5 | Meets target |
+| [Key Generation Speed](001-results.md#3-key-generation-speed) | <1ms total | 5 | Meets target |
+| [Batch Write Performance](001-results.md#4-batch-write-performance) | <100ms total | 5 | Meets target |
+| [Embedding Generation](001-results.md#5-embedding-generation) | <100ms/text | 5 | Meets target |
 
 ## See Also
 
-- [Detailed Results](010-results.md) — Full metrics for each benchmark
-- [Test Suite](../developers/080-test-suite.md) — Overview of all tests and coverage
+- [Detailed Results](001-results.md) — Full metrics for each benchmark
+- [Test Suite](../developers/006-test-suite.md) — Overview of all tests and coverage
 - [Memory Architecture](../developers/005-memory-architecture.md) — The 6-tier memory system under test
 
 

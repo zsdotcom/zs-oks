@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# 090 — Webhooks Guide
+# 009 — Webhooks Guide
 
 ---
 
@@ -196,9 +196,9 @@ Webhook data is stored in `localStorage` under the key `oks-webhooks`.
 
 ## See Also
 
-- [Connectors Guide](080-connectors.md) — Connector configurations for external services
-- [A2A Agents Guide](010-agents.md) — Agent events that trigger webhooks
-- [Multi-Agent Workflows](020-workflows.md) — Workflow completion events
+- [Connectors Guide](008-connectors.md) — Connector configurations for external services
+- [A2A Agents Guide](001-agents.md) — Agent events that trigger webhooks
+- [Multi-Agent Workflows](002-workflows.md) — Workflow completion events
 - [Getting Started](000-getting-started.md) — Basic setup and configuration
 - [Portal Overview](../index.md) — Full documentation index
 

@@ -213,7 +213,7 @@ audience: "stakeholders"
 - [001 — Concept & Vision](001-concept.md) — User personas and value proposition
 - [003 — Blueprint](003-blueprint.md) — Tech stack and success metrics
 - [004 — Architecture](004-architecture.md) — System architecture and directory structure
-- [Index](index.md) — Full documentation index
+- [Index](../index.md) — Full documentation index
 
 ---
 

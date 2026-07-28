@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# 100 — Public Data APIs Guide
+# 010 — Public Data APIs Guide
 
 ---
 
@@ -222,12 +222,12 @@ Data is **cached in memory** for 5 minutes (`CACHE_TTL`) to avoid redundant API 
 
 ## 9. Use Cases for Research
 
-- **Epidemiological studies**: Fetch notifiable disease data from CDC, then plot on the [EpiMap](060-epi-map.md)
+- **Epidemiological studies**: Fetch notifiable disease data from CDC, then plot on the [EpiMap](006-epi-map.md)
 - **Global health comparisons**: Compare WHO health indicators across countries
 - **Disease tracking**: Use FluView and COVIDcast for real-time surveillance
 - **Environmental health**: Combine weather and air quality data with disease data
 - **Outbreak monitoring**: Use InfectoNET alerts for emerging pathogen threats
-- **Cross-reference**: Look up [ICD-11 codes](070-icd11.md) and query related health data
+- **Cross-reference**: Look up [ICD-11 codes](007-icd11.md) and query related health data
 
 ---
 
@@ -244,11 +244,11 @@ Data is **cached in memory** for 5 minutes (`CACHE_TTL`) to avoid redundant API 
 
 ## See Also
 
-- [ICD-11 Lookup Guide](070-icd11.md) — Medical codes for research queries
-- [Epidemiological Map Guide](060-epi-map.md) — Visualizing fetched data on a map
-- [Sandboxed Code Execution](050-sandbox.md) — Analyzing data with the sandbox
-- [Connectors Guide](080-connectors.md) — External service integrations
-- [A2A Agents Guide](010-agents.md) — Researching with public data
+- [ICD-11 Lookup Guide](007-icd11.md) — Medical codes for research queries
+- [Epidemiological Map Guide](006-epi-map.md) — Visualizing fetched data on a map
+- [Sandboxed Code Execution](005-sandbox.md) — Analyzing data with the sandbox
+- [Connectors Guide](008-connectors.md) — External service integrations
+- [A2A Agents Guide](001-agents.md) — Researching with public data
 - [Portal Overview](../index.md) — Full documentation index
 
 ---

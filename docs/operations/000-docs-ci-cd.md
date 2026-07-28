@@ -149,8 +149,8 @@ The `deploy-docs.yml` workflow is active and configured. As soon as the reposito
 
 - [CI/CD Pipeline](../developers/008-ci-cd.md) — CI, app deploy, and docs deploy workflows
 - [Deployment Guide](../developers/009-deployment.md) — Docker, Vercel, Netlify deployment options
-- [Branch Protection](../.github/branch-protection.md) — Branch rules and status checks
-- [Infrastructure Config](../.config.template.md) — Secret keys and external service setup (gitignored)
+- [Branch Protection](../../.github/branch-protection.md) — Branch rules and status checks
+- [Infrastructure Config](../../.config.template.md) — Secret keys and external service setup (gitignored)
 - [Documentation Style Guide](001-docs-style-guide.md) — Markdown and frontmatter conventions
 
 

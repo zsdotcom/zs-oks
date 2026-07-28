@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "developers"
 ---
 
-# 070 — Code Splitting & Performance
+# 007 — Code Splitting & Performance
 
 Optimization strategies used to keep the initial JavaScript bundle minimal and load heavy components on demand.
 
@@ -177,10 +177,10 @@ These libraries are loaded at runtime from CDN, never bundled:
 
 ## See Also
 
-- [Development Guidelines](040-development.md) — Zero-dependency rule
-- [Zero-Dependency Architecture](100-dependency-removal.md) — CDN loading philosophy
-- [CI/CD Pipeline](080-ci-cd.md) — Bundle analysis in CI
-- [Setup Guide](010-setup.md) — Running the app
+- [Development Guidelines](004-development.md) — Zero-dependency rule
+- [Zero-Dependency Architecture](010-dependency-removal.md) — CDN loading philosophy
+- [CI/CD Pipeline](008-ci-cd.md) — Bundle analysis in CI
+- [Setup Guide](001-setup.md) — Running the app
 
 ---
 

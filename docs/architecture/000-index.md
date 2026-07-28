@@ -1,7 +1,10 @@
 ---
 title: Architecture Decision Records — Index
+category: "architecture"
 order: 0
 tags: [adr, architecture, index]
+last_updated: "2026-07-28"
+audience: "developers"
 ---
 
 # Architecture Decision Records
