@@ -33,8 +33,11 @@ coverage/
 tsconfig.tsbuildinfo
 
 # --- Agent / Runtime ---
-.opencode/
 .opencode_history
+.opencode/*
+!.opencode/skills/
+.opencode/skills/*
+!.opencode/skills/*/
 session-*.md
 benchmark-results.json
 

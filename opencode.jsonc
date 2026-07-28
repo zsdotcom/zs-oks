@@ -2,13 +2,11 @@
   "$schema": "https://opencode.ai/config.json",
 
   // ─── System Instructions ───
-  // OpenCode loads these markdown files into the LLM system prompt on launch
-  "instructions": [
-    "AGENTS.md"
-  ],
+  // Loads AGENTS.md into the AI's system prompt every launch
+  "instructions": ["AGENTS.md"],
 
   // ─── Skills ───
-  // Register skill directories so the /skill command can discover them
+  // Register both skill directories so /skill command can discover them
   "skills": {
     "paths": [".opencode/skills"]
   },
@@ -18,7 +16,7 @@
   "references": {
     "docs": {
       "path": "docs",
-      "description": "Product documentation and user guides"
+      "description": "Product documentation and user guides (105+ files)"
     },
     "data": {
       "path": "docs/_data",
@@ -30,25 +28,34 @@
     }
   },
 
+  // ─── MCP Servers ───
+  // These connect the AI to external tools and services
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@context7/mcp-server"],
+      "env": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-playwright"]
+    }
+  },
+
   // ─── Subagent Settings ───
-  // Maximum nesting depth for subagent delegation
   "subagent_depth": 3,
 
   // ─── Tool & Execution Permissions ───
-  // Governs what the AI agent can execute automatically vs. requiring manual approval
   "permission": {
-    // Basic file inspection tools
     "read": "allow",
     "glob": "allow",
     "grep": "allow",
     "list": "allow",
     "lsp": "allow",
     "skill": "allow",
-
-    // File editing permissions
     "edit": "allow",
-
-    // Terminal / Bash permissions
     "bash": {
       "*": "ask",
       "npm *": "allow",
@@ -60,12 +67,8 @@
       "git commit *": "ask",
       "git push *": "ask"
     },
-
-    // Web capabilities
     "webfetch": "allow",
     "websearch": "allow",
-
-    // Strictly lock filesystem interaction to this repository root
     "external_directory": {
       "/home/codeandbrain/open-knowledge-studio/**": "allow",
       "*": "deny"
