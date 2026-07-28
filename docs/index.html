@@ -13,30 +13,42 @@
   <link rel="alternate" type="text/plain" href="llms.txt" title="LLM documentation index">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='6' fill='%231a1a2e'/%3E%3Cpath d='M8 10c0-2 2-4 4-4h8c2 0 4 2 4 4v12c0 2-2 4-4 4h-8c-2 0-4-2-4-4V10z' stroke='%234f46e5' stroke-width='1.5' fill='none'/%3E%3Ccircle cx='16' cy='14' r='3' fill='%234f46e5'/%3E%3Cpath d='M12 20h8' stroke='%234f46e5' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M13 23h6' stroke='%234f46e5' stroke-width='1.5' stroke-linecap='round' opacity='0.5'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-dark-mode@3/dist/docsify-dark-mode.min.css">
   <style>
-    .sidebar .app-name-link {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 700;
-      text-decoration: none;
-      color: #8B5CF6 !important;
-    }
-    .sidebar .app-name-link .logo-svg {
-      width: 24px;
-      height: 24px;
-      flex-shrink: 0;
-    }
-    .sidebar .app-name-link .logo-text {
-      line-height: 1.2;
-    }
-    .sidebar .app-name-link .logo-sub {
-      display: block;
-      font-size: 0.6em;
-      font-weight: 400;
-      color: #94a3b8;
-      letter-spacing: 0.3px;
-    }
+    :root { --brand: #8B5CF6; --brand-light: #A78BFA; --sidebar-bg: #0f1117; --sidebar-text: #94a3b8; }
+    .sidebar .app-name-link { display: flex; align-items: center; gap: 8px; font-weight: 700; text-decoration: none; color: var(--brand) !important; }
+    .sidebar .app-name-link .logo-svg { width: 24px; height: 24px; flex-shrink: 0; }
+    .sidebar .app-name-link .logo-text { line-height: 1.2; }
+    .sidebar .app-name-link .logo-sub { display: block; font-size: 0.6em; font-weight: 400; color: var(--sidebar-text); }
+    .sidebar { background: var(--sidebar-bg); border-right: 1px solid rgba(139,92,246,0.15); }
+    .sidebar ul li a { color: var(--sidebar-text); font-size: 0.9em; }
+    .sidebar ul li a:hover { color: var(--brand-light); }
+    .sidebar ul li.active > a { color: var(--brand); border-right: 2px solid var(--brand); font-weight: 600; }
+    .sidebar ul li ul { border-left: 1px solid rgba(139,92,246,0.1); }
+    .sidebar-nav > ul > li > a { font-weight: 600; color: #cbd5e1; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; }
+    .sidebar .search input { background: #1a1a2e; border: 1px solid rgba(139,92,246,0.2); border-radius: 6px; color: #e2e8f0; padding: 8px 12px; }
+    .sidebar .search input:focus { border-color: var(--brand); box-shadow: 0 0 0 2px rgba(139,92,246,0.2); }
+    .markdown-section { max-width: 1000px; }
+    .markdown-section h1 { color: var(--brand); border-bottom: 2px solid rgba(139,92,246,0.2); padding-bottom: 0.3em; }
+    .markdown-section h2 { color: var(--brand-light); border-bottom: 1px solid rgba(139,92,246,0.1); padding-bottom: 0.2em; }
+    .markdown-section h3 { color: #06B6D4; }
+    .markdown-section h4 { color: #10B981; }
+    .markdown-section a { color: var(--brand-light); }
+    .markdown-section code { color: #F59E0B; background: rgba(245,158,11,0.1); border-radius: 3px; padding: 0.1em 0.3em; }
+    .markdown-section pre { background: #0a0a0f !important; border: 1px solid rgba(139,92,246,0.15); border-radius: 8px; }
+    .markdown-section pre code { color: #e2e8f0; background: transparent; }
+    .markdown-section blockquote { border-left: 4px solid var(--brand); background: rgba(139,92,246,0.05); padding: 0.5em 1em; border-radius: 0 8px 8px 0; }
+    .markdown-section table { width: 100%; }
+    .markdown-section th { background: rgba(139,92,246,0.1); color: var(--brand-light); font-weight: 600; }
+    .markdown-section th, .markdown-section td { border: 1px solid rgba(139,92,246,0.1); padding: 8px 12px; }
+    .markdown-section tr:nth-child(even) { background: rgba(139,92,246,0.03); }
+    .markdown-section img { max-width: 100%; border-radius: 8px; }
+    .cover { background: linear-gradient(135deg, #0a0a0f 0%, #1a1035 50%, #0a0a0f 100%) !important; }
+    .cover-main { color: #e2e8f0 !important; }
+    .cover-main h1 { color: var(--brand) !important; font-size: 2.5em !important; }
+    .cover-main blockquote { border-left: none !important; background: transparent !important; font-size: 1.1em; color: #94a3b8 !important; }
+    .sidebar-toggle { background: var(--sidebar-bg); }
+    .sidebar-toggle span { background: var(--brand); }
   </style>
 </head>
 <body>
@@ -44,6 +56,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2/dist/docsify-copy-code.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-dark-mode@3/dist/docsify-dark-mode.min.js"></script>
 
   <script>
     window.$docsify = {
@@ -54,17 +69,13 @@
       coverpage: '_coverpage.md',
       name: '',
       repo: 'https://github.com/zsdotcom/zs-oks',
-      search: {
-        maxAge: 86400000,
-        paths: 'auto',
-        placeholder: 'Search docs...',
-        noData: 'No results',
-        depth: 4,
-      },
+      search: { maxAge: 86400000, paths: 'auto', placeholder: 'Search docs...', noData: 'No results', depth: 4 },
       autoHeader: true,
       formatUpdated: '{YYYY}-{MM}-{DD}',
+      darkMode: { dark: true, light: true, defaultTheme: 'dark', buttonPosition: 'bottom-right' },
       plugins: [
-        function(hook, vm) {
+        DocsifyDarkMode,
+        function(hook) {
           hook.doneEach(function() {
             var link = document.querySelector('.sidebar .app-name-link');
             if (link && !link.querySelector('.logo-svg')) {
