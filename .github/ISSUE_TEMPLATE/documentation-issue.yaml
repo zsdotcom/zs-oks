@@ -1,0 +1,52 @@
+name: Documentation Issue
+description: Report a documentation error, gap, or improvement
+labels:
+  - documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve our documentation!
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
+
+  - type: dropdown
+    attributes:
+      label: Type
+      description: What kind of documentation issue is this?
+      multiple: false
+      options:
+        - Error or inaccuracy
+        - Missing content / gap
+        - Unclear or confusing explanation
+        - Broken link
+        - Outdated information
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Document location
+      description: Which document or section has the issue?
+      placeholder: e.g., docs/guides/001-agents.md or https://...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Description
+      description: Describe the issue in detail.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Suggested fix
+      description: If you have a suggestion for how to fix it, please describe.

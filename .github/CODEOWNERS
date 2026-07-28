@@ -1,27 +1,45 @@
-# Default owner for all files
-* @devopsariful @arwazarish @codeandbrain @healthbgd
+# zsdotcom/zs-oks — Repository CODEOWNERS
+# Order is important: LAST matching pattern wins.
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
-# CI/CD workflow ownership
-.github/workflows/ @devopsariful @codeandbrain
-.github/actions/ @devopsariful @codeandbrain
-.github/CODEOWNERS @devopsariful @codeandbrain
+# =============================================================================
+# DEFAULT OWNERS — All files unless overridden below
+# =============================================================================
+* @zsdotcom/codeandbrain @zsdotcom/arwazarish @zsdotcom/devopsariful @zsdotcom/healthbgd
 
-# Source code ownership
-src/ @codeandbrain @arwazarish
+# =============================================================================
+# CI/CD & INFRASTRUCTURE — DevOps responsible
+# =============================================================================
+.github/ @zsdotcom/devopsariful @zsdotcom/codeandbrain
+.github/workflows/ @zsdotcom/devopsariful @zsdotcom/codeandbrain
+.github/CODEOWNERS @zsdotcom/devopsariful @zsdotcom/codeandbrain
+Dockerfile @zsdotcom/devopsariful @zsdotcom/codeandbrain
+.dockerignore @zsdotcom/devopsariful @zsdotcom/codeandbrain
+nginx.conf @zsdotcom/devopsariful @zsdotcom/codeandbrain
+.devcontainer/ @zsdotcom/devopsariful @zsdotcom/codeandbrain
+.vscode/ @zsdotcom/devopsariful @zsdotcom/codeandbrain
 
-# Documentation ownership
-docs/ @codeandbrain @healthbgd
-README.md @codeandbrain @healthbgd
-AGENTS.md @codeandbrain @healthbgd
+# =============================================================================
+# APPLICATION SOURCE CODE — Tech lead responsible
+# =============================================================================
+src/ @zsdotcom/codeandbrain @zsdotcom/arwazarish
+src/test/ @zsdotcom/arwazarish @zsdotcom/codeandbrain
+index.html @zsdotcom/codeandbrain @zsdotcom/arwazarish
+vite.config.ts @zsdotcom/codeandbrain @zsdotcom/devopsariful
 
-# Infrastructure ownership
-Dockerfile @devopsariful @codeandbrain
-docker-compose.yml @devopsariful @codeandbrain
-nginx.conf @devopsariful @codeandbrain
-.vscode/ @devopsariful @codeandbrain
-.devcontainer/ @devopsariful @codeandbrain
+# =============================================================================
+# DOCUMENTATION — Content maintainer responsible
+# =============================================================================
+docs/ @zsdotcom/healthbgd @zsdotcom/codeandbrain
+docs/guides/ @zsdotcom/healthbgd @zsdotcom/codeandbrain
+docs/onboarding/ @zsdotcom/healthbgd @zsdotcom/codeandbrain
+docs/agents/ @zsdotcom/codeandbrain @zsdotcom/healthbgd
+README.md @zsdotcom/healthbgd @zsdotcom/codeandbrain
+AGENTS.md @zsdotcom/healthbgd @zsdotcom/codeandbrain
 
-# Testing ownership
-src/test/ @arwazarish @codeandbrain
-.github/workflows/ci.yml @arwazarish @devopsariful
-.github/workflows/deploy.yml @devopsariful @codeandbrain
+# =============================================================================
+# OPENCODE CONFIGURATION — Agent maintainer
+# =============================================================================
+.opencode/ @zsdotcom/codeandbrain @zsdotcom/devopsariful
+opencode.jsonc @zsdotcom/codeandbrain @zsdotcom/devopsariful
+AGENTS.md @zsdotcom/codeandbrain @zsdotcom/healthbgd

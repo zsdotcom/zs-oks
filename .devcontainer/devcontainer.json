@@ -1,5 +1,5 @@
 {
-  "name": "open-knowledge-studio",
+  "name": "zs-oks",
   "build": {
     "dockerfile": "Dockerfile"
   },
@@ -8,7 +8,7 @@
     "BROWSER": "none"
   },
   "mounts": [
-    "source=open-knowledge-studio-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+    "source=zs-oks-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
   ],
   "onCreateCommand": "npm install",
   "postAttachCommand": "npm run dev",
@@ -19,6 +19,10 @@
     }
   },
   "forwardPorts": [3000],
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -34,7 +38,11 @@
         "streetsidesoftware.code-spell-checker",
         "EditorConfig.EditorConfig",
         "tamasfe.even-better-toml",
-        "mikestead.dotenv"
+        "mikestead.dotenv",
+        "bierner.markdown-preview-github-styles",
+        "davidanson.vscode-markdownlint",
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
       ],
       "settings": {
         "files.associations": {
@@ -61,7 +69,12 @@
           "noninteractive",
           "orama",
           "tamasfe",
-          "yzhang"
+          "yzhang",
+          "zsdotcom",
+          "arwazarish",
+          "devopsariful",
+          "healthbgd",
+          "zarishsphere"
         ]
       }
     }

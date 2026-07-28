@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Open Knowledge Studio Support
+    url: https://github.com/zsdotcom/zs-oks/discussions
+    about: Please ask and answer questions in GitHub Discussions.
+  - name: ZarishSphere Foundation
+    url: https://zarishsphere.com
+    about: Learn more about the foundation behind this project.

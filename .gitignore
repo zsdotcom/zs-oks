@@ -1,51 +1,70 @@
 
+# =============================================================================
+# Open Knowledge Studio — .gitignore
+# =============================================================================
+
+# --- OS / Editor ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
 *.~
 *~
-# Agent / runtime caches
-benchmark-results.json
-# Build output
-coverage/
-# Dependencies
-dist/
-.DS_Store
-/e2e-results/
+
+# --- IDE ---
+.idea/
+*.iml
+.vscode/*.log
+
+# --- Environment Variables (contains secrets — NEVER commit) ---
+.config.template.md
 .env
 .env.development
-# Environment variables
 .env.local
 .env.production
-# Generated / ejected
-.idea/
-# IDE & Editor — specific files only, not the whole .vscode/
-*.iml
-*.log
+
+# --- Dependencies ---
 node_modules/
-npm-debug.log*
-.opencode/
-.opencode_history
-Open Knowledge Studio_files/
-Open Knowledge Studio.html
-# OS
-# Package manager lockfiles — keep package-lock.json, ignore others
-# Playwright E2E
-/playwright-report/
-# pnpm-lock.yaml
-public/models/
-session-*.md
-*.swo
-*.swp
-temp/
-# Temporary files
-# Testing
-test-results/
-Thumbs.db
-*.tmp
-tmp/
+
+# --- Build Output ---
+dist/
+coverage/
 *.tsbuildinfo
 tsconfig.tsbuildinfo
-# TypeScript
-.vscode/*.log
-.workspace/
+
+# --- Agent / Runtime ---
+.opencode/
+.opencode_history
+session-*.md
+benchmark-results.json
+
+# --- Logs ---
+*.log
+npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-# yarn.lock
+
+# --- Temporary Files ---
+tmp/
+temp/
+*.tmp
+*.temp
+
+# --- Testing ---
+test-results/
+/e2e-results/
+/playwright-report/
+playwright/.cache/
+
+# --- Generated / Ejected ---
+public/models/
+Open Knowledge Studio_files/
+Open Knowledge Studio.html
+
+# --- Workspace (local only) ---
+.workspace/
+
+# --- Package Manager Lockfiles (keep package-lock.json) ---
+pnpm-lock.yaml
+yarn.lock
+_github_docs-main

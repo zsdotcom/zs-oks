@@ -1,0 +1,44 @@
+name: Feature Request
+description: Suggest an idea for this project
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an idea! Please check existing issues and discussions first.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Is your feature request related to a problem?
+      description: A clear, concise description of the problem.
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Describe the solution you'd like
+      description: What do you want to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Describe alternatives you've considered
+      description: Any alternative solutions or features you've considered.
+
+  - type: textarea
+    attributes:
+      label: Impact
+      description: Who would benefit from this feature and how?
+    validations:
+      required: true

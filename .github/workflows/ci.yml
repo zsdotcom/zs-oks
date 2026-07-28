@@ -12,17 +12,26 @@ on:
       - '.vscode/**'
       - '.devcontainer/**'
       - '.workspace/**'
+      - '.config.template.md'
   pull_request:
-    branches: [main]
+    branches: [main, develop]
     paths-ignore:
       - 'docs/**'
       - 'AGENTS.md'
       - 'README.md'
+  merge_group:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.label || github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   typecheck-and-test:
     name: TypeCheck & Test
+    if: github.repository == 'zsdotcom/zs-oks'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -48,6 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: typecheck-and-test
     if: github.event_name == 'pull_request'
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -73,6 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: typecheck-and-test
     if: github.ref == 'refs/heads/main'
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

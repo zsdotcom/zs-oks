@@ -5,7 +5,9 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'monday'
-    open-pull-requests-limit: 5
+      time: '09:00'
+      timezone: 'Asia/Dhaka'
+    open-pull-requests-limit: 10
     labels:
       - 'dependencies'
       - 'automated'
@@ -17,15 +19,35 @@ updates:
     commit-message:
       prefix: 'chore'
       include: 'scope'
+    reviewers:
+      - 'zsdotcom/codeandbrain'
+      - 'zsdotcom/devopsariful'
 
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'monthly'
-    open-pull-requests-limit: 3
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'Asia/Dhaka'
+    open-pull-requests-limit: 5
     labels:
       - 'ci'
       - 'automated'
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
+    reviewers:
+      - 'zsdotcom/devopsariful'
+      - 'zsdotcom/codeandbrain'
+
+  - package-ecosystem: 'docker'
+    directory: '/'
+    schedule:
+      interval: 'monthly'
+    labels:
+      - 'dependencies'
+      - 'docker'
     commit-message:
       prefix: 'chore'
       include: 'scope'

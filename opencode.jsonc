@@ -13,6 +13,23 @@
     "paths": [".opencode/skills"]
   },
 
+  // ─── References ───
+  // Local directories available as supporting context via @ alias
+  "references": {
+    "docs": {
+      "path": "docs",
+      "description": "Product documentation and user guides"
+    },
+    "data": {
+      "path": "docs/_data",
+      "description": "Canonical project variables (version, stats, URLs)"
+    },
+    "infra": {
+      "path": ".github",
+      "description": "CI/CD workflows, CODEOWNERS, issue templates"
+    }
+  },
+
   // ─── Subagent Settings ───
   // Maximum nesting depth for subagent delegation
   "subagent_depth": 3,

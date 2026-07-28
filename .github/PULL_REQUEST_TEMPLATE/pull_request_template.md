@@ -26,10 +26,15 @@
 - [ ] Added/updated documentation in `docs/`
 - [ ] No new runtime dependencies introduced
 - [ ] All existing tests continue to pass
+- [ ] `CODEOWNERS` notified where applicable
 
 ## Screenshots (if applicable)
 
 <!-- Add screenshots to help explain the change -->
+
+## Related Issues
+
+<!-- Link any related issues: Closes #123, Fixes #456 -->
 
 ## Additional Notes
 

@@ -32,7 +32,8 @@ flowchart LR
 | File | Trigger | Jobs |
 | :--- | :--- | :--- |
 | `.github/workflows/ci.yml` | Push to `main`/`develop`, PR to `main` | TypeCheck & Test, E2E Tests, Bundle Analysis |
-| `.github/workflows/deploy.yml` | Push to `main` | Deploy to GitHub Pages |
+| `.github/workflows/deploy-app.yml` | Push to `main`, Release | Deploy app to Vercel, Docker Hub |
+| `.github/workflows/deploy-docs.yml` | Push to `main`, docs/** | Deploy docs to GitHub Pages |
 
 ---
 
@@ -156,7 +157,17 @@ jobs:
 
 ---
 
-## 3. Deploy Workflow (`deploy.yml`)
+## 3. Deploy Workflows
+
+### 3a. App Deployment (`deploy-app.yml`)
+Deploys the React SPA to Vercel and pushes Docker images to Docker Hub on release.
+
+### 3b. Docs Deployment (`deploy-docs.yml`)
+Publishes the `docs/` folder to GitHub Pages as a static documentation site.
+
+---
+
+## 4. Legacy Deploy (`deploy.yml` — replaced)
 
 ```yaml
 name: Deploy to GitHub Pages

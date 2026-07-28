@@ -1,0 +1,11 @@
+# Auto-assign PR reviewers based on CODEOWNERS
+addReviewers: true
+addAssignees: author
+reviewers:
+  - zsdotcom/codeandbrain
+  - zsdotcom/devopsariful
+  - zsdotcom/arwazarish
+skipKeywords:
+  - wip
+  - draft
+numberOfReviewers: 1

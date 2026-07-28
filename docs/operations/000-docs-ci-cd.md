@@ -99,40 +99,58 @@ Docsify is recommended because:
 
 ### GitHub Actions Integration
 
-Add a docs deployment job to `deploy.yml` or create a separate workflow:
+A dedicated workflow ([`deploy-docs.yml`](https://github.com/zsdotcom/zs-oks/blob/main/.github/workflows/deploy-docs.yml)) publishes docs to GitHub Pages:
 
 ```yaml
-name: Deploy Docs
+name: Deploy Docs to GitHub Pages
 
 on:
   push:
     branches: [main]
     paths:
       - 'docs/**'
+      - '.github/workflows/deploy-docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-docs
+  cancel-in-progress: false
 
 jobs:
-  deploy-docs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Setup Pages
-        uses: actions/configure-pages@v4
-      - name: Upload docs artifact
+        uses: actions/configure-pages@v5
+      - name: Upload documentation
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
 ```
 
-## No Current Implementation
+## Implementation Status
 
-This document serves as the plan. No Docsify configuration files, VitePress setup, or separate deployment workflow has been created. Implementation will proceed when there is demand for a proper docs browsing experience beyond the raw Markdown files.
+The `deploy-docs.yml` workflow is active and configured. As soon as the repository is pushed and GitHub Pages is enabled in the repo settings, docs will automatically deploy on every push to `main` that includes doc changes. No additional Docsify, VitePress, or other static site generator is needed — GitHub Pages serves raw Markdown files directly.
 
 ## See Also
 
-- [CI/CD Pipeline](../developers/008-ci-cd.md) — Existing build and deploy workflow
+- [CI/CD Pipeline](../developers/008-ci-cd.md) — CI, app deploy, and docs deploy workflows
 - [Deployment Guide](../developers/009-deployment.md) — Docker, Vercel, Netlify deployment options
+- [Branch Protection](../.github/branch-protection.md) — Branch rules and status checks
+- [Infrastructure Config](../.config.template.md) — Secret keys and external service setup (gitignored)
 - [Documentation Style Guide](001-docs-style-guide.md) — Markdown and frontmatter conventions
 
 
