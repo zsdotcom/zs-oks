@@ -64,6 +64,9 @@ public/models/
 Open Knowledge Studio_files/
 Open Knowledge Studio.html
 
+# --- Devcontainer lock (auto-generated) ---
+.devcontainer/devcontainer-lock.json
+
 # --- Workspace (local only) ---
 .workspace/
 
