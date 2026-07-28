@@ -1,9 +1,11 @@
 ---
-title: "040 — PDF Export Guide"
+title: "004 — PDF Export"
+description: "Print-to-PDF and Export PDF buttons with print styles and KaTeX support in exported documents"
 category: "guides"
-order: 40
-tags: ["pdf", "export", "printing", "documents", "katex"]
-last_updated: "2026-07-27"
+order: 4
+tags: ["pdf", "export", "printing", "documentation"]
+last_updated: "2026-07-28"
+audience: "users"
 ---
 
 # 040 — PDF Export Guide
@@ -120,3 +122,9 @@ function exportToPDF(
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+

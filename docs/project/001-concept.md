@@ -1,3 +1,12 @@
+---
+title: "001 — Concept & Vision"
+description: "Product vision, user personas, value proposition, differentiators, and glossary"
+category: "project"
+order: 1
+tags: ["vision", "personas", "value-proposition"]
+last_updated: "2026-07-28"
+audience: "stakeholders"
+---
 # 001 — Concept & Vision
 
 ## 1. Product Vision
@@ -95,3 +104,7 @@ The product is a **single-page application** that replaces a suite of tools (cha
 ---
 
 *Last updated: July 27, 2026*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

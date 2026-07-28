@@ -1,9 +1,11 @@
 ---
-title: "030 — Diagram Generation Guide"
+title: "003 — Diagram Generation"
+description: "KaTeX mathematical typesetting and Mermaid diagram generation with eight diagram types and examples"
 category: "guides"
-order: 30
-tags: ["diagrams", "mermaid", "katex", "visualization", "charts"]
-last_updated: "2026-07-27"
+order: 3
+tags: ["diagrams", "katex", "mermaid", "visualization"]
+last_updated: "2026-07-28"
+audience: "users"
 ---
 
 # 030 — Diagram Generation Guide
@@ -247,3 +249,9 @@ The Data Analyst agent generates these automatically when asked for visualizatio
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+

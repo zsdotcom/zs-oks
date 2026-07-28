@@ -1,3 +1,12 @@
+---
+title: "005 — UI/UX Design System"
+description: "Cyber-minimalist design system documentation: colors, typography, layout, elevation, and components"
+category: "project"
+order: 5
+tags: ["design", "ui", "ux", "cyber-minimalist"]
+last_updated: "2026-07-28"
+audience: "stakeholders"
+---
 # 005 — UI/UX Design System
 
 ## 1. Design Philosophy: Cyber-Minimalism
@@ -326,3 +335,7 @@ Hierarchy is established through **luminance and blur** rather than traditional 
 ---
 
 *Last updated: July 27, 2026*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

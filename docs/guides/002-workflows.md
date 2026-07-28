@@ -1,9 +1,11 @@
 ---
-title: "020 — Multi-Agent Workflows"
+title: "002 — Multi-Agent Workflows"
+description: "Orchestrated decompose-execute-synthesize mode and Sequential chain mode for multi-agent workflows"
 category: "guides"
-order: 20
-tags: ["workflows", "agents", "orchestration", "sequential"]
-last_updated: "2026-07-27"
+order: 2
+tags: ["workflows", "orchestrated", "sequential", "automation"]
+last_updated: "2026-07-28"
+audience: "users"
 ---
 
 # 020 — Multi-Agent Workflows
@@ -177,9 +179,15 @@ These are pushed to the `A2AMetricsDashboard` via the `onAgentResponse` callback
 - [Getting Started](000-getting-started.md) — First-time user walkthrough
 - [Diagram Generation](030-diagrams.md) — Agents generating visualizations
 - [Sandboxed Code Execution](050-sandbox.md) — Safe code execution in workflows
-- [Developer Guide: Memory Architecture](../developers/070-memory-architecture.md) — Memory tiers used in workflows
+- [Developer Guide: Memory Architecture](../developers/005-memory-architecture.md) — Memory tiers used in workflows
 - [Portal Overview](../index.md) — Full documentation index
 
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+

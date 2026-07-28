@@ -1,3 +1,12 @@
+---
+title: "005 — 005 Your First Chat"
+description: "Your first chat session with the A2A agent system"
+category: "onboarding"
+order: 5
+tags: ["onboarding", "walkthrough"]
+last_updated: "2026-07-28"
+audience: "users"
+---
 # 005 — Your First Chat
 
 Now that you have a provider and a project, let's have your first conversation with AI.
@@ -53,3 +62,7 @@ Here are some prompts to try:
 ---
 
 **Next step:** [006 — Using A2A Agents](./006-using-agents.md)
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

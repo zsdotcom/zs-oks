@@ -1,3 +1,12 @@
+---
+title: "013 — 013 Export Share"
+description: "Exporting and sharing your work via PDF, print, and webhooks"
+category: "onboarding"
+order: 13
+tags: ["onboarding", "walkthrough"]
+last_updated: "2026-07-28"
+audience: "users"
+---
 # 013 — Export & Share
 
 Export your work in multiple formats, share with collaborators, and back up your data.
@@ -61,3 +70,7 @@ Export your work in multiple formats, share with collaborators, and back up your
 ---
 
 **Next step:** [014 — Project Complete](./014-project-complete.md)
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

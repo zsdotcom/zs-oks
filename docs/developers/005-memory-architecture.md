@@ -1,9 +1,11 @@
 ---
-title: "050 — Memory Architecture Deep Dive"
+title: "005 — Memory Architecture Deep Dive"
+description: "Deep dive into the 6-tier memory system including vector embedding pipeline, Orama search, and cross-tier operations"
 category: "developers"
-order: 50
-tags: ["memory", "indexeddb", "vector", "embeddings", "workers", "search"]
-last_updated: "2026-07-26"
+order: 5
+tags: ["memory", "6-tier", "vectors", "semantic-search", "orama"]
+last_updated: "2026-07-28"
+audience: "developers"
 ---
 
 # 050 — Memory Architecture Deep Dive
@@ -287,3 +289,7 @@ Uses `navigator.storage.estimate()` to report browser storage usage. Most browse
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

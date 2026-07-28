@@ -1,3 +1,12 @@
+---
+title: "000 — Onboarding Journey Overview"
+description: "Overview of the 14-step Onboarding journey guiding first-time users from zero to project completion"
+category: "onboarding"
+order: 0
+tags: ["onboarding", "walkthrough", "beginner"]
+last_updated: "2026-07-28"
+audience: "users"
+---
 # Onboarding Journey — Welcome to Open Knowledge Studio
 
 Welcome! This onboarding series will guide you through the entire journey — from your first visit all the way to completing and archiving a project. Each guide builds on the previous one, so follow them in order for the best experience.
@@ -61,3 +70,7 @@ flowchart LR
 ---
 
 **Ready?** Start with [First Steps — Interface Tour](./001-first-steps.md)
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

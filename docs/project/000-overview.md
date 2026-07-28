@@ -1,3 +1,12 @@
+---
+title: "000 — Project Overview"
+description: "Mission, philosophy, key capabilities, quick start, and statistics for Open Knowledge Studio v2.0"
+category: "project"
+order: 0
+tags: ["overview", "mission", "capabilities"]
+last_updated: "2026-07-28"
+audience: "stakeholders"
+---
 # 000 — Project Overview
 
 **Open Knowledge Studio v2.0** is a zero-npm-dependency, browser-native, 6-agent A2A platform for offline-first research, writing, and data analysis. It operates entirely within the browser using IndexedDB for persistent memory, Transformers.js for vector embeddings, and Orama JS for semantic search — all loaded dynamically from CDN with only two build-time dependencies: `react` and `react-dom`.
@@ -42,7 +51,7 @@ Democratize access to powerful AI tooling for research and knowledge management 
 ## 4. Quick Start
 
 ```bash
-git clone https://github.com/codeandbrain/open-knowledge-studio.git
+git clone https://github.com/zsdotcom/zs-oks.git
 cd open-knowledge-studio
 npm install
 npm run dev
@@ -85,3 +94,7 @@ npm run preview    # serve dist/ locally
 ---
 
 *Last updated: July 27, 2026*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

@@ -1,3 +1,12 @@
+---
+title: "011 — 011 Connectors"
+description: "Connecting external services via GitHub, Slack, RSS, and email connectors"
+category: "onboarding"
+order: 11
+tags: ["onboarding", "walkthrough"]
+last_updated: "2026-07-28"
+audience: "users"
+---
 # 011 — Connectors
 
 Connectors integrate Open Knowledge Studio with external services. You can sync data from GitHub, send messages to Slack/Discord/Telegram, and more.
@@ -76,3 +85,7 @@ Connectors integrate Open Knowledge Studio with external services. You can sync 
 ---
 
 **Next step:** [012 — Kanban Boards](./012-kanban.md)
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

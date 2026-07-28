@@ -39,7 +39,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          BASE_PATH: /open-knowledge-studio/
+          BASE_PATH: /zs-oks/
           VITE_GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
           VITE_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           VITE_GITHUB_OAUTH_CLIENT_ID: ${{ secrets.GITHUB_OAUTH_CLIENT_ID }}

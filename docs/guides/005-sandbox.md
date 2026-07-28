@@ -1,9 +1,11 @@
 ---
-title: "050 — Sandboxed Code Execution"
+title: "005 — Sandboxed Execution"
+description: "Secure iframe sandbox for code execution with security model, available and restricted globals"
 category: "guides"
-order: 50
-tags: ["sandbox", "security", "execution", "iframe", "code"]
-last_updated: "2026-07-27"
+order: 5
+tags: ["sandbox", "security", "iframe", "execution"]
+last_updated: "2026-07-28"
+audience: "users"
 ---
 
 # 050 — Sandboxed Code Execution
@@ -172,3 +174,9 @@ Sandbox settings are managed in `SettingsPanel.tsx` under the **Sandbox** sectio
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+

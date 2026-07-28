@@ -139,7 +139,7 @@ Only `react` + `react-dom`. Transformers.js, Orama, KaTeX, Mermaid, Leaflet all 
 
 ```bash
 # Clone & install
-git clone https://github.com/codeandbrain/open-knowledge-studio.git
+git clone https://github.com/zsdotcom/zs-oks.git
 cd open-knowledge-studio
 npm install
 
@@ -165,19 +165,23 @@ npm run test:bench # Performance benchmarks
 ## ✦ Brand Assets
 
 - **Brand guidelines:** [`docs/project/006-brand-guidelines.md`](docs/project/006-brand-guidelines.md) — positioning, voice, tone, messaging, visual identity rules
-- **Free resource catalog:** [`docs/free-resources.md`](docs/free-resources.md) — free MCP servers, Cloudflare tier, CDN libraries, public-health APIs
+- **Free resource catalog:** [`docs/resources/000-free-resources.md`](docs/resources/000-free-resources.md) — free MCP servers, Cloudflare tier, CDN libraries, public-health APIs
 
 ---
 
 ## ✦ Documentation
 
-Comprehensive documentation is available in the [`docs/`](docs/index.md) directory with **130+ files across 13 sections**:
+Comprehensive documentation is available in the [`docs/`](docs/index.md) directory with **105+ files across 16 sections**:
 
 ```
 docs/
 ├── index.md                              # Master table of contents
+├── llms.txt                              # AI-readable documentation index
+├── _data/                                # Shared variables & reusable snippets
+│   ├── variables.yml                     # Canonical project variables
+│   └── reusables/                        # Reusable Markdown components
 │
-├── project/                              # Core project docs (7 files)
+├── project/                              # Stakeholder docs (7 files)
 │   ├── 000-overview.md                   # Project overview & quick start
 │   ├── 001-concept.md                    # Vision, personas, glossary
 │   ├── 002-specification.md              # Technical specifications
@@ -192,7 +196,7 @@ docs/
 │   ├── 002-environment.md                # Environment variables & API keys
 │   ├── 003-non-coder-guide.md            # Click-by-click non-developer guide
 │   ├── 004-development.md                # Development guidelines
-│   ├── 005-memory-architecture.md         # 6-tier memory deep dive
+│   ├── 005-memory-architecture.md        # 6-tier memory deep dive
 │   ├── 006-test-suite.md                 # Testing documentation
 │   ├── 007-code-splitting.md             # Performance & code splitting
 │   ├── 008-ci-cd.md                      # CI/CD pipeline
@@ -219,20 +223,15 @@ docs/
 ├── architecture/                         # Architecture Decision Records (7 files)
 ├── api/                                  # API reference (5 files)
 ├── security/                             # Security & trust model (4 files)
-├── changelog/                            # Version history (1 file)
-├── benchmarks/                           # Performance benchmarks (2 files)
+├── agents/                               # In-app A2A agents (17 flat files)
+├── onboarding/                           # New user journey (15 files)
+├── operations/                           # Docs ops (GitHub Pages, style guide)
+├── accessibility/                        # Accessibility (WCAG, screen reader)
 ├── i18n/                                 # Internationalization (1 file)
-├── a11y/                                 # Accessibility (1 file)
-├── ops/                                  # Docs operations (2 files)
-├── agents/                               # Agent docs (66 files)
-│   ├── SKILL.md / references/            # Agent system overview
-│   ├── Built-in (12): coordinator, researcher, data-analyst, writer, reviewer, librarian, security-analyst, code-reviewer, planner, tester, code-generator, knowledge-curator
-│   ├── Persona guides (9): epistemologist, bioinformatician, field-epidemiologist,
-│   │                      clinical-trialist, data-journalist, genomic-analyst,
-│   │                      environmental-epidemiologist, health-economist, vaccinologist
-│   └── _template/                        # Custom agent template
-├── onboarding/                           # Onboarding journey (15 files)
-└── free-resources.md                     # Free MCPs, Cloudflare, APIs, CDN libs
+├── benchmarks/                           # Performance benchmarks (2 files)
+├── changelog/                            # Version history (1 file)
+├── research/                             # Enhancement analysis (2 files)
+└── resources/                            # Free MCPs, Cloudflare, APIs, CDN libs
 ```
 
 > **Start here:** [`docs/index.md`](docs/index.md) → [`docs/project/000-overview.md`](docs/project/000-overview.md) → [`docs/developers/000-quickstart.md`](docs/developers/000-quickstart.md)
@@ -244,7 +243,7 @@ docs/
 ```
 open-knowledge-studio/
 ├── .github/workflows/         # CI + Deploy GitHub Actions
-├── docs/                      # 130+ files, 13 sections (see above)
+├── docs/                      # 105+ files, 16 sections (see above)
 ├── e2e/                       # Playwright E2E tests (7 spec files)
 ├── public/                    # Static assets (favicon, manifest, sw)
 ├── src/

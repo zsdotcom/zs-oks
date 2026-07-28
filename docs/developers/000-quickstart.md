@@ -1,9 +1,11 @@
 ---
-title: "000 — 5-Minute Quick Start"
+title: "000 — 5-Minute Quickstart"
+description: "Clone, install, configure, and run the project from zero to running in five minutes"
 category: "developers"
 order: 0
 tags: ["quickstart", "setup", "getting-started"]
-last_updated: "2026-07-26"
+last_updated: "2026-07-28"
+audience: "developers"
 ---
 
 # 000 — 5-Minute Quick Start
@@ -25,7 +27,7 @@ Get **Open Knowledge Studio** running locally in 5 minutes.
 ## 2. Clone & Install
 
 ```bash
-git clone https://github.com/codeandbrain/open-knowledge-studio.git
+git clone https://github.com/zsdotcom/zs-oks.git
 cd open-knowledge-studio
 npm install
 ```
@@ -99,3 +101,7 @@ npm run preview     # Serve dist/ locally
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

@@ -61,3 +61,8 @@ The PWA is deployable to any static host. The deploy pipeline (`deploy.yml`) set
 - [ADR-001: Zero NPM Dependency Decision](./001-zero-npm-dependency.md)
 - [Security Documentation: Data Privacy](../security/002-data-privacy.md)
 - [API Documentation Index](../api/000-index.md)
+
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

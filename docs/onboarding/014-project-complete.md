@@ -1,3 +1,12 @@
+---
+title: "014 — 014 Project Complete"
+description: "Project completion review, retrospective, and next steps planning"
+category: "onboarding"
+order: 14
+tags: ["onboarding", "walkthrough"]
+last_updated: "2026-07-28"
+audience: "users"
+---
 # 014 — Project Complete
 
 Congratulations on completing the onboarding journey! This guide covers how to wrap up a project, archive your work, and plan your next steps.
@@ -90,4 +99,8 @@ You now have access to:
 
 **Thank you for using Open Knowledge Studio!**
 
-For help, feedback, or to report issues: [github.com/codeandbrain/open-knowledge-studio](https://github.com/codeandbrain/open-knowledge-studio)
+For help, feedback, or to report issues: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

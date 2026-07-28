@@ -1,9 +1,11 @@
 ---
-title: "030 — Guide for Non-Coder Developers"
+title: "003 — Non-Coder Guide"
+description: "Click-by-click setup walkthrough for non-developers including Node installation, cloning, and running the app"
 category: "developers"
-order: 30
-tags: ["guide", "non-coder", "beginner", "setup"]
-last_updated: "2026-07-26"
+order: 3
+tags: ["non-coder", "beginner", "setup", "guide"]
+last_updated: "2026-07-28"
+audience: "developers"
 ---
 
 # 030 — Guide for Non-Coder Developers
@@ -46,7 +48,7 @@ Node.js is a program that lets the app run on your computer. npm is a tool that 
 3. Open GitHub Desktop and sign in with your GitHub account (create one at github.com if needed)
 4. Click **File → Clone Repository**
 5. Click the **URL** tab
-6. In the "Repository URL" field, type: `https://github.com/codeandbrain/open-knowledge-studio.git`
+6. In the "Repository URL" field, type: `https://github.com/zsdotcom/zs-oks.git`
 7. In the "Local Path" field, choose where to save it (like your Desktop or Documents folder)
 8. Click **Clone**
 9. Wait for the download to finish
@@ -57,7 +59,7 @@ Node.js is a program that lets the app run on your computer. npm is a tool that 
 2. Type the following and press Enter after each line:
 
 ```bash
-git clone https://github.com/codeandbrain/open-knowledge-studio.git
+git clone https://github.com/zsdotcom/zs-oks.git
 ```
 
 3. Wait for the download to finish
@@ -321,3 +323,7 @@ The app automatically chooses the best AI provider. To test:
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

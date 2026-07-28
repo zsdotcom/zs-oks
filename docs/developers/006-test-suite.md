@@ -1,9 +1,11 @@
 ---
-title: "060 — Test Suite Documentation"
+title: "006 — Test Suite Documentation"
+description: "Test suite overview with 227 tests across 14 files, coverage thresholds, mock behavior, and benchmark suite"
 category: "developers"
-order: 60
-tags: ["testing", "vitest", "coverage", "benchmarks", "e2e"]
-last_updated: "2026-07-26"
+order: 6
+tags: ["testing", "vitest", "coverage", "benchmarks"]
+last_updated: "2026-07-28"
+audience: "developers"
 ---
 
 # 060 — Test Suite Documentation
@@ -413,3 +415,7 @@ start coverage/index.html  # Windows
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

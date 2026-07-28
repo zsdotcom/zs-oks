@@ -7,6 +7,12 @@
     "AGENTS.md"
   ],
 
+  // ─── Skills ───
+  // Register skill directories so the /skill command can discover them
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+
   // ─── Subagent Settings ───
   // Maximum nesting depth for subagent delegation
   "subagent_depth": 3,

@@ -1,3 +1,12 @@
+---
+title: "004 — System Architecture"
+description: "System architecture diagram, component tree, data flow, state management, and security model"
+category: "project"
+order: 4
+tags: ["architecture", "component-tree", "data-flow", "security"]
+last_updated: "2026-07-28"
+audience: "stakeholders"
+---
 # 004 — System Architecture
 
 ## 1. High-Level Architecture
@@ -221,9 +230,13 @@ searchSemantic(query, topK=10)
 - [003 — Blueprint](003-blueprint.md) — Tech stack and success metrics
 - [005 — Design](005-design.md) — UI/UX design system
 - [Index](index.md) — Full documentation index
-- [Memory Architecture](developers/070-memory-architecture.md) — 6-tier memory deep dive
+- [Memory Architecture](developers/005-memory-architecture.md) — 6-tier memory deep dive
 - [Dependency Removal](developers/010-dependency-removal.md) — Zero-dependency architecture
 
 ---
 
 *Last updated: July 27, 2026*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

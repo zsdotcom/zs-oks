@@ -1,3 +1,13 @@
+---
+title: "011 — Google OAuth Setup"
+description: "Google OAuth 2.0 setup for connecting to Google Workspace services using Google Identity Services"
+category: "guides"
+order: 11
+tags: ["google", "oauth", "workspace", "drive", "gmail"]
+last_updated: "2026-07-28"
+audience: "users"
+---
+
 # Google OAuth Setup Guide
 
 Open Knowledge Studio uses Google OAuth 2.0 to connect to Google Workspace (Drive, Docs, Sheets, Gmail, Tasks). This is a client-side flow using Google Identity Services (GIS) — you only need a **Client ID**, no secret.
@@ -83,3 +93,9 @@ VITE_GOOGLE_OAUTH_CLIENT_ID=your-client-id-here.apps.googleusercontent.com
 | `gmail.send` | Send reports via Gmail |
 | `gmail.readonly` | Read Gmail messages |
 | `tasks` | Create Google Tasks |
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+

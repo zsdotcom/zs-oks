@@ -1,9 +1,11 @@
 ---
-title: "070 — Code Splitting & Performance"
+title: "007 — Code Splitting and Performance"
+description: "Five lazy-loaded components, Suspense patterns, direct imports list, and bundle size targets"
 category: "developers"
-order: 70
-tags: ["performance", "code-splitting", "lazy-loading", "optimization", "bundles"]
-last_updated: "2026-07-26"
+order: 7
+tags: ["code-splitting", "lazy-loading", "performance", "bundling"]
+last_updated: "2026-07-28"
+audience: "developers"
 ---
 
 # 070 — Code Splitting & Performance
@@ -183,3 +185,7 @@ These libraries are loaded at runtime from CDN, never bundled:
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

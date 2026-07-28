@@ -1,3 +1,12 @@
+---
+title: "001 — 001 First Steps"
+description: "First steps: interface tour, navigation overview, and initial orientation"
+category: "onboarding"
+order: 1
+tags: ["onboarding", "walkthrough"]
+last_updated: "2026-07-28"
+audience: "users"
+---
 # 001 — First Steps: Interface Tour
 
 Welcome to Open Knowledge Studio! This guide will walk you through the interface so you know where everything is.
@@ -75,3 +84,7 @@ flowchart TD
 ---
 
 **Next step:** [002 — Connect an AI Provider](./002-connect-provider.md)
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

@@ -1,9 +1,11 @@
 ---
-title: "090 — Webhooks Guide"
+title: "009 — Webhook Event System"
+description: "Webhook event system including creation flow, payload format, use cases, and integration patterns"
 category: "guides"
-order: 90
-tags: ["webhooks", "events", "notifications", "integration"]
-last_updated: "2026-07-27"
+order: 9
+tags: ["webhooks", "events", "automation", "payloads"]
+last_updated: "2026-07-28"
+audience: "users"
 ---
 
 # 090 — Webhooks Guide
@@ -203,3 +205,9 @@ Webhook data is stored in `localStorage` under the key `oks-webhooks`.
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+

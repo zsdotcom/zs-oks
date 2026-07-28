@@ -50,3 +50,8 @@ Graceful degradation is implemented: if Transformers.js fails to load, the app f
 - [ADR-003: Vector Embeddings in Web Worker](./003-vector-web-worker.md)
 - [ADR-006: PWA & Offline Architecture](./006-pwa-offline.md)
 - [API Documentation: IndexedDB Schema](../api/002-indexeddb.md)
+
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

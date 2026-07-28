@@ -21,9 +21,9 @@ The application is designed for sensitive use cases (field epidemiology, outbrea
 
 | # | Document | Description |
 |---|----------|-------------|
-| 010 | [Threat Model](./010-threat-model.md) | Assets, threats, mitigations, and trust boundaries |
-| 020 | [Data Privacy & Trust](./020-data-privacy.md) | Data residency, isolation, user controls, offline mode |
-| 030 | [API Key Management](./030-api-key-management.md) | Storage, usage, rotation, and CI/CD best practices |
+| 001 | [Threat Model](./001-threat-model.md) | Assets, threats, mitigations, and trust boundaries |
+| 002 | [Data Privacy & Trust](./002-data-privacy.md) | Data residency, isolation, user controls, offline mode |
+| 003 | [API Key Management](./003-api-key-management.md) | Storage, usage, rotation, and CI/CD best practices |
 
 ## Trust Model Summary
 
@@ -41,3 +41,8 @@ The application is designed for sensitive use cases (field epidemiology, outbrea
 
 - [Architecture Decision Records](../architecture/000-index.md)
 - [API Documentation](../api/000-index.md)
+
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

@@ -52,4 +52,9 @@ Results are written to `benchmark-results.json` (gitignored).
 
 - [Detailed Results](010-results.md) — Full metrics for each benchmark
 - [Test Suite](../developers/080-test-suite.md) — Overview of all tests and coverage
-- [Memory Architecture](../developers/070-memory-architecture.md) — The 6-tier memory system under test
+- [Memory Architecture](../developers/005-memory-architecture.md) — The 6-tier memory system under test
+
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

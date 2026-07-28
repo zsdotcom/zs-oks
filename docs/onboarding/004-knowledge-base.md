@@ -1,3 +1,12 @@
+---
+title: "004 — 004 Knowledge Base"
+description: "Build your knowledge base with sources, documents, and reference materials"
+category: "onboarding"
+order: 4
+tags: ["onboarding", "walkthrough"]
+last_updated: "2026-07-28"
+audience: "users"
+---
 # 004 — Build Your Knowledge Base
 
 The knowledge base stores all your documents, files, and data. It's the core of your workspace.
@@ -49,3 +58,7 @@ The knowledge base stores all your documents, files, and data. It's the core of 
 ---
 
 **Next step:** [005 — Your First Chat](./005-your-first-chat.md)
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

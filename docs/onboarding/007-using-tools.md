@@ -1,3 +1,12 @@
+---
+title: "007 — 007 Using Tools"
+description: "Using tools and MCP servers to extend agent capabilities"
+category: "onboarding"
+order: 7
+tags: ["onboarding", "walkthrough"]
+last_updated: "2026-07-28"
+audience: "users"
+---
 # 007 — Using Tools & MCP Servers
 
 Tools extend what the AI can do — search the web, run calculations, analyze code, and more. MCP servers connect to external APIs for real-time data.
@@ -99,3 +108,7 @@ For example: `!tool web_search query=latest outbreak news count=5`
 ---
 
 **Next step:** [008 — Creating Documents](./008-documents.md)
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

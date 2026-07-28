@@ -1,3 +1,13 @@
+---
+title: "012 — Bangladesh Health Ecosystem"
+description: "Bangladesh health ecosystem covering SHR, Health ID, DHIS2, OpenMRS, VaxEPI, CRVS, telemedicine, and ICD-11 transition"
+category: "guides"
+order: 12
+tags: ["bangladesh", "health", "fhir", "shrhs", "icd11"]
+last_updated: "2026-07-28"
+audience: "users"
+---
+
 # Bangladesh Digital Health Ecosystem
 
 Reference guide for the Bangladesh health information system landscape — systems, standards, and integration points.
@@ -155,3 +165,9 @@ Integrated vaccine registration portal launched 2024.
 | VaxEPI | Immunization | National |
 | BDRIS | CRVS | National |
 | Biometric HRM | HR | 625+ institutions |
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+

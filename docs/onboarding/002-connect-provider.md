@@ -1,3 +1,12 @@
+---
+title: "002 — 002 Connect Provider"
+description: "Connect an AI provider by configuring an API key in Settings"
+category: "onboarding"
+order: 2
+tags: ["onboarding", "walkthrough"]
+last_updated: "2026-07-28"
+audience: "users"
+---
 # 002 — Connect an AI Provider
 
 The app needs an AI provider to generate responses, analyze data, and power agents. You can use any of the 10 supported providers.
@@ -66,3 +75,7 @@ These are loaded automatically when the app starts.
 ---
 
 **Next step:** [003 — Create Your First Project](./003-create-project.md)
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

@@ -1,10 +1,13 @@
 ---
 title: "006 — Brand Guidelines"
+description: "Brand positioning, voice and tone guidelines, messaging library, and visual identity rules"
 category: "project"
-order: 60
-tags: ["brand", "visual-identity", "voice", "tone", "messaging"]
-last_updated: "2026-07-27"
+order: 6
+tags: ["brand", "voice", "tone", "visual-identity"]
+last_updated: "2026-07-28"
+audience: "stakeholders"
 ---
+
 
 # 006 — Brand Guidelines
 
@@ -187,3 +190,7 @@ The 6-agent roster is the primary storytelling device. Each agent has a four-par
 ---
 
 *Last updated: July 27, 2026*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

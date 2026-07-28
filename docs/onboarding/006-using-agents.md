@@ -1,3 +1,12 @@
+---
+title: "006 — 006 Using Agents"
+description: "Using the 12 built-in A2A agents for research, writing, and analysis"
+category: "onboarding"
+order: 6
+tags: ["onboarding", "walkthrough"]
+last_updated: "2026-07-28"
+audience: "users"
+---
 # 006 — Using A2A Agents
 
 Open Knowledge Studio has 12 built-in A2A (Agent-to-Agent) agents that work together to help you research, analyze, write, and review.
@@ -64,3 +73,7 @@ Go to the **Dashboard** tab → **Agent Metrics** to see:
 ---
 
 **Next step:** [007 — Using Tools & MCP Servers](./007-using-tools.md)
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

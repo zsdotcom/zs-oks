@@ -30,7 +30,7 @@
 - `computeEmbedding()` in `src/services/memoryApi.ts:202` delegates to a Web Worker (`embeddingWorker.ts`) that dynamically loads Transformers.js 3.4.0 from CDN.
 - CDN-only deps in `index.html`: KaTeX 0.18.1, Mermaid 11.16.0 (jsdelivr), Leaflet 1.9.4 (unpkg). Orama JS 3.0.0 loaded dynamically in `oramaService.ts`. **Never use npm for these.**
 - `geminiService.ts` routes 10 providers (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare) in one `queryLLM()` call.
-- 12 A2A UI agents (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planner, Tester, Code Generator, Knowledge Curator) — product features, not OpenCode agents. See `docs/agents/SKILL.md`.
+- 12 A2A UI agents (Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planner, Tester, Code Generator, Knowledge Curator) — product features, not OpenCode agents. See `docs/agents/000-index.md`.
 - App entrypoint: `src/index.tsx` → `src/App.tsx` (1357 lines, one monolithic component with all state). 5 lazy-loaded panels via `React.lazy()`. MCP server definitions extracted to `src/data/mcpServers.ts`; nav items to `src/data/navigation.tsx`.
 
 ## Testing quirks
@@ -48,14 +48,21 @@
 - **`handleImport` in `App.tsx:540-556`** doesn't restore webhooks, connectors, skills, or workspaceProjects.
 - **If docs conflict with source code, trust the source.**
 - **API keys** come from `import.meta.env.VITE_*` or runtime Settings panel (stored in IndexedDB).
-- **Free resource catalog** at `docs/free-resources.md` — MCP servers, Cloudflare free tier, CDN libraries, public-health APIs.
+- **Free resource catalog** at `docs/resources/000-free-resources.md` — MCP servers, Cloudflare free tier, CDN libraries, public-health APIs.
 - **Brand guidelines** at `docs/project/006-brand-guidelines.md` — voice, tone, messaging, visual identity rules.
 
-## Documentation reference (120+ files, 12 sections)
+## Documentation reference (105+ files, 16 sections)
 - `docs/index.md` — Master TOC
+- `docs/llms.txt` — AI-readable documentation index
+- `docs/_data/variables.yml` — Canonical project variables
 - `docs/developers/000-quickstart.md` — 5-min dev setup
 - `docs/developers/002-environment.md` — API keys
 - `docs/architecture/000-index.md` — 6 ADRs
 - `docs/api/000-index.md` — Memory, IndexedDB, LLM, Sandbox API ref
 - `docs/guides/001-agents.md` — A2A agents (product feature)
-- `docs/guides/011-bd-health-system.md` / `012-bd-core-fhir.md` — Bangladesh integration
+- `docs/guides/012-bd-health-system.md` / `013-bd-core-fhir.md` — Bangladesh integration
+- `docs/operations/000-docs-ci-cd.md` — GitHub Pages publishing pipeline
+- `docs/agents/017-docs-manager-agent.md` — Docs Analysis & Management Agent
+
+## Skills
+- `/skill docs-manager` — Documentation analysis, management, research, and publishing (6-phase workflow). Load from `.opencode/skills/docs-manager/SKILL.md`.

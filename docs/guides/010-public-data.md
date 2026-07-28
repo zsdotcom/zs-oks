@@ -1,9 +1,11 @@
 ---
-title: "100 — Public Data APIs Guide"
+title: "010 — Public Data APIs"
+description: "Public data API browser for CDC, WHO, FluView, COVIDcast, Pathogen, Weather, and Air Quality data"
 category: "guides"
-order: 100
-tags: ["public-data", "api", "cdc", "who", "weather", "epidemiology"]
-last_updated: "2026-07-27"
+order: 10
+tags: ["public-data", "cdc", "who", "weather", "apis"]
+last_updated: "2026-07-28"
+audience: "users"
 ---
 
 # 100 — Public Data APIs Guide
@@ -252,3 +254,9 @@ Data is **cached in memory** for 5 minutes (`CACHE_TTL`) to avoid redundant API 
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+

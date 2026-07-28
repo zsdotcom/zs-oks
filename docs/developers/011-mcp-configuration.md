@@ -1,9 +1,11 @@
 ---
-title: "110 — MCP Server Configuration"
+title: "011 — MCP Configuration"
+description: "MCP server setup guide including built-in tools, adding and configuring servers, and troubleshooting"
 category: "developers"
-order: 110
-tags: ["mcp", "model-context-protocol", "servers", "configuration", "tools"]
-last_updated: "2026-07-26"
+order: 11
+tags: ["mcp", "tools", "configuration", "setup"]
+last_updated: "2026-07-28"
+audience: "developers"
 ---
 
 # 110 — MCP Server Configuration Guide
@@ -278,3 +280,7 @@ MCP servers are managed in `src/App.tsx` with state stored in the `sandbox` Inde
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

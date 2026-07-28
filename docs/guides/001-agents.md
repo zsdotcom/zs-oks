@@ -1,9 +1,11 @@
 ---
-title: "010 — A2A Agents Guide"
+title: "001 — A2A Agent System"
+description: "Complete guide to the 12 debate agents, system prompts, skills/tools, A2A panel, and custom agent creation"
 category: "guides"
-order: 10
-tags: ["agents", "a2a", "debate", "configuration", "custom-agents"]
-last_updated: "2026-07-27"
+order: 1
+tags: ["agents", "a2a", "multi-agent", "debate"]
+last_updated: "2026-07-28"
+audience: "users"
 ---
 
 # 010 — A2A Agents Guide
@@ -229,9 +231,15 @@ Access it from the tools panel after running an A2A debate.
 - [Multi-Agent Workflows](020-workflows.md) — Orchestrated and sequential modes
 - [Sandboxed Code Execution](050-sandbox.md) — How agents run code safely
 - [Connectors Guide](080-connectors.md) — External service connectors for agents
-- [Developer Guide: Memory Architecture](../developers/070-memory-architecture.md) — 6-tier memory system
+- [Developer Guide: Memory Architecture](../developers/005-memory-architecture.md) — 6-tier memory system
 - [Portal Overview](../index.md) — Full documentation index
 
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+

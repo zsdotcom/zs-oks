@@ -1,3 +1,12 @@
+---
+title: "003 — Blueprint"
+description: "Tech stack, architecture principles, success metrics, CI pipeline, and development roadmap"
+category: "project"
+order: 3
+tags: ["blueprint", "tech-stack", "roadmap", "ci"]
+last_updated: "2026-07-28"
+audience: "stakeholders"
+---
 # 003 — Project Blueprint
 
 ## 1. Technology Stack
@@ -104,7 +113,7 @@ graph LR
 | Aspect | Detail |
 | :--- | :--- |
 | **License** | MIT |
-| **Repository** | `github.com/codeandbrain/open-knowledge-studio` |
+| **Repository** | `github.com/zsdotcom/zs-oks` |
 | **Contribution** | PRs via GitHub. Must pass CI (typecheck, test, build). Conventional Commits. |
 | **Deployments** | Automatic GitHub Pages on `main` push. Manual Docker/Vercel/Netlify optional. |
 
@@ -117,8 +126,12 @@ graph LR
 - [004 — Architecture](004-architecture.md) — System architecture and data model
 - [Index](index.md) — Full documentation index
 - [Developer Guide: Setup](../developers/050-setup.md) — Getting started
-- [Developer Guide: CI/CD](../developers/098-cicd-pipeline.md) — Pipeline configuration
+- [Developer Guide: CI/CD](../developers/008-ci-cd.md) — Pipeline configuration
 
 ---
 
 *Last updated: July 27, 2026*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

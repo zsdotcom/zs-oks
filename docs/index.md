@@ -1,7 +1,7 @@
 # Open Knowledge Studio — Documentation Index
 
-**Documentation Version:** 3.1
-**Last Updated:** July 27, 2026
+**Documentation Version:** 3.2
+**Last Updated:** July 28, 2026
 
 ---
 
@@ -35,7 +35,7 @@
 | 005 | [Memory Architecture](developers/005-memory-architecture.md)         | 6-tier memory deep dive, vector embedding pipeline, Orama search, cross-tier ops | [API: Memory](../api/001-memory-api.md) · [ADR-002](../architecture/002-6-tier-memory.md)                  |
 | 006 | [Test Suite](developers/006-test-suite.md)                           | 117 tests across 8 files, coverage thresholds, mock behavior, benchmark suite    | [Development](developers/004-development.md) · [Benchmarks](../benchmarks/000-index.md)                    |
 | 007 | [Code Splitting & Performance](developers/007-code-splitting.md)     | 5 lazy-loaded components, Suspense pattern, direct imports list, bundle targets  | [ADR-004](../architecture/004-code-splitting.md) · [Dependencies](developers/010-dependency-removal.md)    |
-| 008 | [CI/CD Pipeline](developers/008-ci-cd.md)                            | GitHub Actions workflows (ci.yml, deploy.yml), secrets, local CI simulation      | [Deployment](developers/009-deployment.md) · [Docs Ops](../ops/000-docs-ci-cd.md)                          |
+| 008 | [CI/CD Pipeline](developers/008-ci-cd.md)                            | GitHub Actions workflows (ci.yml, deploy.yml), secrets, local CI simulation      | [Deployment](developers/009-deployment.md) · [Docs Ops](../operations/000-docs-ci-cd.md)                          |
 | 009 | [Deployment Guide](developers/009-deployment.md)                     | Docker, Vercel, Netlify — step-by-step for each, comparison table                | [CI/CD](developers/008-ci-cd.md) · [Environment](developers/002-environment.md)                            |
 | 010 | [Zero-Dependency Architecture](developers/010-dependency-removal.md) | Dependency philosophy, removed libs table, CDN imports, native API alternatives  | [Code Splitting](developers/007-code-splitting.md) · [ADR-001](../architecture/001-zero-npm-dependency.md) |
 | 011 | [MCP Configuration](developers/011-mcp-configuration.md)             | MCP server setup, built-in tools, add/configure, troubleshooting                 | [Deployment](developers/009-deployment.md) · [Guides](../guides/000-getting-started.md)                    |
@@ -101,7 +101,7 @@
 
 | #   | Document                               | Description                                          |
 | --- | -------------------------------------- | ---------------------------------------------------- |
-| 000 | [A11Y Documentation](a11y/000-a11y.md) | Current features, not-yet-implemented items, roadmap |
+| 000 | [A11Y Documentation](accessibility/000-a11y.md) | Current features, not-yet-implemented items, roadmap |
 
 ## 🌐 Internationalization
 
@@ -119,27 +119,56 @@
 
 | #   | Document                                                 | Description                                                                      |
 | --- | -------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| 000 | [Docs Publishing Pipeline](ops/000-docs-ci-cd.md)        | Strategy for publishing docs as a static site (Docsify, VitePress, GitHub Pages) |
-| 001 | [Documentation Style Guide](ops/001-docs-style-guide.md) | Markdown conventions, frontmatter schema, cross-reference format, tone           |
+| 000 | [Docs Publishing Pipeline](operations/000-docs-ci-cd.md)        | Strategy for publishing docs as a static site (Docsify, VitePress, GitHub Pages) |
+| 001 | [Documentation Style Guide](operations/001-docs-style-guide.md) | Markdown conventions, frontmatter schema, cross-reference format, tone           |
 
 ## 🆓 Free Resources
 
 | #   | Document                                            | Description                                                                      |
 | --- | --------------------------------------------------- | -------------------------------------------------------------------------------- |
-| 000 | [Free Resource Inventory](free-resources.md)        | Free MCP servers, Cloudflare services, CDN libraries, public-health APIs, OSS benefits |
+| 000 | [Free Resource Inventory](resources/000-free-resources.md)        | Free MCP servers, Cloudflare services, CDN libraries, public-health APIs, OSS benefits |
+
+## 🔬 Research
+
+| #   | Document                                                                   | Description                                                      |
+| --- | -------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 000 | [Enhancement Analysis](research/000-enhancement-analysis.md)               | Enhancement opportunity analysis and adaptation plan (July 2026) |
+| 001 | [Original Enhancement Report](research/001-original-enhancement-report.md) | Complete architectural analysis and system blueprint report      |
+
+## 🚀 Onboarding Journey
+
+| #   | Document                                                      | Description                                             |
+| --- | ------------------------------------------------------------- | ------------------------------------------------------- |
+| 000 | [Onboarding Overview](onboarding/000-overview.md)             | Welcome and introduction to the 14-step journey         |
+| 001 | [First Steps](onboarding/001-first-steps.md)                  | Interface tour, navigation overview                     |
+| 002 | [Connect Provider](onboarding/002-connect-provider.md)        | Configure AI provider API key                           |
+| 003 | [Create Project](onboarding/003-create-project.md)            | First project setup                                     |
+| 004 | [Knowledge Base](onboarding/004-knowledge-base.md)            | Build your knowledge base                                |
+| 005 | [First Chat](onboarding/005-your-first-chat.md)               | Your first A2A chat session                             |
+| 006 | [Using Agents](onboarding/006-using-agents.md)                | Working with 12 built-in agents                         |
+| 007 | [Using Tools](onboarding/007-using-tools.md)                  | MCP servers and tools                                   |
+| 008 | [Documents](onboarding/008-documents.md)                      | Document creation and editing                           |
+| 009 | [Templates](onboarding/009-templates.md)                      | Using document templates                                |
+| 010 | [Skills](onboarding/010-skills.md)                            | Automation and skills                                   |
+| 011 | [Connectors](onboarding/011-connectors.md)                    | External service connectors                             |
+| 012 | [Kanban](onboarding/012-kanban.md)                            | Kanban project boards                                   |
+| 013 | [Export & Share](onboarding/013-export-share.md)              | Export and sharing workflows                            |
+| 014 | [Project Complete](onboarding/014-project-complete.md)        | Review, retrospective, and next steps                   |
 
 ## 🤖 In-App Agents
 
-| Area                | Documentation                                                                                                                                          | Description                                                      |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
-| **Agent System**    | [SKILL.md](agents/SKILL.md) · [Reference](agents/references/index.md)                                                                                  | All agent documentation (skills, templates, tools, workflows)    |
-| **Coordinator** 🎯  | [SKILL.md](agents/coordinator/SKILL.md) · [Templates](agents/coordinator/references/TEMPLATES.md) · [Tools](agents/coordinator/references/TOOLS.md)    | Workflow orchestration, delegation, validation                   |
-| **Researcher** 🔬   | [SKILL.md](agents/researcher/SKILL.md) · [Templates](agents/researcher/references/TEMPLATES.md) · [Tools](agents/researcher/references/TOOLS.md)       | Literature synthesis, source evaluation, citation management     |
-| **Data Analyst** 📊 | [SKILL.md](agents/data-analyst/SKILL.md) · [Templates](agents/data-analyst/references/TEMPLATES.md) · [Tools](agents/data-analyst/references/TOOLS.md) | Statistical analysis, data cleaning, visualization               |
-| **Writer** ✍️       | [SKILL.md](agents/writer/SKILL.md) · [Templates](agents/writer/references/TEMPLATES.md) · [Tools](agents/writer/references/TOOLS.md)                   | Document drafting, template application, formatting              |
-| **Reviewer** 🔍     | [SKILL.md](agents/reviewer/SKILL.md) · [Templates](agents/reviewer/references/TEMPLATES.md) · [Tools](agents/reviewer/references/TOOLS.md)             | Quality checks, citation audit, compliance validation            |
-| **Librarian** 📚    | [SKILL.md](agents/librarian/SKILL.md) · [Templates](agents/librarian/references/TEMPLATES.md) · [Tools](agents/librarian/references/TOOLS.md)          | Memory maintenance, reference management, knowledge organization |
-| **Template** ❓     | [SKILL.md](agents/_template/SKILL.md) · [Templates](agents/_template/references/TEMPLATES.md) · [Tools](agents/_template/references/TOOLS.md)          | Custom agent creation template                                   |
+| Area                | Documentation                                                              | Description                                                      |
+| ------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Agent System**    | [000-index](agents/000-index.md)                                            | All agent documentation index                                    |
+| **Coordinator** 🎯  | [001-coordinator](agents/001-coordinator.md)                                | Workflow orchestration, delegation, validation                   |
+| **Coordinator** 🎯  | [001-coordinator](agents/001-coordinator.md)                                | Workflow orchestration, delegation, validation                   |
+| **Researcher** 🔬   | [002-researcher](agents/002-researcher.md)                                  | Literature synthesis, source evaluation, citation management     |
+| **Data Analyst** 📊 | [003-data-analyst](agents/003-data-analyst.md)                              | Statistical analysis, data cleaning, visualization               |
+| **Writer** ✍️       | [004-writer](agents/004-writer.md)                                          | Document drafting, template application, formatting              |
+| **Reviewer** 🔍     | [005-reviewer](agents/005-reviewer.md)                                      | Quality checks, citation audit, compliance validation            |
+| **Librarian** 📚    | [006-librarian](agents/006-librarian.md)                                    | Memory maintenance, reference management, knowledge organization |
+| **Docs Manager** 📋 | [017-docs-manager-agent](agents/017-docs-manager-agent.md)                  | Documentation analysis, management, research, publishing         |
+| **Template** ❓     | [016-template](agents/016-template.md)                                      | Custom agent creation template                                   |
 
 ---
 
@@ -162,4 +191,19 @@
 
 ---
 
+## 🤖 AI Agent Access
+
+For AI coding agents (Claude Code, OpenCode, etc.), a machine-readable version of this index is available at:
+- [`llms.txt`](llms.txt) — LLM-optimized documentation index for programmatic discovery
+- [`_data/variables.yml`](_data/variables.yml) — Canonical project variables (name, version, stats, tech stack)
+- [`_data/reusables/`](_data/reusables/) — Reusable Markdown snippets (footer, frontmatter templates)
+
+---
+
 _Start with the [Project Overview](project/000-overview.md) for a high-level introduction, or the [5-Minute Quickstart](developers/000-quickstart.md) to get running immediately._
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+Documentation is published from `/docs` via GitHub Pages. The production app is a separate React SPA in `src/`._

@@ -1,3 +1,13 @@
+---
+title: "013 — BD Core FHIR Implementation Guide"
+description: "BD Core FHIR Implementation Guide covering OCL terminology, geographic hierarchy, vaccine codes, and FHIR sandbox"
+category: "guides"
+order: 13
+tags: ["bangladesh", "fhir", "terminology", "sandbox"]
+last_updated: "2026-07-28"
+audience: "users"
+---
+
 # BD Core FHIR IG Integration
 
 Guide to the Bangladesh Core FHIR Implementation Guide features integrated into Open Knowledge Studio.
@@ -108,4 +118,10 @@ src/services/bdTerminologyService.ts    — OCL terminology client
 src/services/bdGeographyService.ts      — Geographic hierarchy
 src/services/bdVaccineService.ts        — Vaccine codes + EPI schedule
 src/components/BdCorePanel.tsx          — UI panel with 3 tabs
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+
 ```

@@ -1,9 +1,11 @@
 ---
-title: "080 — Connectors Guide"
+title: "008 — Connectors Setup Guide"
+description: "Setup guide for GitHub, Slack, RSS, and email connectors with configuration instructions for each"
 category: "guides"
-order: 80
-tags: ["connectors", "github", "slack", "rss", "email", "webhooks", "integration"]
-last_updated: "2026-07-27"
+order: 8
+tags: ["connectors", "github", "slack", "rss", "email"]
+last_updated: "2026-07-28"
+audience: "users"
 ---
 
 # 080 — Connectors Guide
@@ -161,3 +163,9 @@ Removed connectors are deleted from IndexedDB via `removeConnector()`.
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+

@@ -1,0 +1,152 @@
+# Open Knowledge Studio — LLM Documentation Index
+> AI-consumable documentation index for the Open Knowledge Studio project.
+> Total: 16 sections, 105+ files. Last updated: 2026-07-28.
+
+## Project Identity
+- **Name:** Open Knowledge Studio (OKS) v2.0
+- **Tagline:** Zero-dependency · Browser-native · 12-Agent A2A Platform
+- **Description:** A private AI research laboratory in your browser — 12 specialized agents collaborate on research, writing, and data analysis. All data stays local, zero backend required.
+- **License:** MIT
+- **Repository:** https://github.com/zsdotcom/zs-oks
+- **Foundation:** ZarishSphere Foundation (https://zarishsphere.com)
+- **Author:** Mohammad Ariful Islam (codeandbrain)
+- **Tech Stack:** React 19.2, TypeScript 7.0, Vite 8.1, Tailwind CSS 4.x, IndexedDB, Transformers.js (CDN Worker), Orama JS (CDN), KaTeX (CDN), Mermaid (CDN), Leaflet.js (CDN)
+
+## Documentation Structure
+
+### 1. Project Overview (Stakeholders/Visitors)
+- `docs/project/000-overview.md` — Mission, philosophy, key capabilities, quick stats
+- `docs/project/001-concept.md` — Product vision, user personas, value proposition
+- `docs/project/002-specification.md` — Complete feature specs, component/service catalog
+- `docs/project/003-blueprint.md` — Tech stack, architecture principles, CI pipeline, roadmap
+- `docs/project/004-architecture.md` — Architecture diagram, component tree, data flow
+- `docs/project/005-design.md` — Cyber-minimalist design system (colors, typography, layout)
+- `docs/project/006-brand-guidelines.md` — Brand positioning, voice & tone, visual identity
+
+### 2. Architecture Decisions (Developers/Architects)
+- `docs/architecture/000-index.md` — ADR index and status roster
+- `docs/architecture/001-zero-npm-dependency.md` — Build-time dep policy, CDN rationale
+- `docs/architecture/002-6-tier-memory.md` — Session→Episodic→Semantic→Procedural→Working→Long-Term
+- `docs/architecture/003-vector-web-worker.md` — Transformers.js in Web Worker
+- `docs/architecture/004-code-splitting.md` — React.lazy for 5 heaviest panels
+- `docs/architecture/005-indexeddb-schema.md` — 22 object stores v2
+- `docs/architecture/006-pwa-offline.md` — Service Worker, offline core
+
+### 3. Developer Guides (Contributors)
+- `docs/developers/000-quickstart.md` — 5-minute setup from zero to running
+- `docs/developers/001-setup.md` — Full prerequisites and installation
+- `docs/developers/002-environment.md` — All VITE_* env vars, API keys
+- `docs/developers/003-non-coder-guide.md` — Click-by-click for non-developers
+- `docs/developers/004-development.md` — Coding standards, git workflow
+- `docs/developers/005-memory-architecture.md` — 6-tier memory deep dive
+- `docs/developers/006-test-suite.md` — 227 tests, coverage thresholds
+- `docs/developers/007-code-splitting.md` — Lazy loading, Suspense pattern
+- `docs/developers/008-ci-cd.md` — GitHub Actions workflows
+- `docs/developers/009-deployment.md` — Docker, Vercel, Netlify guides
+- `docs/developers/010-dependency-removal.md` — Zero-dependency philosophy
+- `docs/developers/011-mcp-configuration.md` — MCP server setup
+
+### 4. User Guides (End Users)
+- `docs/guides/000-getting-started.md` — First-time tour, first chat, first document
+- `docs/guides/001-agents.md` — 12 debate agents, A2A panel, custom agents
+- `docs/guides/002-workflows.md` — Orchestrated and Sequential agent modes
+- `docs/guides/003-diagrams.md` — KaTeX math, Mermaid diagrams
+- `docs/guides/004-pdf-export.md` — Print-to-PDF and Export PDF
+- `docs/guides/005-sandbox.md` — Sandboxed code execution
+- `docs/guides/006-epi-map.md` — Leaflet epidemiological map
+- `docs/guides/007-icd11.md` — ICD-11 medical code lookup
+- `docs/guides/008-connectors.md` — GitHub, Slack, RSS, email connectors
+- `docs/guides/009-webhooks.md` — Webhook event system
+- `docs/guides/010-public-data.md` — CDC, WHO, weather data browser
+- `docs/guides/011-google-oauth-setup.md` — Google Workspace integration
+- `docs/guides/012-bd-health-system.md` — Bangladesh health ecosystem
+- `docs/guides/013-bd-core-fhir.md` — BD Core FHIR IG
+
+### 5. Agent Documentation (Agent Users)
+- `docs/agents/000-index.md` — Complete agent system index
+- `docs/agents/001-coordinator.md` — Workflow orchestration agent
+- `docs/agents/002-researcher.md` — Literature synthesis agent
+- `docs/agents/003-data-analyst.md` — Statistical analysis agent
+- `docs/agents/004-writer.md` — Document drafting agent
+- `docs/agents/005-reviewer.md` — Quality/audit agent
+- `docs/agents/006-librarian.md` — Memory/knowledge agent
+- `docs/agents/007-independent-researcher.md` — Unconstrained research agent
+- `docs/agents/008-public-health-analyst.md` — Health data specialist
+- `docs/agents/009-technical-writer.md` — Documentation specialist
+- `docs/agents/010-data-journalist.md` — Data storytelling agent
+- `docs/agents/011-knowledge-manager.md` — Knowledge curation agent
+- `docs/agents/012-developer.md` — Code assistance agent
+- `docs/agents/013-student.md` — Learning companion agent
+- `docs/agents/014-ngo-field-worker.md` — Field operations agent
+- `docs/agents/015-privacy-user.md` — Privacy-focused agent
+- `docs/agents/016-template.md` — Custom agent creation template
+- `docs/agents/017-docs-manager-agent.md` — Documentation analysis, management, and publishing agent
+
+### 6. API Reference (Integrators)
+- `docs/api/000-index.md` — Service API overview
+- `docs/api/001-memory-api.md` — 6-tier memory functions reference
+- `docs/api/002-indexeddb.md` — 22 object stores CRUD reference
+- `docs/api/003-gemini-service.md` — 10-provider LLM router API
+- `docs/api/004-sandbox-api.md` — Sandbox execution API
+
+### 7. Security (Security Team)
+- `docs/security/000-index.md` — Security philosophy overview
+- `docs/security/001-threat-model.md` — Asset/threat/mitigation table
+- `docs/security/002-data-privacy.md` — Data residency, telemetry
+- `docs/security/003-api-key-management.md` — Key storage and rotation
+
+### 8. Operations (Maintainers)
+- `docs/operations/000-docs-ci-cd.md` — Docs publishing pipeline (GitHub Pages)
+- `docs/operations/001-docs-style-guide.md` — Markdown conventions, frontmatter schema
+
+### 9. Accessibility (A11y)
+- `docs/accessibility/000-a11y.md` — WCAG compliance, screen reader support
+
+### 10. Internationalization (i18n)
+- `docs/i18n/000-i18n.md` — i18n strategy, Intl API, RTL considerations
+
+### 11. Onboarding (New Users)
+- `docs/onboarding/000-overview.md` — Onboarding journey overview
+- `docs/onboarding/001-first-steps.md` through `docs/onboarding/014-project-complete.md` — 14-step guided walkthrough
+
+### 12. Benchmarks (Performance)
+- `docs/benchmarks/000-index.md` — Benchmark methodology
+- `docs/benchmarks/001-results.md` — Detailed performance results
+
+### 13. Resources (All Audiences)
+- `docs/resources/000-free-resources.md` — Free MCP servers, CDN libs, public APIs
+
+### 14. Research (All Audiences)
+- `docs/research/000-enhancement-analysis.md` — Enhancement opportunity analysis 2026
+- `docs/research/enhancement-oppertunity_open-knowledge-studio.md` — Full architectural report
+
+### 15. Changelog
+- `docs/changelog/000-changelog.md` — Full version history v1.0.0→v2.0.0
+
+### 16. Shared Data
+- `docs/_data/variables.yml` — Canonical project variables
+- `docs/_data/reusables/footer.md` — Standardized document footer
+
+## Index Files (Entry Points by Audience)
+- **Stakeholders:** `docs/project/000-overview.md`
+- **Architects:** `docs/architecture/000-index.md`
+- **Developers:** `docs/developers/000-quickstart.md`
+- **End Users:** `docs/guides/000-getting-started.md`
+- **New Users:** `docs/onboarding/000-overview.md`
+- **Agent Users:** `docs/agents/000-index.md`
+- **Integrators:** `docs/api/000-index.md`
+- **All Audiences:** `docs/index.md`
+
+## Cross-Reference Map
+- Memory System: `developers/005-memory-architecture.md` ↔ `architecture/002-6-tier-memory.md` ↔ `api/001-memory-api.md`
+- Vector Embeddings: `architecture/003-vector-web-worker.md` ↔ `developers/005-memory-architecture.md`
+- Code Splitting: `architecture/004-code-splitting.md` ↔ `developers/007-code-splitting.md`
+- Zero Deps: `architecture/001-zero-npm-dependency.md` ↔ `developers/010-dependency-removal.md`
+- IndexedDB: `architecture/005-indexeddb-schema.md` ↔ `api/002-indexeddb.md`
+- Bangladesh Health: `guides/012-bd-health-system.md` ↔ `guides/013-bd-core-fhir.md`
+- Security: `security/000-index.md` ↔ `developers/002-environment.md`
+- ICD-11: `guides/007-icd11.md` ↔ `guides/006-epi-map.md`
+- Agents: `guides/001-agents.md` ↔ `agents/000-index.md`
+- Deployment: `developers/008-ci-cd.md` ↔ `developers/009-deployment.md`
+- MCP: `developers/011-mcp-configuration.md` ↔ `guides/009-webhooks.md`
+- Connectors: `guides/008-connectors.md` ↔ `developers/011-mcp-configuration.md`

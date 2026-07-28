@@ -1,3 +1,12 @@
+---
+title: "010 — 010 Skills"
+description: "Skills and automation to streamline repetitive workflows"
+category: "onboarding"
+order: 10
+tags: ["onboarding", "walkthrough"]
+last_updated: "2026-07-28"
+audience: "users"
+---
 # 010 — Skills & Automation
 
 Skills are automated workflows triggered by keywords in your chat messages. When the AI detects a trigger, it activates the relevant skill to handle the task.
@@ -83,3 +92,7 @@ flowchart LR
 ---
 
 **Next step:** [011 — Connectors](./011-connectors.md)
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

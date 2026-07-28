@@ -1,9 +1,11 @@
 ---
-title: "020 — Environment Variables & API Keys"
+title: "002 — Environment Variables and API Keys"
+description: "All VITE_ environment variables with configuration instructions, API key sources, and security best practices"
 category: "developers"
-order: 20
+order: 2
 tags: ["environment", "api-keys", "configuration", "secrets"]
-last_updated: "2026-07-26"
+last_updated: "2026-07-28"
+audience: "developers"
 ---
 
 # 020 — Environment Variables & API Keys
@@ -222,7 +224,7 @@ Open the app and go to **Settings → AI Providers**. If keys are configured, pr
 ## See Also
 
 - [5-Minute Quick Start](000-quickstart.md) — Get up and running fast
-- [Free Resource Inventory](../free-resources.md) — Free CSP domains, CDN libraries, API sources
+- [Free Resource Inventory](../resources/000-free-resources.md) — Free CSP domains, CDN libraries, API sources
 - [Complete Setup & Installation](001-setup.md) — Full environment setup
 - [Non-Coder Guide](003-non-coder-guide.md) — Step-by-step key configuration
 - [Development Guidelines](004-development.md) — Coding standards
@@ -231,3 +233,7 @@ Open the app and go to **Settings → AI Providers**. If keys are configured, pr
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

@@ -1,0 +1,80 @@
+# Open Knowledge Studio — Shared Project Variables
+# Usage: referenced by all documentation files for consistency.
+# These define the canonical project identity.
+
+project:
+  name: "Open Knowledge Studio"
+  short_name: "OKS"
+  tagline: "Zero-dependency · Browser-native · 12-Agent A2A Platform"
+  version: "2.0.0"
+  description: "A private AI research laboratory in your browser — 12 specialized agents collaborate on your work, all data stays local, zero backend required."
+
+foundation:
+  name: "ZarishSphere Foundation"
+  url: "https://zarishsphere.com"
+
+author:
+  name: "Mohammad Ariful Islam"
+  handle: "codeandbrain"
+  github: "https://github.com/zsdotcom"
+  repo: "https://github.com/zsdotcom/zs-oks"
+  old_repo: "https://github.com/codeandbrain/open-knowledge-studio"
+
+license: "MIT"
+
+tech_stack:
+  runtime: ["React 19.2", "React DOM 19.2"]
+  build: ["TypeScript 7.0", "Vite 8.1", "Rolldown"]
+  css: "Tailwind CSS 4.x"
+  test: ["Vitest 4.1", "Playwright"]
+  ml: "Transformers.js 3.4.0 (CDN Worker)"
+  search: "Orama JS 3.0.0 (CDN)"
+  math: "KaTeX 0.18.1 (CDN)"
+  diagrams: "Mermaid 11.16.0 (CDN)"
+  maps: "Leaflet.js 1.9.4 (CDN)"
+
+stats:
+  runtime_deps: 2
+  tests: 227
+  test_files: 14
+  components: 28
+  lazy_loaded: 5
+  services: 19
+  indexeddb_stores: 22
+  agents: 12
+  ai_providers: 10
+  build_size_gzip: "~90 KB"
+  onboarding_guides: 15
+
+agents:
+  - Coordinator
+  - Researcher
+  - Data Analyst
+  - Writer
+  - Reviewer
+  - Librarian
+  - Security Analyst
+  - Code Reviewer
+  - Planner
+  - Tester
+  - Code Generator
+  - Knowledge Curator
+
+ai_providers:
+  - Gemini
+  - OpenAI
+  - Anthropic
+  - DeepSeek
+  - Groq
+  - Ollama
+  - OpenRouter
+  - Cerebras
+  - GitHub
+  - Cloudflare
+
+docs:
+  version: "3.2"
+  last_updated: "2026-07-28"
+  sections: 16
+  total_files: 105+
+  github_pages: true

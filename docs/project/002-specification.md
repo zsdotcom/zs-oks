@@ -1,3 +1,12 @@
+---
+title: "002 — Technical Specification"
+description: "Complete feature specifications, component and service catalog, IndexedDB schema, and CDN library inventory"
+category: "project"
+order: 2
+tags: ["specification", "features", "components", "indexeddb"]
+last_updated: "2026-07-28"
+audience: "stakeholders"
+---
 # 002 — Technical Specification
 
 ## 1. System Requirements
@@ -209,3 +218,7 @@
 ---
 
 *Last updated: July 27, 2026*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

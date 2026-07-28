@@ -82,6 +82,11 @@ The app does **not** validate API keys on save. Keys are validated on first use 
 
 ## See Also
 
-- [Threat Model](./010-threat-model.md)
-- [Data Privacy & Trust](./020-data-privacy.md)
+- [Threat Model](./001-threat-model.md)
+- [Data Privacy & Trust](./002-data-privacy.md)
 - [Gemini/LLM Service API](../api/003-gemini-service.md)
+
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

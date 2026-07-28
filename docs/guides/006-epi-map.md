@@ -1,9 +1,11 @@
 ---
-title: "060 — Epidemiological Map Guide"
+title: "006 — Epidemiological Map"
+description: "Leaflet.js-powered epidemiological map with severity-coded markers, popup details, and auto-fit bounds"
 category: "guides"
-order: 60
-tags: ["map", "epidemiology", "leaflet", "visualization", "geospatial"]
-last_updated: "2026-07-27"
+order: 6
+tags: ["epidemiology", "map", "leaflet", "visualization"]
+last_updated: "2026-07-28"
+audience: "users"
 ---
 
 # 060 — Epidemiological Map Guide
@@ -148,3 +150,9 @@ The component cleans up (destroys the map instance) on unmount to prevent memory
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
+
+

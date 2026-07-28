@@ -433,5 +433,10 @@ Returns the count of entries across all 6 memory tiers. Used by the A2A Observab
 ## See Also
 
 - [ADR-002: 6-Tier Memory Architecture](../architecture/002-6-tier-memory.md)
-- [IndexedDB Schema Reference](./020-indexeddb.md)
+- [IndexedDB Schema Reference](./002-indexeddb.md)
 - [ADR-003: Vector Embeddings in Web Worker](../architecture/003-vector-web-worker.md)
+
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

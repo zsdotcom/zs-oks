@@ -1,9 +1,11 @@
 ---
-title: "090 — Deployment Guide"
+title: "009 — Deployment Guide"
+description: "Step-by-step deployment guides for Docker, Vercel, and Netlify with platform comparison table"
 category: "developers"
-order: 90
-tags: ["deployment", "docker", "vercel", "netlify", "devops", "github-pages"]
-last_updated: "2026-07-26"
+order: 9
+tags: ["deployment", "docker", "vercel", "netlify", "hosting"]
+last_updated: "2026-07-28"
+audience: "developers"
 ---
 
 # 090 — Deployment Guide
@@ -103,7 +105,7 @@ docker run -p 8080:80 \
 1. Go to [vercel.com](https://vercel.com)
 2. Click **Sign Up** (or **Log In**) — use your GitHub account
 3. Click **Add New... → Project**
-4. Import the repository: `codeandbrain/open-knowledge-studio`
+4. Import the repository: `zsdotcom/zs-oks`
 5. Configure the project:
 
 | Setting | Value |
@@ -151,7 +153,7 @@ docker run -p 8080:80 \
 3. Click **Add new site → Import an existing project**
 4. Click **Deploy with GitHub**
 5. Authorize Netlify access to your repositories
-6. Search for and select `codeandbrain/open-knowledge-studio`
+6. Search for and select `zsdotcom/zs-oks`
 7. Configure:
 
 | Setting | Value |
@@ -269,3 +271,7 @@ npx gh-pages -d dist
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

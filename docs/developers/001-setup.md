@@ -1,9 +1,11 @@
 ---
-title: "010 — Complete Setup & Installation"
+title: "001 — Complete Setup Guide"
+description: "Full prerequisites, installation steps, and troubleshooting for setting up the development environment"
 category: "developers"
-order: 10
-tags: ["setup", "installation", "prerequisites", "configuration"]
-last_updated: "2026-07-26"
+order: 1
+tags: ["setup", "prerequisites", "installation", "troubleshooting"]
+last_updated: "2026-07-28"
+audience: "developers"
 ---
 
 # 010 — Complete Setup & Installation
@@ -56,7 +58,7 @@ Download from [git-scm.com](https://git-scm.com) if not installed.
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/codeandbrain/open-knowledge-studio.git
+git clone https://github.com/zsdotcom/zs-oks.git
 cd open-knowledge-studio
 ```
 
@@ -230,3 +232,7 @@ open-knowledge-studio/
 ---
 
 *Back to [Documentation Home](../index.md)*
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._

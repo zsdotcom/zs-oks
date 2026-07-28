@@ -80,3 +80,8 @@ Generic CRUD operations (`dbGet`, `dbPut`, `dbDelete`, `dbGetAll`, `dbClear`, `d
 - [ADR-002: 6-Tier Memory Architecture](./002-6-tier-memory.md)
 - [API Documentation: IndexedDB Schema](../api/002-indexeddb.md)
 - [API Documentation: Memory API](../api/001-memory-api.md)
+
+
+---
+
+_Open Knowledge Studio v2.0 — Zero-dependency, browser-native, 12-agent A2A platform for offline-first research, writing, and data analysis. Built by [Mohammad Ariful Islam](https://github.com/zsdotcom) ([codeandbrain](https://github.com/codeandbrain)) at the [ZarishSphere Foundation](https://zarishsphere.com). Licensed under MIT. Source code: [github.com/zsdotcom/zs-oks](https://github.com/zsdotcom/zs-oks)._
