@@ -83,13 +83,11 @@ export function generateReport(
       `- ${a.disease} (${a.location}): ${a.recommendation}`
     ).join('\n');
 
-    if (stats) {
-      sections.push({
-        title: 'Overview',
-        content: `Total Alerts: ${stats.totalAlerts} | Critical: ${stats.criticalAlerts} | High: ${stats.highAlerts} | Trend: ${stats.trend}`,
-        type: 'text',
-      });
-    }
+    sections.push({
+      title: 'Overview',
+      content: `Total Alerts: ${stats.totalAlerts} | Critical: ${stats.criticalAlerts} | High: ${stats.highAlerts} | Trend: ${stats.trend}`,
+      type: 'text',
+    });
     sections.push({ title: 'Active Alerts', content: alertsMd || 'None', type: 'list' });
     sections.push({ title: 'Top Diseases', content: topMd || 'None', type: 'list' });
     sections.push({ title: 'Recommendations', content: recsMd || 'Standard surveillance vigilance.', type: 'text' });
