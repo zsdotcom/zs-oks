@@ -1,7 +1,5 @@
-- [Home](/)
 - [Project Overview](project/000-overview.md)
 - [User Guides](guides/000-getting-started.md)
 - [Agents](agents/000-index.md)
-- [API](api/000-index.md)
+- [API Reference](api/000-index.md)
 - [GitHub](https://github.com/zsdotcom/zs-oks)
-- [AI Index](llms.txt)
