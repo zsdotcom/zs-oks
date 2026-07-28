@@ -17,7 +17,6 @@ test.describe('Theme switching', () => {
   });
 
   test('theme state persists after toggle', async ({ page }) => {
-    const initialTheme = await page.locator('button[title="Switch to light mode"]').count();
     await page.locator('button[title="Switch to light mode"]').click();
     await page.waitForTimeout(300);
     const hasDarkToggle = await page.locator('button[title="Switch to dark mode"]').count();
