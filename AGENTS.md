@@ -20,7 +20,7 @@ The person you work with is NOT a professional developer. They are a **solo crea
 **When in doubt, simpler is better. Explain WHY before HOW.**
 
 ## Repo constraints
-- All work inside `/home/codeandbrain/open-knowledge-studio`.
+- All work inside the repository directory (wherever you cloned it). The setup scripts (scripts/setup.sh / setup.ps1) automatically configure the correct paths.
 - `opencode.jsonc` loads this file as instructions; permits `npm *`, `npx *`, `git status/diff/log/add` without confirmation; `git commit/push` requires approval.
 
 ## Commands (CI: `typecheck` → `test` → `build`; E2E on PRs only)
