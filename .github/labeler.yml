@@ -28,9 +28,9 @@ AGENTS.md:
   - infrastructure
 
 # Configuration
-*.jsonc:
+"*.jsonc":
   - configuration
-*.json:
+"*.json":
   - configuration
 vite.config.*:
   - configuration
