@@ -32,14 +32,14 @@
   "mcp": {
     "context7": {
       "type": "local",
-      "command": ["npx", "-y", "@context7/mcp-server"],
+      "command": ["npx", "-y", "@upstash/context7-mcp"],
       "environment": {
         "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
       }
     },
     "playwright": {
       "type": "local",
-      "command": ["npx", "-y", "@anthropic/mcp-playwright"]
+      "command": ["npx", "-y", "@playwright/mcp"]
     },
     "github": {
       "type": "local",

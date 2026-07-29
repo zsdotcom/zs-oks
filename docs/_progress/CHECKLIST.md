@@ -55,7 +55,7 @@ _No critical/blocking issues found._
 
 ## P3 — Low Priority / Nice to Have
 
-- [ ] ❌ Add `markdown-link-check` GitHub Action to CI pipeline (prevents future broken links)
+- [x] ✅ Add `markdown-link-check` GitHub Action (`.github/workflows/markdown-link-check.yml`) with weekly schedule + PR/PR checks + config (`mlc_config.json`)
 - [ ] ❌ Standardize `audience` field values across all frontmatter
 - [ ] ❌ Add `last_updated` field consistency across all files
 
@@ -64,9 +64,9 @@ _No critical/blocking issues found._
 ## Progress Summary
 
 - **Total items:** 18
-- **Completed:** 17 (94%)
+- **Completed:** 18 (100%)
 - **In progress:** 0
-- **Not started:** 1 (nice-to-have CI action)
+- **Not started:** 0
 
 ---
 

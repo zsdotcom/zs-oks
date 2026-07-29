@@ -1,6 +1,6 @@
 # Documentation Management — Progress Tracker
 
-**Last Updated:** 2026-07-29 10:37 UTC
+**Last Updated:** 2026-07-29 11:37 UTC
 **Current Phase:** Phase 6 — Publish (awaiting approval)
 
 ---
@@ -39,6 +39,8 @@
 | 14 | `developers/004-development.md` | Update "all 74 tests passing" → "all 227 tests passing" | ✅ |
 | 15 | `developers/004-development.md` | Update "All 74 tests across 6 files" → "All 227 tests across 14 files" | ✅ |
 | 16 | `index.md` | Fix broken link `../operations/` → `operations/` | ✅ |
+| 17 | `.github/workflows/markdown-link-check.yml` | Add link-check CI workflow (weekly + PR/push) | ✅ |
+| 18 | `mlc_config.json` | Add link-check config (retry, ignore patterns, GitHub headers) | ✅ |
 
 ## Verification Results
 
