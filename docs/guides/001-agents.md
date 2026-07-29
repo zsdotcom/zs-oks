@@ -16,7 +16,7 @@ audience: "users"
 
 Open Knowledge Studio ships with **12 A2A (Agent-to-Agent) debate agents** that provide multi-perspective analysis on user prompts. Each agent has a distinct role, color-coded identity, emoji avatar, memory type, and system prompt. All active agents receive the same user prompt in parallel and generate independent responses.
 
-Agents are defined in `DEFAULT_A2A_AGENTS` at `src/App.tsx:108-151`.
+Agents are defined in `DEFAULT_A2A_AGENTS` at `src/App.tsx:127-212`.
 
 ---
 
@@ -75,16 +75,16 @@ Each agent has a detailed system prompt that defines its behavior. Below are the
 ### Code Reviewer
 > "You are the Code Reviewer Agent of Open Knowledge Studio. Your role is to review source code for quality, maintainability, and adherence to best practices. Check for code smells, anti-patterns, naming conventions, documentation coverage, test coverage, error handling, and type safety. Use established style guides (TypeScript, React, Tailwind conventions). Provide line-level feedback with severity: Error, Warning, Suggestion. Include before/after code examples for each recommendation. Rate code quality on a scale of 1-10 with justification."
 
-### Planner
+### Planning Agent
 > "You are the Planning Agent of Open Knowledge Studio. Your role is to decompose complex tasks into manageable sub-tasks with clear dependencies. Create structured execution plans using the Mermaid Gantt chart format. Estimate time and resource requirements for each step. Identify critical path items and parallelizable work. Assign tasks to appropriate agents based on their capabilities. Track progress against the plan and suggest adjustments. Always include risk assessment and contingency strategies."
 
-### Tester
+### Testing Agent
 > "You are the Testing Agent of Open Knowledge Studio. Your role is to design and execute comprehensive test strategies. Generate unit tests, integration tests, and end-to-end test scenarios. Validate edge cases, error states, and boundary conditions. Check test coverage and identify untested code paths. Use the project's existing testing framework (Vitest + happy-dom). Follow Test-Driven Development (TDD) principles: test first, then implement. Report test results with pass/fail status, coverage metrics, and regression risk assessment."
 
-### Code Generator
+### Code Generator Agent
 > "You are the Code Generator Agent of Open Knowledge Studio. Your role is to generate production-quality source code from specifications. Write clean, typed, documented code following the project's conventions (TypeScript, React, Tailwind CSS v4). Never add runtime dependencies beyond react and react-dom. Use native browser APIs and CDN-loaded libraries instead of npm packages. Include error handling and edge case coverage. Provide usage examples for all generated functions and components."
 
-### Knowledge Curator
+### Knowledge Curator Agent
 > "You are the Knowledge Curator Agent of Open Knowledge Studio. Your role is to organize, tag, and interlink knowledge assets across the workspace. Create taxonomies and tag hierarchies. Detect duplicate or overlapping content and suggest merges. Build cross-reference links between related documents. Generate knowledge graphs showing concept relationships. Maintain glossary entries with definitions, synonyms, and related terms. Suggest content refresh cycles for stale information. Track knowledge coverage gaps and recommend new content."
 
 ---
@@ -144,7 +144,7 @@ Each agent has a detailed system prompt that defines its behavior. Below are the
 | `consistency-audit` — Cross-section checks | `send-message` — Communicate feedback |
 | `citation-audit` — Reference validation | `calculate` — Verify numbers |
 | `methodology-review` — Statistical rigor | `semantic-search` — Find contradictions |
-| `compliance-check` — WHO/CDC compliance | `recall` — Retrieve context |
+| `compliance-check` — WHO/CDC compliance | `remember`, `recall` — Memory operations |
 
 ### Librarian
 
@@ -154,57 +154,76 @@ Each agent has a detailed system prompt that defines its behavior. Below are the
 | `knowledge-refresh` — Update from sources | `vectorize` — Embed documents |
 | `index-rebuild` — Rebuild search index | `semantic-search` — Query by meaning |
 | `reference-manager` — Manage citations | `read-file`, `write-file` |
-| `glossary-build` — Create term glossaries | `recall` — Retrieve context |
+| `glossary-build` — Create term glossaries | `search-wikipedia`, `search-openalex` — External sources |
 
 ### Security Analyst
 
 | Skills | Tools |
 |:---|:---|
-| `vuln-scan` — Scan code/configs for weaknesses | `read-file`, `grep-source` |
-| `secret-detect` — Find hardcoded secrets | `regex-scan` — Pattern matching |
-| `csp-audit` — Check Content Security Policy | `fetch-url` — Validate external refs |
-| `dependency-check` — Scan npm deps for CVEs | `recall` — Retrieve known vulnerabilities |
-| `remediation` — Suggest fixes with code examples | `send-message` — Report findings |
+| `code-review` — Analyze code for vulnerabilities | `read-file`, `write-file` |
+| `dependency-analysis` — Check dependency security | `search-web` — Research vulnerabilities |
+| `compliance-check` — Audit security compliance | `code-review` — Review source code |
+| | `dependency-analyze` — Scan dependencies |
+| | `data-validate` — Verify security data |
+| | `remember`, `recall` — Memory operations |
 
 ### Code Reviewer
 
 | Skills | Tools |
 |:---|:---|
-| `code-smell-detect` — Identify anti-patterns | `read-file`, `diff-check` |
-| `style-enforce` — Check naming/style conventions | `semantic-search` — Similar code patterns |
-| `coverage-check` — Review test coverage gaps | `calculate` — Complexity metrics |
-| `error-handling-audit` — Check try/catch coverage | `recall` — Best practice references |
-| `docs-review` — Verify inline docs accuracy | `send-message` — Line-level feedback |
+| `code-review` — Review code quality and patterns | `read-file`, `write-file` |
+| `writing-technical-doc` — Document code changes | `code-review` — Analyze code |
+| `data-statistical-analysis` — Analyze code metrics | `code-docgen` — Generate documentation |
+| | `code-format` — Check formatting |
+| | `dependency-analyze` — Review dependencies |
+| | `test-generate` — Suggest tests |
+| | `remember` — Reference conventions |
 
-### Planner
-
-| Skills | Tools |
-|:---|:---|
-| `task-decompose` — Break work into sub-tasks | `draw-diagram` — Gantt charts |
-| `dependency-map` — Identify task ordering | `spawn-agent` — Assign sub-tasks |
-| `resource-estimate` — Time/complexity estimates | `status-track` — Monitor progress |
-| `risk-assess` — Flag risks and contingencies | `read-file`, `write-file` |
-| `progress-track` — Track against plan | `send-message`, `recall` |
-
-### Tester
+### Planning Agent
 
 | Skills | Tools |
 |:---|:---|
-| `test-generate` — Create unit/integration tests | `read-file`, `write-file` |
-| `edge-case-find` — Identify boundary conditions | `calculate` — Test assertions |
-| `coverage-analyze` — Find untested paths | `semantic-search` — Similar tests |
-| `regression-check` — Flag regression risks | `spawn-agent` — Run test suites |
-| `mock-generate` — Create test fixtures/mocks | `recall` — Known failure patterns |
+| `workflow-decompose` — Break complex tasks | `spawn-agent` — Assign sub-tasks |
+| `workflow-validate` — Verify execution plans | `status-track` — Monitor progress |
+| `workflow-merge` — Combine sub-task results | `send-message` — Communicate with agents |
+| `executive-summary` — Summarize plans | `list-agents` — Enumerate available agents |
+| | `read-file`, `write-file` — File I/O |
+| | `batch-process` — Process multiple items |
+| | `remember`, `recall` — Memory operations |
 
-### Code Generator
+### Testing Agent
 
 | Skills | Tools |
 |:---|:---|
-| `component-gen` — Generate React components | `read-file`, `write-file` |
-| `hook-gen` — Generate custom React hooks | `semantic-search` — Existing patterns |
-| `util-gen` — Generate utility functions | `fetch-url` — API docs reference |
-| `style-gen` — Generate Tailwind CSS classes | `calculate` — Type validation |
-| `type-gen` — Generate TypeScript types | `recall` — Project conventions |
+| `test-generation` — Create comprehensive tests | `read-file`, `write-file` |
+| `data-validate` — Verify test data correctness | `test-generate` — Generate test cases |
+| `quality-check` — Assess test quality | `data-validate` — Validate results |
+| | `calculate` — Compute metrics |
+| | `remember`, `recall` — Memory operations |
+
+### Code Generator Agent
+
+| Skills | Tools |
+|:---|:---|
+| `code-documentation` — Generate inline docs | `read-file`, `write-file` |
+| `api-spec-gen` — Generate API specifications | `code-docgen` — Document code |
+| `writing-technical-doc` — Write technical content | `api-spec-gen` — Generate specs |
+| | `sql-query` — Generate database queries |
+| | `code-format` — Format output |
+| | `test-generate` — Generate tests |
+| | `remember` — Reference conventions |
+
+### Knowledge Curator Agent
+
+| Skills | Tools |
+|:---|:---|
+| `knowledge-refresh` — Update knowledge from sources | `read-file`, `write-file` |
+| `reference-manager` — Organize references | `search-wikipedia`, `search-openalex` — External research |
+| `glossary-build` — Create term glossaries | `semantic-search` — Query by meaning |
+| `consistency-audit` — Check cross-document consistency | `vectorize` — Embed documents |
+| | `remember`, `recall` — Memory operations |
+| | `markdown-toc` — Generate tables of contents |
+| | `text-summarize` — Summarize content |
 
 ---
 

@@ -81,7 +81,7 @@ src/
 ├── App.tsx                             # Shell: agents, state, routing, layout
 ├── types.ts                            # All shared TypeScript interfaces
 │
-├── components/                         # 25 UI components
+├── components/                         # 30+ UI components
 │   ├── ChatInterface.tsx               # AI chat with A2A integration
 │   ├── WorkspaceDocumentEditor.tsx     # Split-pane markdown editor (lazy)
 │   ├── KnowledgeBaseManager.tsx         # Tree file/folder browser
@@ -108,8 +108,8 @@ src/
 │   ├── charts/SimpleCharts.tsx         # SVG chart components
 │   └── icons/lucide-shim.tsx           # 36 inline SVG icons
 │
-├── services/                           # 12 application services
-│   ├── geminiService.ts                # 6-provider LLM router
+├── services/                           # 19+ application services
+│   ├── geminiService.ts                # 10-provider LLM router
 │   ├── memoryApi.ts                    # 6-tier memory API
 │   ├── embeddingWorker.ts              # Web Worker entry
 │   ├── oramaService.ts                 # Orama CDN wrapper
@@ -134,14 +134,23 @@ src/
 │   ├── markdown.ts                     # Custom CommonMark parser
 │   └── highlight.ts                    # Custom regex highlighter
 │
-└── test/                               # 227 tests across 14 files
+└── test/                               # 227 tests across 14 files + benchmarks
     ├── setup.ts                        # Mocks: indexeddb, Worker, BroadcastChannel, crypto
     ├── memory.unit.test.ts             # 25 unit tests
     ├── memory.integration.test.ts      # 10 integration tests
     ├── memory.benchmark.ts             # 5 benchmarks
     ├── gemini.test.ts                  # 8 LLM router tests
+    ├── geminiRouting.test.ts           # 11 provider routing tests
     ├── sandbox.test.ts                 # 9 sandbox tests
-    └── icd11.test.ts                   # 22 ICD-11 tests
+    ├── icd11.test.ts                   # 22 ICD-11 tests
+    ├── icf.test.ts                     # 21 ICF tests
+    ├── ichi.test.ts                    # 22 ICHI tests
+    ├── services.test.ts                # 42 service tests
+    ├── webhook.test.ts                 # 11 webhook tests
+    ├── connector.test.ts               # 16 connector tests
+    ├── bdGeography.test.ts             # 14 BD geography tests
+    ├── bdTerminology.test.ts           # 8 BD terminology tests
+    └── bdVaccine.test.ts               # 9 BD vaccine tests
 ```
 
 ## 3. Data Flow Architecture

@@ -38,7 +38,7 @@ stats:
   tests: 227
   test_files: 14
   components: 28
-  lazy_loaded: 5
+  lazy_loaded: 10
   services: 19
   indexeddb_stores: 22
   agents: 12
@@ -55,8 +55,8 @@ agents:
   - Librarian
   - Security Analyst
   - Code Reviewer
-  - Planner
-  - Tester
+  - Planning Agent
+  - Testing Agent
   - Code Generator
   - Knowledge Curator
 

@@ -52,7 +52,7 @@ flowchart LR
 
 | Positive | Negative |
 |----------|----------|
-| Each tier has a clear, documented lifecycle | More complex API surface (22 exported functions) |
+| Each tier has a clear, documented lifecycle | More complex API surface (32 exported functions) |
 | Sensitive data (session) never touches disk | Cross-tier promotion can create data duplication |
 | Procedural skills survive all user actions | Storage estimation must sum across multiple object stores |
 | `performMaintenance()` cron purges episodic memory at 90-day threshold | Working memory flush is manual — stale data can accumulate |

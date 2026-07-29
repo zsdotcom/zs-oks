@@ -178,7 +178,7 @@ Migrates data from localStorage (legacy format) to IndexedDB. Checks `countStore
 async function exportAllData(): Promise<string>
 ```
 
-Exports 14 stores as a JSON string. Does not include memory tiers (episodic, semantic, procedural, working, long_term), skills, connectors, or workspaceProjects — these are excluded from export.
+Exports all 22 object stores as a JSON string, including memory tiers, skills, connectors, and workspaceProjects.
 
 ### `importAllData(jsonStr)`
 
@@ -208,7 +208,7 @@ interface DBSchema {
   metrics: { id: string; timestamp: string; topic: string; agentId: string; agentName: string; latencyMs: number; thinkingSeconds?: number; tokensEstimated: number; status: string };
   skills: { id: string; name: string; description: string; category: string; instructions: string; allowedTools: string[]; priority: string; triggers: string[]; createdAt: string; updatedAt: string };
   connectors: { id: string; name: string; type: string; enabled: boolean; config: string; status: string; lastSync: string };
-  workspaceProjects: { id: string; name: string; description: string; createdAt: string; agentIds: string[]; tags: string[]; sourceUrl?: string };
+  workspaceProjects: { id: string; name: string; description: string; createdAt: string; updatedAt: string; fileCount: number; agentCount: number; agentIds: string[]; tags: string[]; sourceUrl?: string };
   sandbox: { id: string; settings: string };
   sessions: { id: string; title: string; messages: string; provider: string; modelName: string; createdAt: string };
   versions: { id: string; documentId: string; content: string; createdAt: string; size: string; label?: string };

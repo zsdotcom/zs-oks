@@ -47,7 +47,7 @@ The seeded templates (WHO SitReps, line listings, ICD-11 lookup, EPI schedules, 
 
 | Attribute | Evidence |
 |---|---|
-| **Precise / systems-literate** | ADRs follow strict Nygard format even for a solo project. Version numbers, byte counts, and test counts are stated exactly ("~90 KB gzip," "117 tests across 8 files") rather than rounded. |
+| **Precise / systems-literate** | ADRs follow strict Nygard format even for a solo project. Version numbers, byte counts, and test counts are stated exactly ("~90 KB gzip," "227 tests across 14 files") rather than rounded. |
 | **Matter-of-fact about constraints** | Zero-dependency and zero-budget are stated as facts, never apologized for. |
 | **Practitioner-grounded** | Field-report templates and SitReps read like they were written by someone who has used them under pressure. |
 | **Transparent about gaps** | The project documents known limitations plainly ("no real MCP execution," "CSP blocks BD APIs — High severity"). |
@@ -89,9 +89,9 @@ See [005-design.md](005-design.md) §2 for the full color palette, agent color i
 | Rule | Detail |
 |---|---|
 | **Primary brand color** | `#8B5CF6` (Electric Violet) — PWA `theme-color`, default `--accent`, Coordinator agent color, favicon target |
-| **Agent colors are fixed** | Do not reuse `#8B5CF6`, `#06B6D4`, `#F59E0B`, `#10B981`, `#EF4444`, or `#A855F7` for new agents |
+| **Agent colors are fixed** | Do not reuse `#8B5CF6`, `#06B6D4`, `#F59E0B`, `#10B981`, `#EF4444`, `#A855F7`, `#EC4899`, `#14B8A6`, `#F97316`, `#6366F1`, `#84CC16`, or `#F43F5E` for new agents |
 | **Dark is canonical** | Dark theme with violet accent is the default brand presentation for all external assets |
-| **7 theme variants** | Dark (default), Light, Sepia, Forest, Ocean, Midnight, Solarized |
+| **10 theme variants** | Dark (default), Light, Sepia, Forest, Ocean, Midnight, Solarized, WeWeb, Poimandres, Catppuccin |
 
 ## 6. Visual Identity — Typography
 

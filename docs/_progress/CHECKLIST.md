@@ -1,7 +1,7 @@
 # Documentation Master Checklist
 
 **Generated:** 2026-07-29 (fresh run)
-**Last Updated:** 2026-07-29 10:37 UTC
+**Last Updated:** 2026-07-29 12:07 UTC
 
 Status legend: ❌ Not started | 🔄 In progress | ✅ Complete | ➖ Not applicable
 
@@ -63,8 +63,8 @@ _No critical/blocking issues found._
 
 ## Progress Summary
 
-- **Total items:** 18
-- **Completed:** 18 (100%)
+- **Total items:** 18 (Round 1) + 22 (Round 2 deep analysis) = 40
+- **Completed:** 40 (100%)
 - **In progress:** 0
 - **Not started:** 0
 
@@ -76,3 +76,7 @@ _No critical/blocking issues found._
 - [x] ✅ No stale version numbers or dates
 - [x] ✅ All files have standardized footer
 - [x] ✅ All H1 headings match frontmatter serial numbers
+- [x] ✅ All agent names match canonical source (Planning Agent, Testing Agent, etc.)
+- [x] ✅ All agent skills/tools tables match source code
+- [x] ✅ Sandbox docs correct (iframe, 5s timeout, no fictional features)
+- [x] ✅ CI/CD docs updated (test count, no legacy deploy)

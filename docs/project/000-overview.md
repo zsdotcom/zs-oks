@@ -25,7 +25,7 @@ Democratize access to powerful AI tooling for research and knowledge management 
 | **Local-First** | All data persists in IndexedDB. Works offline. Privacy-preserving by design. |
 | **Zero Deps** | Only `react` + `react-dom` at build time. ML, search, math, and diagram libraries load dynamically from CDN. |
 | **Multi-Provider AI** | Unified router for Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, and Cloudflare. |
-| **Multi-Agent A2A** | 6 debate agents with distinct roles, colors, and system prompts for collaborative analysis. |
+| **Multi-Agent A2A** | 12 debate agents with distinct roles, colors, and system prompts for collaborative analysis. |
 | **Vector-Native Memory** | 384-dim embeddings via Transformers.js (Web Worker) for semantic search across a 6-tier memory architecture. |
 
 ## 3. Key Capabilities
@@ -75,8 +75,8 @@ npm run preview    # serve dist/ locally
 | Test coverage | >80% statements, >75% branches, >85% functions, >80% lines |
 | Build size | ~90 KB gzip |
 | IndexedDB stores | 22 |
-| Components | 25 |
-| Services | 12 |
+| Components | 30 |
+| Services | 19 |
 | Agents | 12 (built-in) + custom |
 | AI providers | 10 (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare) |
 

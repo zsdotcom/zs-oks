@@ -92,6 +92,10 @@ audience: "stakeholders"
 | **DeepSeek** | `api.deepseek.com` | `VITE_DEEPSEEK_API_KEY` | DeepSeek V3, DeepSeek R1 |
 | **Groq** | `api.groq.com` | `VITE_GROQ_API_KEY` | Llama 3.3 70B, Mixtral, Gemma |
 | **Ollama** | User-configured URL | None (local) | Any pulled model |
+| **OpenRouter** | `openrouter.ai` | `VITE_OPENROUTER_API_KEY` | Unified access to 200+ models |
+| **Cerebras** | `api.cerebras.ai` | `VITE_CEREBRAS_API_KEY` | Cerebras models |
+| **GitHub** | `models.inference.ai.azure.com` | `VITE_GITHUB_TOKEN` | GitHub Marketplace models |
+| **Cloudflare** | `api.cloudflare.com` | Cloudflare API token | Workers AI models |
 
 ### 2.7 IndexedDB Schema (22 Object Stores)
 
@@ -145,21 +149,26 @@ audience: "stakeholders"
 | `SimpleCharts` | SVG bar/line/stat chart components |
 | `lucide-shim` | 36 inline SVG icons |
 
-#### Lazy-Loaded (5)
+#### Lazy-Loaded (10)
 
 | Component | Trigger | Fallback UI |
 | :--- | :--- | :--- |
-| `A2AMetricsDashboard` | A2A tab opened | Centered "Loading..." |
 | `WorkspaceDocumentEditor` | Document opened | Centered "Loading..." |
+| `ObservabilityDashboard` | Observability tab opened | Centered "Loading..." |
+| `GoogleWorkspacePanel` | Google panel opened | Centered "Loading..." |
 | `SettingsPanel` | Settings button clicked | Centered "Loading..." |
 | `MCPServerPanel` | MCP tab opened | Centered "Loading..." |
-| `GoogleWorkspacePanel` | Google panel opened | Centered "Loading..." |
+| `ICD11Lookup` | ICD-11 tab opened | Centered "Loading..." |
+| `BdCorePanel` | BD Core tab opened | Centered "Loading..." |
+| `EpiMap` | Epi Map tab opened | Centered "Loading..." |
+| `ConnectorPanel` | Connectors tab opened | Centered "Loading..." |
+| `PublicDataPanel` | Public Data tab opened | Centered "Loading..." |
 
-### 2.9 Services (12)
+### 2.9 Services (19+)
 
 | Service | Purpose | Dependencies |
 | :--- | :--- | :--- |
-| `geminiService` | 6-provider LLM router with unified API | None (fetch API) |
+| `geminiService` | 10-provider LLM router with unified API | None (fetch API) |
 | `memoryApi` | 6-tier memory API + embedding + Orama integration | IndexedDB, Worker |
 | `embeddingWorker` | Web Worker: Transformers.js CDN → 384-dim vectors | CDN (jsdelivr) |
 | `oramaService` | Orama JS CDN → hybrid vector search | CDN (jsdelivr) |

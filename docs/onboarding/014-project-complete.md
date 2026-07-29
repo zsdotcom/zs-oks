@@ -75,7 +75,7 @@ Congratulations on completing the onboarding journey! This guide covers how to w
 | MCP servers | [MCP Configuration](../developers/011-mcp-configuration.md) | Advanced MCP server setup |
 | Memory system | [Memory Architecture](../developers/005-memory-architecture.md) | 6-tier memory deep dive |
 | Public data APIs | [Public Data Guide](../guides/010-public-data.md) | CDC, WHO, weather, and more |
-| Skills system | [Skills Reference](../agents/000-index.md) | Complete skill documentation |
+| Skills system | [A2A Agents Guide](../guides/001-agents.md) | Complete skill documentation |
 | Development | [Quickstart](../developers/000-quickstart.md) | For developers extending the app |
 
 ## Feature Summary
@@ -86,14 +86,14 @@ You now have access to:
 |---------|-------|
 | AI Providers | 10 |
 | A2A Agents | 12 |
-| Built-in Tools | 47 |
-| MCP Servers | 11 |
-| Skills | 34 |
-| Templates | 20 |
-| Connector Types | 9 |
-| Knowledge Sources | 22 |
+| Built-in Tools | 59 |
+| MCP Servers | 14 |
+| Skills | 60 (48 preset + 12 seed) |
+| Templates | 36 (12 built-in + 24 seed) |
+| Connector Types | 10+ |
+| Knowledge Sources | 17 |
 | Document Formats | 5 (MD, HTML, PDF, CSV, JSON) |
-| Themes | 7 |
+| Themes | 10 |
 
 ---
 

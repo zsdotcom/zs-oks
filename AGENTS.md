@@ -47,7 +47,7 @@ The person you work with is NOT a professional developer. They are a **solo crea
 - **Entrypoint**: `src/index.tsx` → `src/App.tsx` (1357 lines, main app component)
 - **6-tier memory**: Session → Episodic → Semantic → Procedural → Working → Long-Term
 - **10 AI providers**: Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare
-- **12 built-in agents**: Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planner, Tester, Code Generator, Knowledge Curator
+- **12 built-in agents**: Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planning Agent, Testing Agent, Code Generator, Knowledge Curator
 - **CDN-loaded libraries**: Transformers.js, Orama, KaTeX, Mermaid, Leaflet (never install via npm)
 - **PWA**: `src/sw-register.ts` registers service worker for offline support
 - **All CSS in one file**: `src/index.css` (570 lines, 8 theme variants). No component-level CSS files.

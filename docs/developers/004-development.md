@@ -62,7 +62,7 @@ This document defines the coding standards, git workflow, and contribution guide
 
 ### 1.5 Code Style
 
-- No semicolons in source files
+- Semicolons required (enforced by Prettier)
 - Single quotes for strings
 - 2-space indentation
 - `import type` for type-only imports
@@ -182,11 +182,20 @@ Configured in `vitest.config.ts`:
 | :--- | :--- | :--- |
 | `src/test/memory.unit.test.ts` | Memory unit tests | 25 |
 | `src/test/memory.integration.test.ts` | Memory integration tests | 10 |
-| `src/test/memory.benchmark.ts` | Performance benchmarks | 4 |
+| `src/test/memory.benchmark.ts` | Performance benchmarks | 5 |
 | `src/test/gemini.test.ts` | LLM provider router tests | 8 |
+| `src/test/geminiRouting.test.ts` | Provider routing tests | 11 |
 | `src/test/sandbox.test.ts` | Sandbox execution tests | 9 |
 | `src/test/icd11.test.ts` | ICD-11 lookup tests | 22 |
-| **Total** | | **78** |
+| `src/test/icf.test.ts` | ICF lookup tests | 21 |
+| `src/test/ichi.test.ts` | ICHI lookup tests | 22 |
+| `src/test/services.test.ts` | Service tests | 42 |
+| `src/test/webhook.test.ts` | Webhook tests | 11 |
+| `src/test/connector.test.ts` | Connector tests | 16 |
+| `src/test/bdGeography.test.ts` | BD geography tests | 14 |
+| `src/test/bdTerminology.test.ts` | BD terminology tests | 8 |
+| `src/test/bdVaccine.test.ts` | BD vaccine tests | 9 |
+| **Total** | | **227** |
 
 ---
 

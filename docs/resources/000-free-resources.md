@@ -68,7 +68,7 @@ The project's CDN-only pattern (Transformers.js, Orama, KaTeX, Mermaid, Leaflet 
 
 ## 4. Public-Health & Humanitarian APIs (Free, No-Cost)
 
-These expand the 18 knowledge sources already wired into `publicApiService.ts`:
+These expand the 25 knowledge sources already wired into `publicApiService.ts`:
 
 | Source                                                                            | Provides                                                     | Cost                                                         |
 | --------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -116,7 +116,7 @@ These expand the 18 knowledge sources already wired into `publicApiService.ts`:
 
 ---
 
-**References:** [github.com/github/awesome-copilot](https://github.com/github/awesome-copilot) · [awesome-copilot.github.com](https://awesome-copilot.github.com/) · [developers.cloudflare.com/docs-for-agents](https://developers.cloudflare.com/docs-for-agents/) · [reliefweb.int/labs](https://reliefweb.int/labs) · [data.humdata.org](https://data.humdata.org/)
+**References:** [github.com/github/awesome-copilot](https://github.com/github/awesome-copilot) · [awesome-copilot.github.io](https://awesome-copilot.github.io/) · [developers.cloudflare.com/docs-for-agents](https://developers.cloudflare.com/docs-for-agents/) · [reliefweb.int/labs](https://reliefweb.int/labs) · [data.humdata.org](https://data.humdata.org/)
 
 ---
 
@@ -146,7 +146,7 @@ The following resources from the [Awesome Opencode](https://github.com/opencode-
 | **WHO data.who.int** | `who_data_indicator`, `who_data_search`                                              | Global health indicators via OData API                                      |
 | **Feedbagel RSS**    | `feedbagel_list_feeds`, `feedbagel_fetch_entries`                                    | RSS feed monitoring and entry routing                                       |
 
-### New Built-in Tools (6 added, total: 53)
+### New Built-in Tools (12 added, total: 59)
 
 | Tool             | Permission | Description                                       |
 | ---------------- | ---------- | ------------------------------------------------- |

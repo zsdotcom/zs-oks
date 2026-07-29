@@ -94,6 +94,12 @@ agent-librarian: '#A855F7'      # Purple
 | Writer | `--color-writer` | `#10B981` | Agent header, avatar border, response accent |
 | Reviewer | `--color-review` | `#EF4444` | Agent header, avatar border, response accent |
 | Librarian | `--color-librarian` | `#A855F7` | Agent header, avatar border, response accent |
+| Security Analyst | `--color-security` | `#EC4899` | Agent header, avatar border, response accent |
+| Code Reviewer | `--color-code-review` | `#14B8A6` | Agent header, avatar border, response accent |
+| Planning Agent | `--color-planner` | `#F97316` | Agent header, avatar border, response accent |
+| Testing Agent | `--color-tester` | `#6366F1` | Agent header, avatar border, response accent |
+| Code Generator | `--color-code-gen` | `#84CC16` | Agent header, avatar border, response accent |
+| Knowledge Curator | `--color-knowledge` | `#F43F5E` | Agent header, avatar border, response accent |
 
 ### 2.3 Semantic Color Usage
 

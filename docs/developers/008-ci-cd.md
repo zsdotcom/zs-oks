@@ -27,12 +27,11 @@ flowchart LR
     E --> H[Upload Stats]
 ```
 
-**Two workflow files:**
+**Workflow files:**
 
 | File | Trigger | Jobs |
 | :--- | :--- | :--- |
 | `.github/workflows/ci.yml` | Push to `main`/`develop`, PR to `main` | TypeCheck & Test, E2E Tests, Bundle Analysis |
-| `.github/workflows/deploy-app.yml` | Push to `main`, Release | Deploy app to Vercel, Docker Hub |
 | `.github/workflows/deploy-docs.yml` | Push to `main`, docs/** | Deploy docs to GitHub Pages |
 
 ---
@@ -147,7 +146,7 @@ jobs:
 ```
 1. TypeCheck & Test (always runs)
    ├── tsc -b --noEmit   # TypeScript type checking
-   ├── vitest run         # 78 unit + integration tests
+   ├── vitest run         # 227 unit + integration tests
    └── vite build         # Production build
 2. E2E Tests (runs after TypeCheck & Test, only on PRs)
    └── playwright test    # 7 E2E spec files
@@ -164,68 +163,6 @@ Deploys the React SPA to Vercel and pushes Docker images to Docker Hub on releas
 
 ### 3b. Docs Deployment (`deploy-docs.yml`)
 Publishes the `docs/` folder to GitHub Pages as a static documentation site.
-
----
-
-## 4. Legacy Deploy (`deploy.yml` — replaced)
-
-```yaml
-name: Deploy to GitHub Pages
-
-on:
-  push:
-    branches: [main]
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
-jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version-file: .nvmrc
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist/
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-```
-
-### Deploy Details
-
-- Runs only on push to `main`
-- Sets `BASE_PATH=/open-knowledge-studio/` for the Vite `base` config
-- Copies `index.html` to `404.html` for SPA client-side routing
-- Requires `Settings → Pages → Source: GitHub Actions`
 
 ---
 
@@ -264,13 +201,15 @@ jobs:
 
 ## 5. Local CI Simulation
 
+> ⚠️ **Before pushing**, run these in order to catch CI failures early:
+
 Run the same checks locally before pushing to avoid CI failures:
 
 ```bash
 # 1. TypeScript type checking (0 errors expected)
 npm run typecheck
 
-# 2. Unit + integration tests (78 tests, all passing)
+# 2. Unit + integration tests (227 tests, all passing)
 npm test
 
 # 3. Coverage check (80/75/85/80 thresholds)
@@ -289,6 +228,8 @@ npm run test:e2e
 ---
 
 ## 6. Environment Variables in CI
+
+
 
 The `VITE_*` environment variables are exposed to client code at build time. In CI:
 
@@ -312,6 +253,8 @@ env:
 ---
 
 ## 7. Troubleshooting CI
+
+
 
 ### TypeCheck fails locally but passes in CI
 

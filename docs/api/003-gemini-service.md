@@ -6,7 +6,7 @@ tags: [api, llm, gemini, openai, anthropic, provider]
 
 # Gemini/LLM Service API
 
-Source: `src/services/geminiService.ts` (488 lines)
+Source: `src/services/geminiService.ts` (778 lines)
 
 The LLM Service is a multi-provider router that abstracts 10+ AI providers behind a unified interface. All calls use plain `fetch()` — no vendor SDKs.
 

@@ -6,7 +6,7 @@ tags: [api, sandbox, code-execution, security]
 
 # Sandbox API Reference
 
-Source: `src/services/sandboxService.ts` (106 lines)
+Source: `src/services/sandboxService.ts` (107 lines)
 
 The Sandbox API provides secure, isolated code execution for user-written JavaScript within the application. It uses an iframe with restricted permissions to sandbox execution, preventing access to the main application context.
 

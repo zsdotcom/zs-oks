@@ -53,7 +53,7 @@ flowchart TD
 ### Step-by-Step Process
 
 1. **Decompose** — The Coordinator analyzes the user request and produces a JSON array of `{agentId, subTask, rationale}` mapping each sub-task to the best-suited agent
-2. **Execute** — Each sub-task is sent to the appropriate agent in parallel (results are independent)
+2. **Execute** — Each sub-task is sent to the appropriate agent sequentially (results are independent)
 3. **Collect** — The Coordinator receives all agent outputs
 4. **Synthesize** — The Coordinator merges results into a cohesive final response with cross-references
 
@@ -165,7 +165,7 @@ These are pushed to the `A2AMetricsDashboard` via the `onAgentResponse` callback
 | Aspect | Orchestrated | Sequential |
 |:---|:---|:---|
 | Control flow | Star (Coordinator hub) | Linear chain |
-| Parallelism | Agents run in parallel | Agents run sequentially |
+| Parallelism | Agents run sequentially | Agents run sequentially |
 | Error isolation | Individual agent errors isolated | Error breaks the chain |
 | Context passing | Coordinator manages context | Each step adds to context |
 | Best for | Complex multi-faceted tasks | Document/review pipelines |

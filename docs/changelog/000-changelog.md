@@ -14,23 +14,23 @@ Version history for **Open Knowledge Studio**.
 
 ## v2.0.0 — *Current Release*
 
-**Release Date:** July 27, 2026
+**Release Date:** July 28, 2026
 **Status:** Active
 
 ### Breaking Changes
 
-- Single-agent architecture replaced with 6-agent A2A (Agent-to-Agent) debate system
-- Hardcoded AI provider replaced with 6-provider abstraction layer (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama)
+- Single-agent architecture replaced with 12-agent A2A (Agent-to-Agent) debate system
+- Hardcoded AI provider replaced with 10-provider abstraction layer (Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare)
 - Session-only memory upgraded to 6-tier memory architecture (Session, Episodic, Semantic, Procedural, Working, Long-Term)
-- Plain IndexedDB access replaced with 19-object-store abstraction via `memoryApi.ts`
+- Plain IndexedDB access replaced with 22-object-store abstraction via `memoryApi.ts`
 - Transformer-based embeddings (Transformers.js Web Worker) replace keyword-only search
 - Orama hybrid search (vector + keyword) supersedes basic filtering
-- UI theme system redesigned (7 themes, 12 accent colors, CSS custom properties)
+- UI theme system redesigned (10 themes, 12 accent colors, CSS custom properties)
 - Build toolchain upgraded: Vite 8.1.5, TypeScript 7.0.2, Tailwind 4.x, Vitest 4.1.10
 
 ### New Features
 
-- **6 A2A Debate Agents:** Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian — with system prompts, skills, tools, templates
+- **12 A2A Agents:** Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planning Agent, Testing Agent, Code Generator, Knowledge Curator — with system prompts, skills, tools, templates
 - **Vector Embeddings:** Transformers.js in a dedicated Web Worker for compute embedding, 384-dim vectors
 - **Orama Hybrid Search:** Unified vector + keyword semantic search across all memory tiers
 - **22 IndexedDB Object Stores:** Comprehensive schema covering all 6 memory tiers, settings, skills, connectors, webhooks, sandbox cache, knowledge sources
@@ -44,10 +44,10 @@ Version history for **Open Knowledge Studio**.
 - **Sandboxed Code Execution:** iframe sandbox with `allow-scripts`, eval timeout, console capture, restricted globals
 - **Skills Registry:** Pluggable skill definitions for agents with specialized workflows
 - **External Connectors:** Webhook manager (create, test, log history), Google Workspace auth (OAuth 2.0 via GIS)
-- **Code Splitting:** 5 `React.lazy()` panels (A2A Metrics, Google Workspace, Settings, MCP Server, Workspace Document Editor)
-- **7 UI Themes:** Dark, Light, Sepia, Forest, Ocean, Midnight, Solarized
+- **Code Splitting:** 10 `React.lazy()` panels (A2A Metrics, Google Workspace, Settings, MCP Server, Workspace Document Editor, and 5 more specialized panels)
+- **10 UI Themes:** Dark, Light, Sepia, Forest, Ocean, Midnight, Solarized, Aurora, Monochrome, Neon
 - **12 Accent Colors:** Purple to Pink spectrum
-- **74 Unit/Integration Tests:** 6 test files with coverage thresholds (80/75/85/80)
+- **227 Unit/Integration Tests:** 14 test files with coverage thresholds (80/75/85/80)
 - **E2E Testing:** 7 Playwright spec files, Chromium-only, auto-starts dev server
 - **CI/CD:** GitHub Actions — typecheck, test, build, E2E (PR only), bundle analysis (main only), GitHub Pages deploy
 - **Benchmark Suite:** 5 Vitest benchmarks for IndexedDB write throughput, vector search, key generation, batch writes, embedding generation

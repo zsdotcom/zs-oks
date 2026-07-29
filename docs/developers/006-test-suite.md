@@ -71,14 +71,21 @@ export default defineConfig({
 | # | File | Type | Tests | What It Tests |
 | :-- | :--- | :--- | :--: | :--- |
 | 1 | `src/test/memory.unit.test.ts` | Unit | 25 | All 6 memory tiers, workspace isolation, embeddings, storage management |
-| 2 | `src/test/memory.integration.test.ts` | Integration | 10 | Cross-tier promotion, workspace isolation, BroadcastChannel sync, storage |
+| 2 | `src/test/memory.integration.test.ts` | Integration | 10 | Cross-tier promotion, workspace isolation, BroadcastChannel sync |
 | 3 | `src/test/memory.benchmark.ts` | Benchmark | 5 | IndexedDB write/read performance, search latency, key generation |
 | 4 | `src/test/gemini.test.ts` | Unit | 8 | LLM provider router, orchestrated workflow, sequential workflow |
-| 5 | `src/test/sandbox.test.ts` | Unit | 9 | Sandbox data creation, cleanup, edge cases |
-| 6 | `src/test/icd11.test.ts` | Unit | 22 | ICD-11 search, code lookup, FHIR conversion |
-| 7 | `src/test/icf.test.ts` | Unit | 22 | ICF search, code lookup, FHIR conversion |
-| 8 | `src/test/ichi.test.ts` | Unit | 22 | ICHI search, code lookup, FHIR conversion |
-| | **Total** | | **117** | |
+| 5 | `src/test/geminiRouting.test.ts` | Unit | 11 | Provider routing, fallback logic, error handling |
+| 6 | `src/test/sandbox.test.ts` | Unit | 9 | Sandbox data creation, cleanup, edge cases |
+| 7 | `src/test/icd11.test.ts` | Unit | 22 | ICD-11 search, code lookup, FHIR conversion |
+| 8 | `src/test/icf.test.ts` | Unit | 21 | ICF search, code lookup, FHIR conversion |
+| 9 | `src/test/ichi.test.ts` | Unit | 22 | ICHI search, code lookup, FHIR conversion |
+| 10 | `src/test/services.test.ts` | Unit | 42 | Cross-service integration, data flow, error propagation |
+| 11 | `src/test/webhook.test.ts` | Unit | 11 | Webhook dispatch, event handling, payload validation |
+| 12 | `src/test/connector.test.ts` | Unit | 16 | Connector CRUD, authentication, sync operations |
+| 13 | `src/test/bdGeography.test.ts` | Unit | 14 | Bangladesh geographic hierarchy, division/district/upazila |
+| 14 | `src/test/bdTerminology.test.ts` | Unit | 8 | Bangladesh medical terminology, code systems |
+| 15 | `src/test/bdVaccine.test.ts` | Unit | 9 | Bangladesh vaccination schedule, EPI codes |
+| | **Total** | | **227** | |
 
 ---
 
