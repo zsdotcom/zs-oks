@@ -9,27 +9,34 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://zsdotcom.github.io/zs-oks/">
   <link rel="alternate" type="text/plain" href="llms.txt" title="LLM documentation index">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='6' fill='%231a1a2e'/%3E%3Cpath d='M8 10c0-2 2-4 4-4h8c2 0 4 2 4 4v12c0 2-2 4-4 4h-8c-2 0-4-2-4-4V10z' stroke='%234f46e5' stroke-width='1.5' fill='none'/%3E%3Ccircle cx='16' cy='14' r='3' fill='%234f46e5'/%3E%3Cpath d='M12 20h8' stroke='%234f46e5' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M13 23h6' stroke='%234f46e5' stroke-width='1.5' stroke-linecap='round' opacity='0.5'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="assets/css/style.css">
   <style>
-    :root { --brand: #8B5CF6; --sidebar-bg: #0f1117; --sidebar-text: #94a3b8; }
-    .sidebar .app-name-link { display: flex; align-items: center; gap: 8px; font-weight: 700; text-decoration: none; color: var(--brand) !important; }
-    .sidebar .app-name-link .logo-svg { width: 24px; height: 24px; flex-shrink: 0; }
-    .sidebar .app-name-link .logo-text { line-height: 1.2; }
-    .sidebar .app-name-link .logo-sub { display: block; font-size: 0.6em; font-weight: 400; color: var(--sidebar-text); }
-    .sidebar { background: var(--sidebar-bg); border-right: 1px solid rgba(139,92,246,0.15); }
-    .sidebar ul li a { color: var(--sidebar-text); font-size: 0.9em; }
-    .sidebar ul li a:hover { color: #A78BFA; }
-    .sidebar ul li.active > a { color: var(--brand); border-right: 2px solid var(--brand); font-weight: 600; }
-    .sidebar ul li ul { border-left: 1px solid rgba(139,92,246,0.1); }
-    .sidebar-nav > ul > li > a { font-weight: 600; color: #cbd5e1; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; }
-    .markdown-section { max-width: 1000px; }
-    .markdown-section h1 { color: var(--brand); border-bottom: 2px solid rgba(139,92,246,0.2); }
-    .markdown-section a { color: #A78BFA; }
-    .cover { background: linear-gradient(135deg, #0a0a0f 0%, #1a1035 50%, #0a0a0f 100%) !important; }
-    .cover-main { color: #e2e8f0 !important; }
-    .cover-main h1 { color: var(--brand) !important; font-size: 2.5em !important; }
-    .cover-main blockquote { border-left: none !important; background: transparent !important; color: #94a3b8 !important; }
+    /* Sidebar logo — Docsify renders name as raw HTML in sidebar header */
+    .sidebar .app-name-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--brand) !important;
+      padding: 0.75rem;
+    }
+    .sidebar .app-name-link .logo-svg {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+    .sidebar .app-name-link .logo-text {
+      line-height: 1.2;
+    }
+    .sidebar .app-name-link .logo-sub {
+      display: block;
+      font-size: 0.65em;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 <body>
@@ -45,11 +52,27 @@
       loadSidebar: '_sidebar.md',
       loadNavbar: '_navbar.md',
       coverpage: '_coverpage.md',
-      name: '',
+      name: '<span class="app-name-link"><svg class="logo-svg" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="6" fill="#1a1a2e"/><path d="M8 10c0-2 2-4 4-4h8c2 0 4 2 4 4v12c0 2-2 4-4 4h-8c-2 0-4-2-4-4V10z" stroke="#8B5CF6" stroke-width="1.5" fill="none"/><circle cx="16" cy="14" r="3" fill="#8B5CF6"/><path d="M12 20h8" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/><path d="M13 23h6" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/></svg><span class="logo-text">Open Knowledge Studio<span class="logo-sub">Documentation</span></span></span>',
       repo: 'https://github.com/zsdotcom/zs-oks',
       search: { maxAge: 86400000, paths: 'auto', placeholder: 'Search docs...', noData: 'No results', depth: 4 },
       autoHeader: true,
       formatUpdated: '{YYYY}-{MM}-{DD}',
+      plugins: [
+        function (hook, vm) {
+          hook.afterEach(function (html) {
+            var pagePath = vm.route.path;
+            if (pagePath === '/' || pagePath === '') return html;
+            var footer = '<hr style="margin-top:3rem;border:none;border-top:1px solid var(--border);">';
+            footer += '<div style="text-align:center;padding:1rem 0;font-size:0.8125rem;color:var(--text-muted);">';
+            footer += 'Open Knowledge Studio v2.0 &mdash; <a href="https://github.com/zsdotcom/zs-oks" style="color:var(--brand);">GitHub</a> &middot; ';
+            footer += '<a href="project/000-overview.md" style="color:var(--brand);">About</a> &middot; ';
+            footer += '<a href="changelog/000-changelog.md" style="color:var(--brand);">Changelog</a>';
+            footer += '<br><span style="font-size:0.75rem;">MIT License &mdash; Built by Mohammad Ariful Islam at ZarishSphere Foundation</span>';
+            footer += '</div>';
+            return html + footer;
+          });
+        }
+      ],
     };
   </script>
 </body>
