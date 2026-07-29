@@ -2,8 +2,14 @@
   "$schema": "https://opencode.ai/config.json",
 
   // ─── System Instructions ───
-  // Loads AGENTS.md into the AI's system prompt on every launch
   "instructions": ["AGENTS.md"],
+
+  // ─── Model ───
+  "model": "anthropic/claude-sonnet-4-6",
+  "small_model": "anthropic/claude-haiku-4-5",
+
+  // ─── Default Agent ───
+  "default_agent": "build",
 
   // ─── References ───
   // Local project directories made available as supporting context (@ alias)
@@ -23,7 +29,6 @@
   },
 
   // ─── MCP Servers ───
-  // Connects OpenCode to external tools and services
   "mcp": {
     "context7": {
       "type": "local",
@@ -35,6 +40,48 @@
     "playwright": {
       "type": "local",
       "command": ["npx", "-y", "@anthropic/mcp-playwright"]
+    },
+    "github": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-github"],
+      "environment": {
+        "GITHUB_TOKEN": "{env:GITHUB_TOKEN}"
+      }
+    }
+  },
+
+  // ─── Agents ───
+  "agent": {
+    "repository-maintainer": {
+      "description": "Maintains repo health: CI/CD, deps, linting, code quality. Use for repo-wide fixes, dependency updates, CI debugging.",
+      "mode": "subagent",
+      "permission": {
+        "bash": "allow",
+        "edit": "allow"
+      }
+    }
+  },
+
+  // ─── Commands ───
+  "command": {
+    "deploy": {
+      "description": "Build the project and prepare for deployment",
+      "template": "Run the full build pipeline: typecheck → test → build. If all pass, summarize the output and confirm readiness for deployment. Project: Open Knowledge Studio (React + Vite + TypeScript)."
+    },
+    "test": {
+      "description": "Run tests with optional filter pattern",
+      "template": "Run npm test{{#if .}} -- -t \"{{.}}\"{{/if}} and report the results. If any tests fail, diagnose and fix the issues before reporting success.",
+      "subtask": true
+    },
+    "typecheck": {
+      "description": "Run TypeScript type checking",
+      "template": "Run npm run typecheck and report any errors. If errors are found, analyze and fix them.",
+      "subtask": true
+    },
+    "build": {
+      "description": "Full production build with verification",
+      "template": "Run the complete CI pipeline in order: npm run typecheck, npm test, npm run build. If any step fails, fix the issue before proceeding to the next step. Report final build output.",
+      "subtask": false
     }
   },
 
@@ -62,6 +109,10 @@
       "git add *": "allow",
       "git commit *": "ask",
       "git push *": "ask"
+    },
+    "external_directory": {
+      "/tmp/opencode": "allow",
+      "*": "ask"
     }
   }
 }

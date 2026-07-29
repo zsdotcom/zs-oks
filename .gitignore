@@ -38,6 +38,10 @@ tsconfig.tsbuildinfo
 !.opencode/skills/
 .opencode/skills/*
 !.opencode/skills/*/
+!.opencode/agents/
+!.opencode/agents/*
+!.opencode/commands/
+!.opencode/commands/*
 session-*.md
 benchmark-results.json
 
