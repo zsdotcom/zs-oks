@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# Google OAuth Setup Guide
+# 011 — Google OAuth Setup Guide
 
 ## OAuth Flow
 

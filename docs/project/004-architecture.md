@@ -31,7 +31,7 @@ graph TB
         end
 
         subgraph Services
-            LLM[geminiService - 6 Providers]
+            LLM[geminiService - 10 Providers]
             Memory[memoryApi - 6-Tier]
             Embed[embeddingWorker - Transformers.js]
             Orama[oramaService - Vector Search]
@@ -65,7 +65,7 @@ graph TB
         Chat --> KT
         Chat --> MM
         EpiMap --> LF
-        LLM --> Providers{6 AI Providers}
+        LLM --> Providers{10 AI Providers}
     end
 
     style Browser fill:#0b1326,color:#dae2fd
@@ -134,7 +134,7 @@ src/
 │   ├── markdown.ts                     # Custom CommonMark parser
 │   └── highlight.ts                    # Custom regex highlighter
 │
-└── test/                               # 74 tests across 6 files
+└── test/                               # 227 tests across 14 files
     ├── setup.ts                        # Mocks: indexeddb, Worker, BroadcastChannel, crypto
     ├── memory.unit.test.ts             # 25 unit tests
     ├── memory.integration.test.ts      # 10 integration tests

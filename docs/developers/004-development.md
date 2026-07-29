@@ -138,7 +138,7 @@ docs(ci): add local CI simulation commands
    - How to test it
 4. PR must pass CI checks:
    - `npm run typecheck` (0 errors)
-   - `npm test` (all 74 tests passing)
+   - `npm test` (all 227 tests passing)
    - `npm run build` (production build succeeds)
    - Coverage thresholds (statements 80%, branches 75%, functions 85%, lines 80%)
 5. At least one reviewer must approve
@@ -158,7 +158,7 @@ docs(ci): add local CI simulation commands
 ### 3.2 Running Tests
 
 ```bash
-npm test                    # All 74 tests across 6 files
+npm test                    # All 227 tests across 14 files
 npm run test:watch          # Watch mode (auto-rerun on changes)
 npm run test:coverage       # V8 coverage report
 npm run test:bench          # Performance benchmarks

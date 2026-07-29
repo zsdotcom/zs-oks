@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# BD Core FHIR IG Integration
+# 013 — BD Core FHIR IG Integration
 
 Guide to the Bangladesh Core FHIR Implementation Guide features integrated into Open Knowledge Studio.
 

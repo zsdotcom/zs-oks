@@ -8,7 +8,7 @@ last_updated: "2026-07-28"
 audience: "users"
 ---
 
-# Bangladesh Digital Health Ecosystem
+# 012 — Bangladesh Digital Health Ecosystem
 
 Reference guide for the Bangladesh health information system landscape — systems, standards, and integration points.
 

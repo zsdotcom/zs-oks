@@ -202,7 +202,7 @@ open-knowledge-studio/
 │   ├── db/                  # IndexedDB layer
 │   │   └── indexedDB.ts     # 22 object stores, v2 schema
 │   ├── services/            # Business logic (memory, AI, ICD-11, etc.)
-│   ├── test/                # Test files (6 files, 74 tests)
+│   ├── test/                # Test files (14 files, 227 tests)
 │   └── types.ts             # TypeScript type definitions
 ├── docs/                    # Documentation
 ├── e2e/                     # Playwright E2E spec files (7 files)

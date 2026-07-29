@@ -1,7 +1,7 @@
 # Documentation Management — Progress Tracker
 
-**Last Updated:** 2026-07-28 12:00 UTC
-**Current Phase:** Initial setup (skill created)
+**Last Updated:** 2026-07-29 10:37 UTC
+**Current Phase:** Phase 6 — Publish (awaiting approval)
 
 ---
 
@@ -9,39 +9,48 @@
 
 | Phase | Status | Started | Completed | Notes |
 |-------|--------|---------|-----------|-------|
-| 0 — Load/Skill Init | ✅ Complete | 2026-07-28 | 2026-07-28 | docs-manager skill registered |
-| 1 — Analyze | ✅ Complete | 2026-07-28 | 2026-07-28 | Found ~200 broken links, stale stats, heading mismatches |
-| 2 — Research | ✅ Complete | 2026-07-28 | 2026-07-28 | Link validation tooling research |
-| 3 — Plan | ✅ Complete | 2026-07-28 | 2026-07-28 | Created prioritized CHECKLIST.md |
-| 4 — Execute | ✅ Complete | 2026-07-28 | 2026-07-28 | Fixed 20 H1 headings, ~200 links, stale stats, frontmatter/footer |
-| 5 — Verify | ✅ Complete | 2026-07-28 | 2026-07-28 | 0 broken links, 0 title mismatches, typecheck pass, build pass |
-| 6 — Publish | 🔄 In progress | 2026-07-28 | — | Awaiting user approval | |
+| 0 — Load/Skill Init | ✅ Complete | 2026-07-29 | 2026-07-29 | docs-manager skill loaded |
+| 1 — Analyze | ✅ Complete | 2026-07-29 | 2026-07-29 | Full inventory (97 files), automated checks, cross-reference with source |
+| 2 — Research | ✅ Complete | 2026-07-29 | 2026-07-29 | Link checking tools, docs-as-code best practices |
+| 3 — Plan | ✅ Complete | 2026-07-29 | 2026-07-29 | Created prioritized CHECKLIST.md (18 items) |
+| 4 — Execute | ✅ Complete | 2026-07-29 | 2026-07-29 | All 17 edits applied |
+| 5 — Verify | ✅ Complete | 2026-07-29 | 2026-07-29 | Typecheck pass, 227/227 tests pass, build pass |
+| 6 — Publish | 🔄 In progress | 2026-07-29 | — | Awaiting user approval |
 
 ---
 
-## Recent Activity Log
+## Edits Applied
 
-| Timestamp | Action | File | Status |
-|-----------|--------|------|--------|
-| 2026-07-28 12:00 | Created docs-manager skill | .opencode/skills/docs-manager/SKILL.md | ✅ |
-| 2026-07-28 | Built inventory of all 95 docs | `find docs -name "*.md"` | ✅ |
-| 2026-07-28 | Read 30+ key docs for analysis | Multiple files | ✅ |
-| 2026-07-28 | Ran automated checks (frontmatter, footer, links) | All docs | ✅ |
-| 2026-07-28 | Wrote comprehensive ANALYSIS.md | docs/_progress/ANALYSIS.md | ✅ |
-| 2026-07-28 | Fixed H1 headings in 20 developer/guide files | Multiple files | ✅ |
-| 2026-07-28 | Fixed ~200 broken cross-reference links across all docs | Multiple files | ✅ |
-| 2026-07-28 | Updated stale stats (agent counts 6→12, test counts 74→227, provider list) | project/*.md, guides/*.md, developers/*.md | ✅ |
-| 2026-07-28 | Added missing frontmatter fields to 3 index files | security/, architecture/, api/ | ✅ |
-| 2026-07-28 | Fixed footer in 404.md | docs/404.md | ✅ |
-| 2026-07-28 | Verification: 0 broken links, 0 title mismatches, typecheck pass, build pass | — | ✅ |
+| # | File | Edit | Status |
+|---|------|------|--------|
+| 1 | `guides/011-google-oauth-setup.md` | Add `011 —` prefix to H1 | ✅ |
+| 2 | `guides/012-bd-health-system.md` | Add `012 —` prefix to H1 | ✅ |
+| 3 | `guides/013-bd-core-fhir.md` | Add `013 —` prefix to H1 | ✅ |
+| 4 | `agents/018-security-analyst.md` | Replace short footer with standard footer | ✅ |
+| 5 | `agents/019-code-reviewer.md` | Replace short footer with standard footer | ✅ |
+| 6 | `agents/020-planner.md` | Replace short footer with standard footer | ✅ |
+| 7 | `agents/021-tester.md` | Replace short footer with standard footer | ✅ |
+| 8 | `agents/022-code-generator.md` | Replace short footer with standard footer | ✅ |
+| 9 | `agents/023-knowledge-curator.md` | Replace short footer with standard footer | ✅ |
+| 10 | `project/004-architecture.md` | Update Mermaid: "6 Providers" → "10 Providers" | ✅ |
+| 11 | `project/004-architecture.md` | Update Mermaid: "6 AI Providers" → "10 AI Providers" | ✅ |
+| 12 | `project/004-architecture.md` | Update "74 tests across 6 files" → "227 tests across 14 files" | ✅ |
+| 13 | `developers/001-setup.md` | Update "6 files, 74 tests" → "14 files, 227 tests" | ✅ |
+| 14 | `developers/004-development.md` | Update "all 74 tests passing" → "all 227 tests passing" | ✅ |
+| 15 | `developers/004-development.md` | Update "All 74 tests across 6 files" → "All 227 tests across 14 files" | ✅ |
+| 16 | `index.md` | Fix broken link `../operations/` → `operations/` | ✅ |
 
----
+## Verification Results
 
-## Session Summaries
-
-_No sessions completed yet._
-
----
+| Check | Result |
+|-------|--------|
+| Frontmatter | All content files have frontmatter ✓ |
+| Footer | 96/97 content files have standard footer ✓ |
+| Broken links | 0 broken links ✓ |
+| Stale stats | 0 stale references to "6 agents", "74 tests", "6 providers" ✓ |
+| TypeScript typecheck | 0 errors ✓ |
+| Tests | 227/227 pass ✓ |
+| Build | Succeeds ✓ |
 
 ## Quick Reference
 
