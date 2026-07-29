@@ -49,9 +49,10 @@ The person you work with is NOT a professional developer. They are a **solo crea
 - **10 AI providers**: Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare
 - **12 built-in agents**: Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planner, Tester, Code Generator, Knowledge Curator
 - **CDN-loaded libraries**: Transformers.js, Orama, KaTeX, Mermaid, Leaflet (never install via npm)
-- **Canonical types**: `src/types.ts` defines all shared types, providers, tools, knowledge sources
 - **PWA**: `src/sw-register.ts` registers service worker for offline support
-- **Theming**: 8 theme variants defined via CSS custom properties in `src/index.css`
+- **All CSS in one file**: `src/index.css` (570 lines, 8 theme variants). No component-level CSS files.
+- **Canonical types**: `src/types.ts` (465 lines) defines all shared types, providers, agents, tools
+- **14 test files** in `src/test/` + E2E in `e2e/`
 
 ## Key gotchas
 - **Only `react` and `react-dom` as npm runtime dependencies.** All other libraries are CDN-loaded. Never add a third npm runtime dep.
@@ -64,6 +65,7 @@ The person you work with is NOT a professional developer. They are a **solo crea
 - **Vitest**: uses `happy-dom` environment, setup file at `src/test/setup.ts`, `fake-indexeddb` for IndexedDB mocking. Coverage thresholds: 80% statements, 75% branches, 85% functions, 80% lines.
 - **E2E tests**: Playwright with chromium only. Run `npx playwright install chromium` before first run.
 - **Cross-session memory**: `memoryApi.ts` exports `buildCrossSessionContext(agentId)` to aggregate memory across all sessions.
+- **`opencode.jsonc` command templates**: `deploy` / `test` / `typecheck` / `build` are pre-defined shortcuts (CI pipeline in order). Use them via `[cmd]` when appropriate.
 - **If docs conflict with source code, trust the source.**
 - **Free resource catalog** at `docs/resources/000-free-resources.md`.
 - **Brand guidelines** at `docs/project/006-brand-guidelines.md`.
@@ -87,18 +89,6 @@ These are specialized abilities you can activate with `/skill`:
 |-------|-------------|----------|
 | **`/skill docs-manager`** | Documentation analysis, research, writing, publishing | `.opencode/skills/docs-manager/SKILL.md` |
 | **`/skill developer`** | Full-stack dev, features, bugs, TDD, testing | `.opencode/skills/developer/SKILL.md` |
-
-### How to Use Skills
-1. The user asks for something (e.g., "build a search feature" or "update the docs")
-2. Load the appropriate skill: `/skill docs-manager` or `/skill developer`
-3. Follow the skill's workflow phases
-4. Keep the user informed in plain English at every step
-
-### Core Agents (always active)
-- **Repository Maintainer** — keep everything organized, clean, and working
-- **User's Technical Partner** — translate their ideas into working code
-- **Quality Guardian** — never let code ship without testing
-- **Documentation Steward** — ensure everything is documented for all skill levels
 
 ## Setup Script
 New users run this after cloning:
