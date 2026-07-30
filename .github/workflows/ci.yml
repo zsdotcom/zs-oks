@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
     paths-ignore:
       - 'docs/**'
       - 'AGENTS.md'
@@ -14,7 +14,7 @@ on:
       - '.workspace/**'
       - '.config.template.md'
   pull_request:
-    branches: [main, develop]
+    branches: [main]
     paths-ignore:
       - 'docs/**'
       - 'AGENTS.md'

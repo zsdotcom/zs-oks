@@ -26,6 +26,9 @@
     },
     {
       "pattern": "^https?://sandbox.fhir.dghs.gov.bd"
+    },
+    {
+      "pattern": "^https?://zarishsphere\\.com"
     }
   ]
 }
