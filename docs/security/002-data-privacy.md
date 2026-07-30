@@ -2,6 +2,8 @@
 title: Data Privacy & Trust
 order: 20
 tags: [security, privacy, data-residency, offline]
+audience: "stakeholders"
+last_updated: "2026-07-30"
 ---
 
 # Data Privacy & Trust

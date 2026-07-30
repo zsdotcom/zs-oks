@@ -2,6 +2,8 @@
 title: IndexedDB Schema Reference
 order: 20
 tags: [api, indexeddb, schema, reference]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # IndexedDB Schema Reference

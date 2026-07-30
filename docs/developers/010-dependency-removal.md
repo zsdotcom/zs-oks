@@ -1,11 +1,11 @@
 ---
-title: '010 — Zero-Dependency Architecture'
-description: 'Dependency philosophy, removed libraries table, CDN import strategy, and native API alternatives'
-category: 'developers'
+title: "010 — Zero-Dependency Architecture"
+description: "Dependency philosophy, removed libraries table, CDN import strategy, and native API alternatives"
+category: "developers"
 order: 10
-tags: ['dependencies', 'cdn', 'architecture', 'optimization']
-last_updated: '2026-07-28'
-audience: 'developers'
+tags: ["dependencies", "cdn", "architecture", "optimization"]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # 010 — Zero-Dependency Architecture

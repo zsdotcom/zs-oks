@@ -2,6 +2,8 @@
 title: Gemini/LLM Service API
 order: 30
 tags: [api, llm, gemini, openai, anthropic, provider]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # Gemini/LLM Service API

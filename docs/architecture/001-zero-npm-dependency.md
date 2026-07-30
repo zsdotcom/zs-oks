@@ -3,6 +3,8 @@ title: ADR-001 — Zero NPM Dependency Decision
 status: Accepted
 date: 2026-01
 tags: [adr, dependencies, cdn, bundle-size]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # ADR-001: Zero NPM Dependency Decision

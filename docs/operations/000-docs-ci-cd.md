@@ -3,7 +3,8 @@ title: "000 — Documentation Publishing Pipeline"
 category: "ops"
 order: 0
 tags: ["docs", "ci-cd", "github-pages", "docsify", "vitepress", "publishing"]
-last_updated: "2026-07-27"
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # 000 — Documentation Publishing Pipeline

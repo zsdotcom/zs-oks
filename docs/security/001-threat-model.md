@@ -2,6 +2,8 @@
 title: Threat Model
 order: 10
 tags: [security, threat-model, xss, api-keys, sandbox]
+audience: "stakeholders"
+last_updated: "2026-07-30"
 ---
 
 # Threat Model

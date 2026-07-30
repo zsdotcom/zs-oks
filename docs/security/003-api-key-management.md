@@ -2,6 +2,8 @@
 title: API Key Management
 order: 30
 tags: [security, api-keys, env-vars, settings]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # API Key Management

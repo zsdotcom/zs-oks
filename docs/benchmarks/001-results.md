@@ -3,7 +3,8 @@ title: "010 — Benchmark Results"
 category: "benchmarks"
 order: 10
 tags: ["benchmarks", "performance", "results", "indexeddb", "embeddings"]
-last_updated: "2026-07-27"
+audience: "all"
+last_updated: "2026-07-30"
 ---
 
 # 010 — Benchmark Results

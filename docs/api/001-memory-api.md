@@ -2,6 +2,8 @@
 title: Memory API Reference
 order: 10
 tags: [api, memory, reference]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # Memory API Reference

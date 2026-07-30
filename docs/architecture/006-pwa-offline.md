@@ -3,6 +3,8 @@ title: ADR-006 — PWA & Offline Architecture
 status: Accepted
 date: 2026-02
 tags: [adr, pwa, offline, service-worker, caching]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # ADR-006: PWA & Offline Architecture

@@ -3,7 +3,8 @@ title: "000 — Changelog"
 category: "changelog"
 order: 0
 tags: ["changelog", "version-history", "releases", "v2"]
-last_updated: "2026-07-27"
+audience: "all"
+last_updated: "2026-07-30"
 ---
 
 # 000 — Changelog

@@ -3,6 +3,8 @@ title: ADR-002 — 6-Tier Memory Architecture
 status: Accepted
 date: 2026-01
 tags: [adr, memory, architecture, indexeddb]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # ADR-002: 6-Tier Memory Architecture

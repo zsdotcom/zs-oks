@@ -3,7 +3,8 @@ title: "000 — Performance Benchmarks Overview"
 category: "benchmarks"
 order: 0
 tags: ["benchmarks", "performance", "indexeddb", "embeddings", "vector-search"]
-last_updated: "2026-07-27"
+audience: "all"
+last_updated: "2026-07-30"
 ---
 
 # 000 — Performance Benchmarks Overview

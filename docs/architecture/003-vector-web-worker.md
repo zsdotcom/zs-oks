@@ -3,6 +3,8 @@ title: ADR-003 — Vector Embeddings in Web Worker
 status: Accepted
 date: 2026-01
 tags: [adr, web-worker, embeddings, transformers, wasm]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # ADR-003: Vector Embeddings in Web Worker

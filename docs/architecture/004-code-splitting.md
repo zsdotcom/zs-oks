@@ -3,6 +3,8 @@ title: ADR-004 — Code Splitting Strategy
 status: Accepted
 date: 2026-02
 tags: [adr, code-splitting, react-lazy, performance, bundle]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # ADR-004: Code Splitting Strategy

@@ -3,6 +3,8 @@ title: ADR-005 — IndexedDB Schema Design
 status: Accepted
 date: 2026-01
 tags: [adr, indexeddb, schema, storage, persistence]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # ADR-005: IndexedDB Schema Design

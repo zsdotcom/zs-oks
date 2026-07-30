@@ -56,15 +56,15 @@ _No critical/blocking issues found._
 ## P3 — Low Priority / Nice to Have
 
 - [x] ✅ Add `markdown-link-check` GitHub Action (`.github/workflows/markdown-link-check.yml`) with weekly schedule + PR/PR checks + config (`mlc_config.json`)
-- [ ] ❌ Standardize `audience` field values across all frontmatter
-- [ ] ❌ Add `last_updated` field consistency across all files
+- [x] ✅ Standardize `audience` field values across all frontmatter (added to 20 files, fixed quote style in 2 files)
+- [x] ✅ Add `last_updated` field consistency across all files (added to 13 files, updated date on 10 files, fixed quote style in 2 files)
 
 ---
 
 ## Progress Summary
 
-- **Total items:** 18 (Round 1) + 22 (Round 2 deep analysis) = 40
-- **Completed:** 40 (100%)
+- **Total items:** 18 (Round 1) + 22 (Round 2 deep analysis) + 2 (Round 3 consistency) = 42
+- **Completed:** 42 (100%)
 - **In progress:** 0
 - **Not started:** 0
 

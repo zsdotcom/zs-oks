@@ -3,7 +3,8 @@ title: "010 — Documentation Style Guide"
 category: "ops"
 order: 10
 tags: ["docs", "style-guide", "markdown", "frontmatter", "conventions"]
-last_updated: "2026-07-27"
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # 010 — Documentation Style Guide

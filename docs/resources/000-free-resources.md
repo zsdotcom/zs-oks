@@ -1,9 +1,10 @@
 ---
-title: 'Free Resource Inventory'
-category: 'ops'
+title: "Free Resource Inventory"
+category: "ops"
 order: 002
-tags: ['resources', 'free-tier', 'mcp', 'cloudflare', 'cdn', 'api', 'oss-benefits']
-last_updated: '2026-07-27'
+tags: ["resources", "free-tier", "mcp", "cloudflare", "cdn", "api", "oss-benefits"]
+audience: "all"
+last_updated: "2026-07-30"
 ---
 
 # Free Resource Inventory

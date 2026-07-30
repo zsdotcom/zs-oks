@@ -2,6 +2,8 @@
 title: Sandbox API Reference
 order: 40
 tags: [api, sandbox, code-execution, security]
+audience: "developers"
+last_updated: "2026-07-30"
 ---
 
 # Sandbox API Reference
