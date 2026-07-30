@@ -131,7 +131,7 @@ zs-index/
 
 ### 2.3 Workflow File Naming
 
-CI/CD and automation workflow files follow a three-segment format:
+CI/CD and automation workflow files SHOULD follow this three-segment format for new workflows:
 
 ```
 [id]--[trigger]--[process].yml
@@ -151,6 +151,19 @@ CI/CD and automation workflow files follow a three-segment format:
 201--on-release--publish-pages.yml
 301--on-pull-request--lint-yaml.yml
 ```
+
+**Existing files** under `.github/workflows/` are exempt from this naming convention (covered by the `.github/**` exemption in Section 3). The following workflows currently exist in this repository and use their GitHub-generated or purpose-descriptive names:
+
+| File | Purpose |
+|---|---|
+| `auto-assign.yml` | Auto-assign PR reviewers and labels |
+| `ci.yml` | Type check, test, build, E2E, bundle analysis |
+| `codeql-analysis.yml` | CodeQL security analysis (weekly) |
+| `deploy-app.yml` | Build, Vercel deploy, Docker Hub push |
+| `deploy-docs.yml` | Validate and deploy docs to GitHub Pages |
+| `stale.yml` | Mark stale issues/PRs for cleanup |
+
+New workflow files SHOULD follow the `[id]--[trigger]--[process].yml` convention. If renaming an existing file, update all references (external callers, badges, branch protection rules) in the same PR.
 
 ### 2.4 Asset Naming (Images, Diagrams, Non-Code Files)
 
@@ -188,7 +201,13 @@ The following filenames are **exempt** from Section 2.1 because external tooling
 | `TODO.md` | Root-level roadmap file, referenced by name in AGENTS.md |
 | `llms.txt` | AI-crawler documentation index (markdown links for LLM context ingestion) |
 | `mkdocs.yml` | MkDocs requires this exact filename |
-| `.github/**` | GitHub Actions and templates require fixed paths under `.github/` |
+| `.github/workflows/` | GitHub Actions workflow files — see Section 2.3 for inventory |
+| `.github/ISSUE_TEMPLATE/` | GitHub issue template directory (reserved path) |
+| `.github/PULL_REQUEST_TEMPLATE/` | GitHub PR template directory (reserved path) |
+| `.github/dependabot.yml` | Dependabot configuration — GitHub-required filename |
+| `.github/CODEOWNERS` | Code owners — GitHub-required filename |
+| `.github/auto-assign.yml` | Auto-assign action configuration (referenced by `kentaro-m/auto-assign-action`) |
+| `.github/labeler.yml` | Labeler action configuration (referenced by `actions/labeler`) |
 | `index.md` | Directory index page for multiple platforms (GitHub Pages, docs sites) |
 | `SKILL.md` | Agent skill definition file with YAML frontmatter schema (OpenCode, Cursor) |
 

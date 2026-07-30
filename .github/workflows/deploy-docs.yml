@@ -32,6 +32,9 @@ jobs:
       status: ${{ steps.validation.outputs.status }}
     steps:
       - uses: actions/checkout@v6
+      - name: ZUSS validation
+        run: python3 scripts/validate-zuss.py --ci docs/
+        continue-on-error: true
       - id: validation
         run: |
           echo "Checking docs for basic integrity..."
