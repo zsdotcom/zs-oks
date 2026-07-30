@@ -1,6 +1,21 @@
 ---
 name: docs-manager
+title: "Documentation Analysis & Management Skill"
+domain: "zs-docs"
 description: "Complete documentation analysis, web research via Context7/Upstash MCP, content creation/update, progress tracking, and GitHub Pages publishing. Use ONLY when the user asks about documentation. Keywords: docs manager, documentation analysis, document analysis, analyze docs, documentation audit, docs audit, documentation management, docs manager agent, check documentation, fix documentation, documentation checklist, documentation progress, publish docs, update docs, improve documentation, reorganize docs, documentation research, doc research, solo developer, no coder, newbie."
+type: "okf-skill"
+version: "1.1.0"
+author: "ZarishSphere Foundation"
+status: "stable"
+last_updated: "2026-07-30"
+tags:
+  - documentation
+  - docs-manager
+  - research
+  - information-sources
+  - zuss
+audience:
+  - ai-agents
 ---
 
 # Documentation Analysis & Management Agent
@@ -135,15 +150,118 @@ Use Context7 to research:
 | **Integration opportunities** | Research what free/public-health APIs, MCP servers, CDN libraries could be integrated |
 | **Competitor/doc inspirations** | Look at similar open-source projects' documentation structure for inspiration |
 
-### 2.4 Resource Cataloging
+### 2.4 Mandatory Research Before Writing (ZUSS Section 14 — Non-Negotiable)
+
+> **Every document MUST verify factual claims about technology versions, software availability, release status, security posture, and ecosystem facts against the Information Source Registry before writing. Documents citing outdated or unverified information will be rejected.**
+
+Use the **Information Source Registry** (reproduced below) to determine which sources to consult for each document type.
+
+**Decision table — which sources to check:**
+
+| Document Type | Must Consult | Minimum Sources |
+|---|---|---|
+| Tutorial (how-to) | Category A (tool version), Category B (package version) | 2 |
+| How-to guide (setup/config) | Category A (version), Category B (dependencies), Category F (security) | 3 |
+| Reference (API/spec) | Category I (vendor docs), Category B (package versions) | 2 |
+| Explanation (architecture) | Category E (stack intelligence), Category G (news), Category J (trends) | 3 |
+| Project overview / README | Category A (version), Category C/D (project status), Category F (security) | 3 |
+| Agent / skill document | Category C (marketplace), Category I (vendor release notes) | 2 |
+| Migration guide | Category A (EOL dates), Category I (old + new release notes), Category B (package changes) | 3 |
+| Security advisory | Category F (CVE/NVD/GitHub Advisory Database) — ALL relevant | 3+ |
+| Ecosystem research | Category D (discovery), Category E (intelligence), Category G (news), Category H (newsletters), Category J (aggregates) | 5 |
+
+**Citation format (ZUSS Z19):**
+```markdown
+→ **Source Name** — URL — Brief context
+→ [Category A: endoflife.date]  — shorthand acceptable
+```
+
+### 2.5 Information Source Registry (ZUSS Section 14.3)
+
+Consult these sources — grouped by category — whenever writing about external technologies.
+
+**Category A: Version & Release Tracking**
+- endoflife.date — https://endoflife.date — EOL dates for 380+ products
+- versionlog.com — https://versionlog.com — Version history + EOL calendar for 90+ technologies
+- GitHub Releases — https://github.com/{org}/{repo}/releases — Official release notes
+- GitHub Changelog — https://github.blog/changelog — GitHub platform changes
+- releasealert.dev — https://releasealert.dev — Release notifications across registries
+
+**Category B: Package Registries (Canonical Versions)**
+- npmjs.com — https://www.npmjs.com — JavaScript/TypeScript packages
+- PyPI.org — https://pypi.org — Python packages
+- crates.io — https://crates.io — Rust packages
+- rubygems.org — https://rubygems.org — Ruby gems
+- Maven Central — https://central.sonatype.com — Java/JVM artifacts
+- Docker Hub — https://hub.docker.com — Container images
+
+**Category C: AI Agent & Skill Directories**
+- Official MCP Registry — https://registry.modelcontextprotocol.io — Anthropic-official
+- PulseMCP — https://pulsemcp.com — 11,840+ hand-reviewed MCP servers
+- Smithery — https://smithery.ai — 7,000+ servers, hosted option
+- AIAgentsDirectory Skills — https://aiagentsdirectory.com/skills — 3,002+ agent skills
+- Anthropic — https://github.com/anthropics/skills — Official skill repository
+- Agensi — https://agensi.io — Curated, security-scanned agent skills
+
+**Category D: Open Source Discovery**
+- GitHub Trending — https://github.com/trending — Rising repositories
+- GitHub Explore — https://github.com/explore — Topic-based collections
+- OpenAlternative — https://openalternative.co — Open source alternatives
+- LibHunt — https://libhunt.com — Topic-based library discovery
+
+**Category E: Tech Stack Intelligence**
+- StackShare — https://stackshare.io — Company tech stacks
+- Stack Overflow Survey — https://survey.stackoverflow.co — Developer adoption rates
+- State of JS — https://stateofjs.com — JavaScript ecosystem survey
+- ThoughtWorks Technology Radar — https://www.thoughtworks.com/radar — Expert assessment
+
+**Category F: Security Vulnerability Databases**
+- NVD — https://nvd.nist.gov — US government CVE repository
+- CVE Program — https://cve.org — Common Vulnerabilities and Exposures
+- GitHub Advisory Database — https://github.com/advisories — GHSA advisories
+- CISA KEV — https://www.cisa.gov/known-exploited-vulnerabilities — Known exploited
+- Snyk — https://snyk.io/advisories — Fix guidance
+- OSV.dev — https://osv.dev — Google-backed vulnerability aggregator
+
+**Category G: Tech News & Community**
+- Hacker News — https://news.ycombinator.com — General tech news
+- Lobsters — https://lobste.rs — Curated tech community
+- Dev.to — https://dev.to — Developer blog platform
+- Reddit r/programming, r/MachineLearning — Community discussion
+- The New Stack — https://thenewstack.io — Cloud-native analysis
+
+**Category H: Curated Newsletters**
+- TLDR — https://tldr.tech — Daily tech digest
+- Bytes — https://bytes.dev — JavaScript weekly
+- Rust Weekly — https://this-week-in-rust.org
+- Python Weekly — https://www.pythonweekly.com
+- Pragmatic Engineer — https://newsletter.pragmaticengineer.com — Engineering management
+
+**Category I: Official Vendor Release Notes**
+- GitHub Changelog — https://github.blog/changelog
+- Microsoft Dev Blogs — https://devblogs.microsoft.com — .NET, VS Code, TypeScript
+- AWS What's New — https://aws.amazon.com/new
+- OpenAI Changelog — https://platform.openai.com/changelog
+- Anthropic Updates — https://www.anthropic.com/release-notes
+
+**Category J: Ecosystem & Platform Aggregates**
+- npm trends — https://npmtrends.com — Package download comparison
+- PyPI Stats — https://pypistats.org — Python package popularity
+- BuiltWith — https://builtwith.com — Web technology detection
+- W3Techs — https://w3techs.com — Technology market share
+
+> **Important:** Always check at least one Category A source (version tracking) and the relevant Category I source (official vendor docs) before writing about ANY technology. This is a binding ZUSS requirement.
+
+### 2.6 Resource Cataloging
 For each discovery, catalog:
 - Tool/resource name and URL
 - What it does (in plain English)
 - How it could be integrated into this project
 - Priority (high/medium/low)
 - Effort estimate
+- Which ZUSS Information Source Registry Category it belongs to (if applicable)
 
-### 2.5 Update Progress
+### 2.7 Update Progress
 Record research findings in `docs/_progress/RESEARCH.md`.
 
 ---
@@ -434,3 +552,6 @@ Add to your `opencode.jsonc` or MCP configuration:
 10. **Never add npm dependencies.**
 11. **Write for the solo developer** — plain English, explain every term, include exact steps.
 12. **When in doubt, ask** — if you're unsure about a technical concept, don't guess. Ask the user or research via Context7.
+13. **Mandatory research before writing** — Before writing about any external technology, consult the Information Source Registry (Section 2.5 above). Cite at least one authoritative source per technology claim. This is a ZUSS Section 14 non-negotiable rule.
+14. **Validate with ZUSS checker** — After any documentation change, run `python3 scripts/validate-zuss.py` to check ZUSS compliance (Z01-Z25 rules).
+15. **Keep source citations in ZUSS format** — Use `→ **Source Name** — URL` format for all external source references.

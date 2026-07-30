@@ -1,6 +1,9 @@
 # zsdotcom/zs-oks — Repository CODEOWNERS
 # Order is important: LAST matching pattern wins.
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Teams must exist, be Visible (not Secret), and have Write permission.
+# See docs/guides/014-github-org-setup.md for setup instructions.
 
 # =============================================================================
 # DEFAULT OWNERS — All files unless overridden below
@@ -10,8 +13,8 @@
 # =============================================================================
 # CI/CD & INFRASTRUCTURE — DevOps responsible
 # =============================================================================
-.github/ @zsdotcom/devopsariful @zsdotcom/codeandbrain
-.github/workflows/ @zsdotcom/devopsariful @zsdotcom/codeandbrain
+.github/ @zsdotcom/admin
+.github/workflows/ @zsdotcom/admin
 .github/CODEOWNERS @zsdotcom/devopsariful @zsdotcom/codeandbrain
 Dockerfile @zsdotcom/devopsariful @zsdotcom/codeandbrain
 .dockerignore @zsdotcom/devopsariful @zsdotcom/codeandbrain
@@ -20,7 +23,7 @@ nginx.conf @zsdotcom/devopsariful @zsdotcom/codeandbrain
 .vscode/ @zsdotcom/devopsariful @zsdotcom/codeandbrain
 
 # =============================================================================
-# APPLICATION SOURCE CODE — Tech lead responsible
+# APPLICATION SOURCE CODE — Developers responsible
 # =============================================================================
 src/ @zsdotcom/codeandbrain @zsdotcom/arwazarish
 src/test/ @zsdotcom/arwazarish @zsdotcom/codeandbrain
@@ -28,12 +31,9 @@ index.html @zsdotcom/codeandbrain @zsdotcom/arwazarish
 vite.config.ts @zsdotcom/codeandbrain @zsdotcom/devopsariful
 
 # =============================================================================
-# DOCUMENTATION — Content maintainer responsible
+# DOCUMENTATION — Content team responsible
 # =============================================================================
 docs/ @zsdotcom/healthbgd @zsdotcom/codeandbrain
-docs/guides/ @zsdotcom/healthbgd @zsdotcom/codeandbrain
-docs/onboarding/ @zsdotcom/healthbgd @zsdotcom/codeandbrain
-docs/agents/ @zsdotcom/codeandbrain @zsdotcom/healthbgd
 README.md @zsdotcom/healthbgd @zsdotcom/codeandbrain
 AGENTS.md @zsdotcom/healthbgd @zsdotcom/codeandbrain
 
@@ -42,4 +42,3 @@ AGENTS.md @zsdotcom/healthbgd @zsdotcom/codeandbrain
 # =============================================================================
 .opencode/ @zsdotcom/codeandbrain @zsdotcom/devopsariful
 opencode.jsonc @zsdotcom/codeandbrain @zsdotcom/devopsariful
-AGENTS.md @zsdotcom/codeandbrain @zsdotcom/healthbgd

@@ -16,7 +16,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
-    "analyze": "ANALYZE=true npm run build"
+    "analyze": "ANALYZE=true npm run build",
+    "validate:zuss": "python3 scripts/validate-zuss.py --ci"
   },
   "engines": {
     "node": ">=22.0.0",
