@@ -166,19 +166,4 @@ export async function syncAllConnectors(): Promise<Record<string, { success: boo
   return results;
 }
 
-let pollTimer: ReturnType<typeof setInterval> | null = null;
 
-export function startPolling(intervalMs = 300000): void {
-  stopPolling();
-  pollTimer = setInterval(() => {
-    syncAllConnectors().catch(() => {});
-  }, intervalMs);
-}
-
-export function stopPolling(): void {
-  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
-}
-
-export function isPolling(): boolean {
-  return pollTimer !== null;
-}

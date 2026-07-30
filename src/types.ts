@@ -339,16 +339,6 @@ export interface DocumentTag {
   color: string;
 }
 
-/* ─── Feedback Item (v2 NEW) ─── */
-export interface FeedbackItem {
-  id: string;
-  documentId: string;
-  userId: string;
-  type: 'helpful' | 'not_helpful';
-  comment?: string;
-  createdAt: Date;
-}
-
 /* ─── Template Types (v2 NEW) ─── */
 export type TemplateCategory = 'epidemiology' | 'clinical' | 'research' | 'project' | 'mcp' | 'mermaid' | 'math' | 'custom';
 
@@ -359,66 +349,6 @@ export interface DocumentTemplate {
   category: TemplateCategory;
   content: string;
   icon?: string;
-}
-
-/* ─── Knowledge Source Types ─── */
-export interface KnowledgeSource {
-  id: string;
-  name: string;
-  displayName: string;
-  baseUrl: string;
-  enabled: boolean;
-  rateLimit: string;
-  requiresKey: boolean;
-  requiresToken?: boolean;
-  lastFetch?: Date;
-}
-
-export const KNOWLEDGE_SOURCES: KnowledgeSource[] = [
-  { id: 'ks-wiki', name: 'wikipedia', displayName: 'Wikipedia', baseUrl: 'https://en.wikipedia.org/api/rest_v1', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-arxiv', name: 'arxiv', displayName: 'arXiv', baseUrl: 'https://export.arxiv.org/api', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-openalex', name: 'openalex', displayName: 'OpenAlex', baseUrl: 'https://api.openalex.org', enabled: true, rateLimit: '100K/day', requiresKey: false },
-  { id: 'ks-pubmed', name: 'pubmed', displayName: 'PubMed', baseUrl: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils', enabled: true, rateLimit: '10/sec', requiresKey: false },
-  { id: 'ks-semantic', name: 'semantic-scholar', displayName: 'Semantic Scholar', baseUrl: 'https://api.semanticscholar.org/graph/v1', enabled: true, rateLimit: '100/sec', requiresKey: false },
-  { id: 'ks-who', name: 'who-gho', displayName: 'WHO GHO', baseUrl: 'https://ghoapi.azureedge.net/api', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-cdc', name: 'cdc-wonder', displayName: 'CDC WONDER', baseUrl: 'https://data.cdc.gov/resource', enabled: true, rateLimit: '1000/hr', requiresKey: false },
-  { id: 'ks-cdc-socrata', name: 'cdc', displayName: 'CDC Open Data (Socrata)', baseUrl: 'https://data.cdc.gov', enabled: true, rateLimit: '1000/hr', requiresKey: false, requiresToken: false },
-  { id: 'ks-delphi', name: 'delphi', displayName: 'Delphi Epidata (CMU)', baseUrl: 'https://api.delphi.cmu.edu/epidata', enabled: true, rateLimit: '10000/day', requiresKey: false },
-  { id: 'ks-infectonet', name: 'infectonet', displayName: 'InfectoNET Genomics', baseUrl: 'https://infectonet.org/api', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-open-meteo', name: 'open-meteo', displayName: 'Open-Meteo Weather', baseUrl: 'https://api.open-meteo.com/v1', enabled: true, rateLimit: '10000/day', requiresKey: false },
-  { id: 'ks-gdelt', name: 'gdelt', displayName: 'GDELT Project', baseUrl: 'https://api.gdeltproject.org/api/v2', enabled: true, rateLimit: '20/min', requiresKey: false },
-  { id: 'ks-crossref', name: 'crossref', displayName: 'CrossRef', baseUrl: 'https://api.crossref.org', enabled: true, rateLimit: '50/sec', requiresKey: false },
-  { id: 'ks-rss', name: 'rss', displayName: 'RSS Feeds', baseUrl: '', enabled: true, rateLimit: 'User-defined', requiresKey: false },
-  { id: 'ks-world-bank', name: 'world-bank', displayName: 'World Bank API', baseUrl: 'https://api.worldbank.org/v2', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-un-data', name: 'un-data', displayName: 'UN Data API', baseUrl: 'https://data.un.org/ws/rest/data', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-open-library', name: 'open-library', displayName: 'Open Library', baseUrl: 'https://openlibrary.org', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-europe-pmc', name: 'europe-pmc', displayName: 'Europe PMC', baseUrl: 'https://www.ebi.ac.uk/europepmc/api', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-github-docs', name: 'github-docs', displayName: 'GitHub Docs', baseUrl: 'https://docs.github.com/api', enabled: true, rateLimit: '60/hr', requiresKey: false },
-  { id: 'ks-google-books', name: 'google-books', displayName: 'Google Books', baseUrl: 'https://www.googleapis.com/books/v1', enabled: true, rateLimit: '1000/day', requiresKey: true },
-  { id: 'ks-newsapi', name: 'newsapi', displayName: 'NewsAPI', baseUrl: 'https://newsapi.org/v2', enabled: true, rateLimit: '500/day', requiresKey: true },
-  { id: 'ks-github-api', name: 'github-api', displayName: 'GitHub API', baseUrl: 'https://api.github.com', enabled: true, rateLimit: '60/hr', requiresKey: false, requiresToken: true },
-  { id: 'ks-reliefweb', name: 'reliefweb', displayName: 'ReliefWeb', baseUrl: 'https://api.reliefweb.int/v1', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-who-odata', name: 'who-odata', displayName: 'WHO data.who.int', baseUrl: 'https://data.who.int/api/gho-data/v1', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-  { id: 'ks-hdx', name: 'hdx', displayName: 'HDX Humanitarian Data', baseUrl: 'https://data.humdata.org/api/3/action', enabled: true, rateLimit: 'Unlimited', requiresKey: false },
-];
-
-export interface KnowledgeFetchResult {
-  source: string;
-  query: string;
-  results: KnowledgeResultItem[];
-  timestamp: Date;
-  cached: boolean;
-}
-
-export interface KnowledgeResultItem {
-  title: string;
-  url: string;
-  snippet: string;
-  source: string;
-  date?: string;
-  authors?: string[];
-  doi?: string;
-  confidence: 'high' | 'medium' | 'low';
 }
 
 /* ─── Connector Types ─── */
@@ -434,26 +364,6 @@ export interface ConnectorConfig {
 
 /* ─── App-wide State ─── */
 export type AppView = 'chat' | 'editor' | 'observability' | 'kanban' | 'templates' | 'search' | 'settings' | 'mcp' | 'skills' | 'tools' | 'data' | 'knowledge' | 'docs' | 'nlquery';
-
-export interface AppState {
-  currentUser: AppUser | null;
-  files: KBFile[];
-  folders: KBFolder[];
-  chatMessages: ChatMessage[];
-  providerConfig: ProviderConfig;
-  urlGroups: URLGroup[];
-  savedPrompts: SavedPrompt[];
-  a2aAgents: A2AAgent[];
-  a2aMetrics: A2AMetric[];
-  sandboxSettings: SandboxSettings;
-  activeView: AppView;
-  isDarkMode: boolean;
-  isOnline: boolean;
-  kanbanBoards: KanbanBoard[];
-  documentVersions: DocumentVersion[];
-  templates: DocumentTemplate[];
-  tags: DocumentTag[];
-}
 
 /* ─── Google Auth Types ─── */
 export interface AppUser {

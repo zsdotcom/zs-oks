@@ -498,6 +498,4 @@ export async function fetchAirQuality(lat: number, lon: number): Promise<ApiResu
   }
 }
 
-export function clearApiCache(): void {
-  cache.clear();
-}
+

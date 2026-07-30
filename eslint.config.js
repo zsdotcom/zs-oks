@@ -3,8 +3,8 @@ import tseslint from 'typescript-eslint';
 
 export default [
   { ignores: ['dist/', 'node_modules/', 'coverage/', 'e2e-results/', 'playwright-report/'] },
+  ...tseslint.configs.recommended,
   {
-    extends: [...tseslint.configs.recommended],
     files: ['src/**/*.{ts,tsx}', 'e2e/**/*.ts'],
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },

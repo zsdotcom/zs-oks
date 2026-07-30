@@ -112,7 +112,4 @@ export async function validateICD11Cluster(expression: string): Promise<ClusterV
   }
 }
 
-export const CONDITION_VALUESET_URL = 'https://fhir.dghs.gov.bd/core/ValueSet/bd-condition-icd11-diagnosis-valueset';
-export const ICD11_SYSTEM_URI = ICD11_SYSTEM;
-export const OCL_BASE_URL = OCL_BASE;
-export const FHIR_SANDBOX_BASE = 'https://sandbox.fhir.dghs.gov.bd/fhir';
+

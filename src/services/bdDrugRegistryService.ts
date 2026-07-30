@@ -85,14 +85,6 @@ export function searchDrugs(query: string): DrugEntry[] {
   ).slice(0, 50);
 }
 
-export function getDrugById(id: string): DrugEntry | undefined {
-  return DRUG_REGISTRY.find((d) => d.id === id);
-}
-
-export function getAllDrugs(): DrugEntry[] {
-  return DRUG_REGISTRY;
-}
-
 export function getDrugsByClass(therapeuticClass: string): DrugEntry[] {
   return DRUG_REGISTRY.filter((d) => d.therapeuticClass.toLowerCase() === therapeuticClass.toLowerCase());
 }

@@ -634,15 +634,6 @@ export function getUpazilasByDistrict(districtCode: string): BDUpazila[] {
   return result.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function getAllUpazilas(): BDUpazila[] {
-  const result: BDUpazila[] = [];
-  for (const [code, name] of Object.entries(upazilas)) {
-    const districtCode = getDistrictCodeFromUpazilaCode(code);
-    result.push({ code, name, level: 'upazila', districtCode });
-  }
-  return result;
-}
-
 export function getUpazilaByCode(code: string): BDUpazila | undefined {
   const name = upazilas[code];
   if (!name) return undefined;

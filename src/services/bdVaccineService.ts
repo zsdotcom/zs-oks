@@ -84,10 +84,6 @@ export function getAllVaccines(): BDVaccineEntry[] {
   return vaccineDataset;
 }
 
-export function getVaccineByCode(code: BDVaccineCode): BDVaccineEntry | undefined {
-  return vaccineDataset.find(v => v.code === code);
-}
-
 export function searchVaccines(query: string): BDVaccineEntry[] {
   if (!query.trim()) return [];
   const lower = query.toLowerCase();

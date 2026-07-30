@@ -124,18 +124,6 @@ export async function dbPut<T>(storeName: StoreName, data: T): Promise<void> {
   });
 }
 
-export async function dbInit(): Promise<void> {
-  await openDatabase();
-}
-
-export async function dbClose(): Promise<void> {
-  if (dbInstance) {
-    dbInstance.close();
-    dbInstance = null;
-    dbOpenPromise = null;
-  }
-}
-
 export async function dbGetByIndex<T>(storeName: StoreName, indexName: string, query: string | string[]): Promise<T[]> {
   const db = await openDatabase();
   const tx = db.transaction(storeName, 'readonly');

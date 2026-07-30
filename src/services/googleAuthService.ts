@@ -83,7 +83,6 @@ export const subscribeAuth = (cb: (u: AppUser | null) => void): (() => void) => 
 };
 
 export const getGoogleAccessToken = (): string | null => cachedAccessToken;
-export const setGoogleAccessToken = (token: string | null): void => { cachedAccessToken = token; };
 
 export const signInWithGoogle = async (): Promise<AppUser | null> => {
   const clientId = getStoredClientId();
@@ -195,15 +194,4 @@ export async function googleCreateDoc(token: string, title: string, content: str
   return res.json();
 }
 
-export async function googleCreateSlides(token: string, title: string): Promise<any> {
-  const res = await fetch('https://slides.googleapis.com/v1/presentations', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      title,
-      slides: [{ slideProperties: { layoutObjectId: 'p' } }],
-    }),
-  });
-  if (!res.ok) throw new Error(`Slides create failed: ${res.status}`);
-  return res.json();
-}
+
