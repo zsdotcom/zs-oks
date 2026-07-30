@@ -37,6 +37,19 @@
       font-weight: 400;
       color: var(--text-muted);
     }
+
+    .cover {
+      min-height: 60vh !important;
+      padding: 3rem 2rem !important;
+    }
+
+    .app-nav {
+      background: var(--surface-glass) !important;
+    }
+
+    .sidebar-toggle {
+      background: var(--surface-glass) !important;
+    }
   </style>
 </head>
 <body class="sidebar-chevron-right sidebar-group-underline">
@@ -46,16 +59,20 @@
     window.$docsify = {
       basePath: '/zs-oks/',
       homepage: 'index.md',
-      loadSidebar: '_sidebar.md',
-      loadNavbar: '_navbar.md',
+      loadSidebar: true,
+      loadNavbar: true,
       coverpage: '_coverpage.md',
-      name: '<span class="app-name-link"><svg class="logo-svg" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="6" fill="#1a1a2e"/><path d="M8 10c0-2 2-4 4-4h8c2 0 4 2 4 4v12c0 2-2 4-4 4h-8c-2 0-4-2-4-4V10z" stroke="#8B5CF6" stroke-width="1.5" fill="none"/><circle cx="16" cy="14" r="3" fill="#8B5CF6"/><path d="M12 20h8" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/><path d="M13 23h6" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/></svg><span class="logo-text">Open Knowledge Studio<span class="logo-sub">Documentation</span></span></span>',
+      name: '<span class="app-name-link"><svg class="logo-svg" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="6" fill="#1a1a2e"/><path d="M8 10c0-2 2-4 4-4h8c2 0 4 2 4 4v12c0 2-2 4-4 4h-8c-2 0-4-2-4-4V10z" stroke="#8B5CF6" stroke-width="1.5" fill="none"/><circle cx="16" cy="14" r="3" fill="#8B5CF6"/><path d="M12 20h8" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/><path d="M13 23h6" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/></svg><span class="logo-text">Open Knowledge Studio <span class="logo-sub">Documentation</span></span></span>',
       repo: 'https://github.com/zsdotcom/zs-oks',
       auto2top: true,
       autoHeader: true,
       formatUpdated: '{YYYY}-{MM}-{DD}',
       maxLevel: 4,
       notFoundPage: '404.md',
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md',
+        '/.*/_navbar.md': '/_navbar.md',
+      },
       search: { maxAge: 86400000, paths: 'auto', placeholder: 'Search docs...', noData: 'No results', depth: 4 },
       pwa: {
         serviceWorker: 'sw.js',
@@ -80,8 +97,8 @@
       ],
     };
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify@5/lib/plugins/search.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify@5/lib/plugins/pwa.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@5/dist/docsify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@5/dist/plugins/search.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@5/dist/plugins/pwa.min.js"></script>
 </body>
 </html>
