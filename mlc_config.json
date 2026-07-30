@@ -29,6 +29,45 @@
     },
     {
       "pattern": "^https?://zarishsphere\\.com"
+    },
+    {
+      "pattern": "^https?://oks\\.zarishsphere\\.com"
+    },
+    {
+      "pattern": "^https?://platform\\.openai\\.com"
+    },
+    {
+      "pattern": "^https?://platform\\.deepseek\\.com"
+    },
+    {
+      "pattern": "^https?://awesome-copilot\\.github\\.io"
+    },
+    {
+      "pattern": "^https?://reliefweb\\.int/labs"
+    },
+    {
+      "pattern": "^https?://data\\.humdata\\.org/"
+    },
+    {
+      "pattern": "^#\\w+"
+    },
+    {
+      "pattern": "^\\.\\./\\.\\./\\.config\\.template\\.md"
+    },
+    {
+      "pattern": "^https?://github\\.com/opencode-ai/awesome-opencode"
+    },
+    {
+      "pattern": "^https?://github\\.com/lucmsilva651/ejentum-mcp"
+    },
+    {
+      "pattern": "^https?://github\\.com/poimandres/poimandres"
+    },
+    {
+      "pattern": "^https?://github\\.com/JakeRoggenbuck/opencode-snippets"
+    },
+    {
+      "pattern": "^https?://github\\.com/iamsodo/opencode-quota"
     }
   ]
 }
