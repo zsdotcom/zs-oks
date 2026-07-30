@@ -62,6 +62,7 @@ test-results/
 /e2e-results/
 /playwright-report/
 playwright/.cache/
+.playwright-mcp/
 
 # --- Generated / Ejected ---
 public/models/
