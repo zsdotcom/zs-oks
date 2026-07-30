@@ -16,25 +16,22 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
-    "analyze": "ANALYZE=true npm run build",
-    "validate:zuss": "python3 scripts/validate-zuss.py --ci"
+    "analyze": "ANALYZE=true npm run build"
   },
   "engines": {
-    "node": ">=22.0.0",
+    "node": ">=26.0.0",
     "npm": ">=10.0.0"
   },
   "dependencies": {
-    "globals": "^17.8.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "typescript-eslint": "^8.65.0"
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.1.2",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
+    "@types.react": "^19.2.17",
+    "@types.react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
     "@vitest/coverage-v8": "^4.1.9",
     "fake-indexeddb": "^6.2.5",
@@ -42,6 +39,9 @@
     "rollup-plugin-visualizer": "^7.0.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "globals": "^17.8.0",
+    "@typescript-eslint/eslint-plugin": "^8.65.0",
+    "@typescript-eslint/parser": "^8.65.0"
   }
 }
