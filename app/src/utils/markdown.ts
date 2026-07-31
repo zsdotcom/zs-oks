@@ -32,14 +32,21 @@ function renderInline(text: string): string {
 }
 
 export function sanitizeOutput(html: string): string {
-  return html
-    .replace(/<script\b[^<]*(?:(?!<\/script\b[^>]*>)<[^<]*)*<\/script\b[^>]*>/gi, '')
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe\b[^>]*>)<[^<]*)*<\/iframe\b[^>]*>/gi, '')
-    .replace(/<object\b[^<]*(?:(?!<\/object\b[^>]*>)<[^<]*)*<\/object\b[^>]*>/gi, '')
-    .replace(/<embed\b[^<]*(?:(?!<\/embed\b[^>]*>)<[^<]*)*<\/embed\b[^>]*>/gi, '')
-    .replace(/\bon\w+\s*=\s*"[^"]*"/gi, '')
-    .replace(/\bon\w+\s*=\s*'[^']*'/gi, '')
-    .replace(/javascript\s*:/gi, '');
+  let current = html;
+  let previous: string;
+  do {
+    previous = current;
+    current = current
+      .replace(/<script\b[^<]*(?:(?!<\/script\b[^>]*>)<[^<]*)*<\/script\b[^>]*>/gi, '')
+      .replace(/<iframe\b[^<]*(?:(?!<\/iframe\b[^>]*>)<[^<]*)*<\/iframe\b[^>]*>/gi, '')
+      .replace(/<object\b[^<]*(?:(?!<\/object\b[^>]*>)<[^<]*)*<\/object\b[^>]*>/gi, '')
+      .replace(/<embed\b[^<]*(?:(?!<\/embed\b[^>]*>)<[^<]*)*<\/embed\b[^>]*>/gi, '')
+      .replace(/\bon\w+\s*=\s*"[^"]*"/gi, '')
+      .replace(/\bon\w+\s*=\s*'[^']*'/gi, '')
+      .replace(/javascript\s*:/gi, '');
+  } while (current !== previous);
+
+  return current;
 }
 
 export function parse(markdown: string): string {
