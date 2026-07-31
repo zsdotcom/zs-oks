@@ -33,10 +33,10 @@ function renderInline(text: string): string {
 
 export function sanitizeOutput(html: string): string {
   return html
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
-    .replace(/<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi, '')
+    .replace(/<script\b[^<]*(?:(?!<\/script\b[^>]*>)<[^<]*)*<\/script\b[^>]*>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe\b[^>]*>)<[^<]*)*<\/iframe\b[^>]*>/gi, '')
+    .replace(/<object\b[^<]*(?:(?!<\/object\b[^>]*>)<[^<]*)*<\/object\b[^>]*>/gi, '')
+    .replace(/<embed\b[^<]*(?:(?!<\/embed\b[^>]*>)<[^<]*)*<\/embed\b[^>]*>/gi, '')
     .replace(/\bon\w+\s*=\s*"[^"]*"/gi, '')
     .replace(/\bon\w+\s*=\s*'[^']*'/gi, '')
     .replace(/javascript\s*:/gi, '');
