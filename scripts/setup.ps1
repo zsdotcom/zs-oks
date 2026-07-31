@@ -164,7 +164,7 @@ Write-Host "  ✓ VS Code:       extensions installed" -ForegroundColor Green
 ""
 Write-Host "  Next steps:" -ForegroundColor Yellow
 Write-Host "  1. Edit .env — add your API keys" -ForegroundColor Cyan
-Write-Host "  2. Edit .config.template.md — add secrets to GitHub" -ForegroundColor Cyan
-Write-Host "  3. Open VS Code: code $RepoDir" -ForegroundColor Cyan
-Write-Host "  4. Run dev server: npm run dev" -ForegroundColor Cyan
+Write-Host "  2. Open VS Code: code $RepoDir" -ForegroundColor Cyan
+Write-Host "  3. Run dev server: npm run dev" -ForegroundColor Cyan
+Write-Host "  4. Configure GitHub secrets (see below)" -ForegroundColor Cyan
 ""

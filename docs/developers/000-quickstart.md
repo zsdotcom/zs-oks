@@ -18,8 +18,8 @@ Get **Open Knowledge Studio** running locally in 5 minutes.
 
 | Tool | Version | Check Command |
 | :--- | :--- | :--- |
-| **Node.js** | v26.0+ | `node --version` |
-| **npm** | v11.0+ | `npm --version` |
+| **Node.js** | v18.0+ | `node --version` |
+| **npm** | v9.0+ | `npm --version` |
 | **Git** | v2.0+ | `git --version` |
 
 ---
@@ -28,7 +28,7 @@ Get **Open Knowledge Studio** running locally in 5 minutes.
 
 ```bash
 git clone https://github.com/zsdotcom/zs-oks.git
-cd open-knowledge-studio
+cd zs-oks
 npm install
 ```
 

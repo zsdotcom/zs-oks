@@ -115,11 +115,11 @@ Open your browser and go to: **http://localhost:3000**
 ## ✦ Technical Details (For Developers)
 
 | Category | Technology | Version |
-|:---------|:-----------|:--------|
-| Runtime | React | 19 |
-| Build | Vite | 8 |
-| Language | TypeScript | 7 |
-| CSS | Tailwind | 4 |
+|:---------|:-----------|:---------|
+| Runtime | React | 19.2.8 |
+| Build | Vite | 8.1.5 |
+| Language | TypeScript | 6.0.3 |
+| CSS | Tailwind | 4.3.3 |
 | Test | Vitest + Playwright | Latest |
 | ML | Transformers.js | CDN-loaded |
 | Search | Orama JS | CDN-loaded |
