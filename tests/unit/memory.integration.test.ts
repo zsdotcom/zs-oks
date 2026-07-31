@@ -6,7 +6,7 @@ import {
   generateIsolatedKey, broadcastMemoryUpdate, subscribeMemoryUpdates,
   getStorageEstimate, performMaintenance,
   computeEmbedding, storeLongTerm,
-} from '../services/memoryApi';
+} from '../../app/src/services/memoryApi';
 
 describe('Cross-Tier Operations', () => {
   it('promotes data from Working to Episodic on task completion', async () => {
@@ -16,7 +16,7 @@ describe('Cross-Tier Operations', () => {
       createdAt: new Date().toISOString(),
     });
     await promoteWorkingToEpisodic('session-cross', 'proj-cross');
-    const { getWorking } = await import('../services/memoryApi');
+    const { getWorking } = await import('../../app/src/services/memoryApi');
     const working = await getWorking('session-cross');
     expect(working.length).toBe(0);
   });
@@ -64,7 +64,7 @@ describe('Workspace Isolation Merge & Compare', () => {
       sessionId: 'session-beta', key: 'plan', value: 'Beta plan',
       createdAt: new Date().toISOString(),
     });
-    const { getWorking } = await import('../services/memoryApi');
+    const { getWorking } = await import('../../app/src/services/memoryApi');
     const alpha = await getWorking('session-alpha');
     expect(alpha[0].value).toBe('Alpha plan');
     const beta = await getWorking('session-beta');

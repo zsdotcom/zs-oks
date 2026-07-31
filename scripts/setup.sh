@@ -129,7 +129,7 @@ if [ ! -f "$REPO_DIR/.env" ]; then
   if [ -f "$REPO_DIR/.env.example" ]; then
     cp "$REPO_DIR/.env.example" "$REPO_DIR/.env"
     ok "Created .env from .env.example"
-    warn "Edit .env to add your API keys (see .config.template.md)"
+    warn "Edit .env to add your API keys"
   fi
 fi
 

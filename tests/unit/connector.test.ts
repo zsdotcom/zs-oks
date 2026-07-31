@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { testGitHubConnection, fetchGitHubIssues, fetchGitHubRepoInfo, testSlackWebhook, sendSlackMessage, fetchRSSFeed, addConnector, removeConnector, getConnectors, syncConnector, getConnectorData } from '../services/connectorService';
-import type { ConnectorConfig } from '../types';
+import { testGitHubConnection, fetchGitHubIssues, fetchGitHubRepoInfo, testSlackWebhook, sendSlackMessage, fetchRSSFeed, addConnector, removeConnector, getConnectors, syncConnector, getConnectorData } from '../../app/src/services/connectorService';
+import type { ConnectorConfig } from '../../app/src/types';
 
 function ensureMock() {
   if (!vi.isMockFunction(fetch)) {

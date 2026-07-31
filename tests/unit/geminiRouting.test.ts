@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { queryLLM } from '../services/geminiService';
-import type { ChatMessage } from '../types';
-import { MessageSender } from '../types';
+import { queryLLM } from '../../app/src/services/geminiService';
+import type { ChatMessage } from '../../app/src/types';
+import { MessageSender } from '../../app/src/types';
 
 function mockResponse(data: any, status = 200) {
   return vi.mocked(fetch).mockResolvedValueOnce({
@@ -126,7 +126,7 @@ describe('queryLLM multi-provider routing', () => {
 
   describe('Streaming (queryLLMStream)', async () => {
     it('exists and is a function', async () => {
-      const { queryLLMStream } = await import('../services/geminiService');
+      const { queryLLMStream } = await import('../../app/src/services/geminiService');
       expect(typeof queryLLMStream).toBe('function');
     });
   });

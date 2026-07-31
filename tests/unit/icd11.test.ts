@@ -7,7 +7,7 @@ import {
   icd11ToFHIR,
   FHIRToICD11,
   searchICD11ByFHIR,
-} from '../services/icd11Service';
+} from '../../app/src/services/icd11Service';
 
 describe('searchICD11', () => {
   it('searches by code', () => {

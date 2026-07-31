@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { oclValidateCode, oclLookup, oclValueSetValidateCode, validateICD11Cluster } from '../services/bdTerminologyService';
+import { oclValidateCode, oclLookup, oclValueSetValidateCode, validateICD11Cluster } from '../../app/src/services/bdTerminologyService';
 
 function mockFetchResponse(data: any, status = 200) {
   return vi.mocked(fetch).mockResolvedValueOnce({

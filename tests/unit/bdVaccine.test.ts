@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getAllVaccines, getEpiSchedule, searchVaccines } from '../services/bdVaccineService';
+import { getAllVaccines, getEpiSchedule, searchVaccines } from '../../app/src/services/bdVaccineService';
 
 describe('bdVaccineService', () => {
   describe('getAllVaccines', () => {

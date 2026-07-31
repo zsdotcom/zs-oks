@@ -4,7 +4,7 @@ import {
   getICHIByCode,
   getAllICHICodes,
   getICHIBySection,
-} from '../services/ichiService';
+} from '../../app/src/services/ichiService';
 
 describe('searchICHI', () => {
   it('searches by code', () => {

@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { parseCSV, getCSVSummary } from '../services/csvService';
-import { setLocale, getLocale, t, onLocaleChange, getSupportedLocales } from '../services/i18nService';
-import { enqueue, getQueue, removeFromQueue, getQueueStatus, destroySyncQueue } from '../services/syncQueue';
-import { renderChart, renderMermaidDiagram } from '../services/chartService';
-import { initCollaboration, destroyCollaboration, broadcastFileUpdate, updatePresence, getActivePeers, onCollabAction } from '../services/collaborationService';
-import { detectOutbreaks, computeOutbreakStats } from '../services/outbreakService';
-import { getReportTemplates, generateReport, renderReportToMarkdown } from '../services/reportService';
-import { getSurveillanceFeeds, computeSurveillanceSummary } from '../services/surveillanceService';
-import { buildActiveToolsContext, parseToolCall } from '../services/mcpService';
-import type { EpiDataPoint } from '../components/EpiMap';
+import { parseCSV, getCSVSummary } from '../../app/src/services/csvService';
+import { setLocale, getLocale, t, onLocaleChange, getSupportedLocales } from '../../app/src/services/i18nService';
+import { enqueue, getQueue, removeFromQueue, getQueueStatus, destroySyncQueue } from '../../app/src/services/syncQueue';
+import { renderChart, renderMermaidDiagram } from '../../app/src/services/chartService';
+import { initCollaboration, destroyCollaboration, broadcastFileUpdate, updatePresence, getActivePeers, onCollabAction } from '../../app/src/services/collaborationService';
+import { detectOutbreaks, computeOutbreakStats } from '../../app/src/services/outbreakService';
+import { getReportTemplates, generateReport, renderReportToMarkdown } from '../../app/src/services/reportService';
+import { getSurveillanceFeeds, computeSurveillanceSummary } from '../../app/src/services/surveillanceService';
+import { buildActiveToolsContext, parseToolCall } from '../../app/src/services/mcpService';
+import type { EpiDataPoint } from '../../app/src/components/EpiMap';
 
 describe('csvService', () => {
   it('parseCSV parses basic CSV with headers', () => {
@@ -315,7 +315,7 @@ describe('syncQueue', () => {
     destroySyncQueue();
     const q = await getQueue();
     for (const item of q) {
-      const { removeFromQueue } = await import('../services/syncQueue');
+      const { removeFromQueue } = await import('../../app/src/services/syncQueue');
       await removeFromQueue(item.id);
     }
   });

@@ -10,7 +10,7 @@ import {
   getStorageEstimate, performMaintenance,
   computeEmbedding, computeEmbeddingsParallel,
   rebuildSemanticIndex,
-} from '../services/memoryApi';
+} from '../../app/src/services/memoryApi';
 
 describe('Tier 1: Session Memory', () => {
   beforeEach(() => clearSession());

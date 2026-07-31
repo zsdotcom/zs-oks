@@ -4,7 +4,7 @@ import {
   getICFByCode,
   getAllICFCodes,
   getICFByComponent,
-} from '../services/icfService';
+} from '../../app/src/services/icfService';
 
 describe('searchICF', () => {
   it('searches by code', () => {

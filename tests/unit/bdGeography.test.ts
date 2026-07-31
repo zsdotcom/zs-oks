@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   getAllDivisions, getDistrictsByDivision, getUpazilasByDistrict,
   getAllDistricts, searchGeography, getFullGeoPath,
-} from '../services/bdGeographyService';
+} from '../../app/src/services/bdGeographyService';
 
 describe('bdGeographyService', () => {
   describe('getAllDivisions', () => {

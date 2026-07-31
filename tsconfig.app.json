@@ -15,10 +15,10 @@
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./app/src/*"]
     },
     "types": ["vite/client"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["app/src/**/*.ts", "app/src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]
 }

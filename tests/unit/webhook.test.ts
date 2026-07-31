@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { addWebhook, removeWebhook, updateWebhook, getWebhooksByEvent, fireWebhooks, getAllWebhooks } from '../services/webhookService';
+import { addWebhook, removeWebhook, updateWebhook, getWebhooksByEvent, fireWebhooks, getAllWebhooks } from '../../app/src/services/webhookService';
 
 describe('webhookService', () => {
   beforeEach(() => {

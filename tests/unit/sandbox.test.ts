@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createSandboxData, cleanupSandbox } from '../services/sandboxService';
-import { SandboxResult } from '../services/sandboxService';
+import { createSandboxData, cleanupSandbox } from '../../app/src/services/sandboxService';
+import { SandboxResult } from '../../app/src/services/sandboxService';
 
 describe('Sandbox Service', () => {
   it('should create sandbox data correctly', () => {

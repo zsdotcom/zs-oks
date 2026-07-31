@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { runOrchestratedWorkflow, runSequentialWorkflow } from '../services/geminiService';
+import { runOrchestratedWorkflow, runSequentialWorkflow } from '../../app/src/services/geminiService';
 
 const mockAgents = [
   { id: 'coord', name: 'Coordinator', role: 'Synthesis', systemPrompt: 'You synthesize.', color: '#6366f1', avatar: 'C' },

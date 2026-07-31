@@ -8,6 +8,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+    root: 'app',
     base: process.env.BASE_PATH || '/',
     server: {
       port: 3000,
@@ -40,7 +41,7 @@ export default defineConfig({
     ].filter(Boolean),
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, 'src'),
+        '@': path.resolve(__dirname, 'app/src'),
       }
     },
     build: {

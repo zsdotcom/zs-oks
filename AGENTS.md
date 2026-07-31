@@ -21,6 +21,7 @@ The person you work with is NOT a professional developer. They are a **solo crea
 
 ## Repo constraints
 - All work inside the repository directory. Setup scripts (`scripts/setup.sh` / `scripts/setup.ps1`) auto-configure paths.
+- **Hierarchical Structure**: App is in `app/`, docs in `docs/`, config in `.config/`, infrastructure in `infrastructure/`, and tests in `tests/`.
 - `opencode.jsonc` loads this file as instructions; permits `npm *`, `npx *`, `git status/diff/log/add` without confirmation; `git commit/push` requires approval.
 
 ## Commands (CI pipeline order: `npm ci` → `typecheck` → `test` → `build`; E2E on PRs only)
@@ -39,32 +40,38 @@ The person you work with is NOT a professional developer. They are a **solo crea
 | `npm run preview` | Preview the production build locally |
 
 ## Paths & aliases
-- `@/` → `src/` (configured in both `vite.config.ts` and `tsconfig.app.json`)
+- `@/` → `app/src/` (configured in both `vite.config.ts` and `tsconfig.app.json`)
 - `.nvmrc`: Node.js 26; `.env.example` documents all API keys
 
 ## Architecture (Verified from source)
+- **Hierarchical Organization**:
+    - `app/`: React/TypeScript application and Google Apps Script backend.
+    - `docs/`: Comprehensive project documentation.
+    - `infrastructure/`: Agentic definitions, tool schemas (MCP), and workflows.
+    - `.config/`: Centralized configuration for deployments and linting.
+    - `tests/`: Unit (`tests/unit/`) and E2E (`tests/e2e/`) test suites.
 - **Frontend only** — everything runs in the browser, no backend server
-- **Entrypoint**: `src/index.tsx` → `src/App.tsx` (1357 lines, main app component)
+- **Entrypoint**: `app/src/index.tsx` → `app/src/App.tsx` (1357 lines, main app component)
 - **6-tier memory**: Session → Episodic → Semantic → Procedural → Working → Long-Term
 - **10 AI providers**: Gemini, OpenAI, Anthropic, DeepSeek, Groq, Ollama, OpenRouter, Cerebras, GitHub, Cloudflare
 - **12 built-in agents**: Coordinator, Researcher, Data Analyst, Writer, Reviewer, Librarian, Security Analyst, Code Reviewer, Planning Agent, Testing Agent, Code Generator, Knowledge Curator
 - **CDN-loaded libraries**: Transformers.js, Orama, KaTeX, Mermaid, Leaflet (never install via npm)
-- **PWA**: `src/sw-register.ts` registers service worker for offline support
-- **All CSS in one file**: `src/index.css` (570 lines, 8 theme variants). No component-level CSS files.
-- **Canonical types**: `src/types.ts` (465 lines) defines all shared types, providers, agents, tools
-- **14 test files** in `src/test/` + E2E in `e2e/`
+- **PWA**: `app/src/sw-register.ts` registers service worker for offline support
+- **All CSS in one file**: `app/src/index.css` (570 lines, 8 theme variants). No component-level CSS files.
+- **Canonical types**: `app/src/types.ts` (465 lines) defines all shared types, providers, agents, tools
+- **Test files**: Unit tests in `tests/unit/` + E2E in `tests/e2e/`
 
 ## Key gotchas
 - **Only `react` and `react-dom` as npm runtime dependencies.** All other libraries are CDN-loaded. Never add a third npm runtime dep.
-- **Tailwind CSS v4**: No `tailwind.config.js`. Configured via `@import "tailwindcss"` in `src/index.css` + `@tailwindcss/vite` plugin in `vite.config.ts`.
+- **Tailwind CSS v4**: No `tailwind.config.js`. Configured via `@import "tailwindcss"` in `app/src/index.css` + `@tailwindcss/vite` plugin in `vite.config.ts`.
 - **`npm run build` runs typecheck first**: `tsc -b --noEmit && vite build`. Type errors will fail the build.
 - **CSP connect-src** (`vite.config.ts:22`) must list every API domain the app calls. Add new API domains here.
 - **API keys** come from `import.meta.env.VITE_*` or runtime Settings panel (stored in IndexedDB).
-- **ESLint**: `@typescript-eslint/no-explicit-any` is **off**, `no-console` allows `warn`/`error`, unused vars are `warn` (with `_` prefix ignore).
+- **ESLint**: `@typescript-eslint/no-explicit-any` is **off**, `no-console` allows `warn`/`error`, unused vars are `warn` (with `_` prefix ignore). Config located in `.config/eslint.config.js`.
 - **Prettier**: single quotes, trailing commas, 120 print width, semicolons, lf line endings.
-- **Vitest**: uses `happy-dom` environment, setup file at `src/test/setup.ts`, `fake-indexeddb` for IndexedDB mocking. Coverage thresholds: 80% statements, 75% branches, 85% functions, 80% lines.
-- **E2E tests**: Playwright with chromium only. Run `npx playwright install chromium` before first run.
-- **Cross-session memory**: `memoryApi.ts` exports `buildCrossSessionContext(agentId)` to aggregate memory across all sessions.
+- **Vitest**: uses `happy-dom` environment, setup file at `tests/unit/setup.ts`, `fake-indexeddb` for IndexedDB mocking. Coverage thresholds: 80% statements, 75% branches, 85% functions, 80% lines.
+- **E2E tests**: Playwright with chromium only. Run `npx playwright install chromium` before first run. Config located in `playwright.config.ts`.
+- **Cross-session memory**: `app/src/services/memoryApi.ts` exports `buildCrossSessionContext(agentId)` to aggregate memory across all sessions.
 - **`opencode.jsonc` command templates**: `deploy` / `test` / `typecheck` / `build` are pre-defined shortcuts (CI pipeline in order). Use them via `[cmd]` when appropriate.
 - **If docs conflict with source code, trust the source.**
 - **Free resource catalog** at `docs/resources/000-free-resources.md`.

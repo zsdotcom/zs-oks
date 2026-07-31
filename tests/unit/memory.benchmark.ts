@@ -3,7 +3,7 @@ import {
   storeEpisodic, storeSemantic,
   generateIsolatedKey, storeWorking,
   computeEmbedding,
-} from '../services/memoryApi';
+} from '../../app/src/services/memoryApi';
 
 describe('IndexedDB Write (100 records)', () => {
   bench('write throughput for episodic memory', async () => {

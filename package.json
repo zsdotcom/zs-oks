@@ -13,10 +13,11 @@
     "test:coverage": "vitest run --coverage",
     "test:bench": "vitest bench",
     "test:bench:compare": "vitest bench --compare benchmark-results.json",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --config=playwright.config.ts",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
-    "analyze": "ANALYZE=true npm run build"
+    "analyze": "ANALYZE=true npm run build",
+    "lint": "eslint --config .config/eslint.config.js app/src"
   },
   "engines": {
     "node": ">=18.0.0",
