@@ -6,7 +6,7 @@ on:
     paths:
       - 'docs/**'
       - 'docs/_data/**'
-      - '.github/workflows/deploy-docs.yml'
+      - '.github/workflows/003--on-push--deploy-docs.yml'
       - 'AGENTS.md'
       - 'README.md'
   workflow_dispatch:

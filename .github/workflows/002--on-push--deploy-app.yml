@@ -7,7 +7,7 @@ on:
       - 'docs/**'
       - 'AGENTS.md'
       - 'README.md'
-      - '.github/workflows/deploy-docs.yml'
+      - '.github/workflows/003--on-push--deploy-docs.yml'
   release:
     types: [published]
 

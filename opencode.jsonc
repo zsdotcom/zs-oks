@@ -23,6 +23,10 @@
       "description": "Canonical project variables (version, stats, URLs)"
     },
     "infra": {
+      "path": "infrastructure",
+      "description": "Agentic infrastructure: agents, tools, workflows, knowledge"
+    },
+    "github": {
       "path": ".github",
       "description": "CI/CD workflows, CODEOWNERS, issue templates"
     }
