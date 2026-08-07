@@ -1,21 +1,39 @@
 # Security Policy
+## ZarishSphere Foundation — Open Knowledge Studio
 
-## Supported Versions
+**Document type:** Policy
+**Date:** August 03, 2026
+**Author:** Mohammad Ariful Islam / ZarishSphere Foundation
+**License:** CC BY 4.0
+**Status:** V1 — Active
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+## 1. Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+We actively support and provide security updates for the following versions of Open Knowledge Studio:
 
-## Reporting a Vulnerability
+| Version | Supported |
+| :--- | :--- |
+| V1.x (Current) | :white_check_mark: |
+| < V1.0 | :x: |
 
-Use this section to tell people how to report a vulnerability.
+## 2. Reporting a Vulnerability
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+The ZarishSphere Foundation takes security seriously. If you discover a vulnerability, please follow these steps:
+
+1.  **Do not open a public issue.**
+2.  Email the details to **foundation@zarishsphere.com**.
+3.  Include a description of the vulnerability, steps to reproduce, and potential impact.
+
+We will acknowledge your report within 48 hours and provide a timeline for resolution.
+
+## 3. Automated Security Measures
+
+We utilize the following automated tools to maintain repository security:
+- **Dependabot**: Weekly scans for dependency vulnerabilities and automated PRs.
+- **CodeQL**: Static analysis for code quality and security vulnerabilities on every push to `main`.
+- **Secret Scanning**: Automated detection of leaked credentials.
+
+---
+*ZarishSphere Foundation · V1 · August 03, 2026*
+*License: CC BY 4.0*
+*GitHub: https://github.com/zsdotcom/zs-oks*

@@ -1,0 +1,42 @@
+name: Cleanup Stale Branches
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at midnight UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Delete merged branches
+        run: |
+          git remote prune origin
+          git branch -r --merged origin/main | grep -v 'origin/main' | sed 's/origin\///' | xargs -r -n 1 git push origin --delete
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete stale branches (older than 30 days)
+        run: |
+          current_date=$(date +%s)
+          git for-each-ref --format='%(committerdate:raw) %(refname:short)' refs/remotes/origin | while read time zone ref; do
+            if [[ "$ref" == "origin/main" || "$ref" == "origin/HEAD" ]]; then
+              continue
+            fi
+            
+            diff=$(( (current_date - time) / 86400 ))
+            if [ $diff -gt 30 ]; then
+              branch_name=${ref#origin/}
+              echo "Deleting stale branch: $branch_name (last commit $diff days ago)"
+              git push origin --delete "$branch_name" || true
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

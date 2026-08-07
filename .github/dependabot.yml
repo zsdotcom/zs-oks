@@ -7,10 +7,11 @@ updates:
       day: 'monday'
       time: '09:00'
       timezone: 'Asia/Dhaka'
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 20
     labels:
       - 'dependencies'
       - 'automated'
+      - 'npm'
     ignore:
       - dependency-name: 'react'
         versions: ['>=20.0.0']
@@ -30,10 +31,11 @@ updates:
       day: 'monday'
       time: '09:00'
       timezone: 'Asia/Dhaka'
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
     labels:
       - 'ci'
       - 'automated'
+      - 'actions'
     commit-message:
       prefix: 'chore'
       include: 'scope'
