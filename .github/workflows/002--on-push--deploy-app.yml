@@ -49,7 +49,7 @@ jobs:
     name: Deploy to Vercel
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'release' && github.repository == 'zsdotcom/zs-oks'
+    if: github.event_name == 'release' && github.repository == 'zsdotcom/zs-oks' && vars.VERCEL_TOKEN != ''
     environment:
       name: production
       url: https://oks.zarishsphere.com
@@ -90,7 +90,7 @@ jobs:
     name: Push to Docker Hub
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'release' && github.repository == 'zsdotcom/zs-oks'
+    if: github.event_name == 'release' && github.repository == 'zsdotcom/zs-oks' && vars.DOCKER_HUB_TOKEN != ''
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
