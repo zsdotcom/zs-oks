@@ -41,7 +41,7 @@
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10",
-    "globals": "^17.8.0",
+    "globals": "^17.9.0",
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "@typescript-eslint/parser": "^8.66.0"
   }
