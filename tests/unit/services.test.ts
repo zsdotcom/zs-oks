@@ -148,11 +148,17 @@ describe('outbreakService', () => {
   });
 
   it('detectOutbreaks assigns severity based on anomaly score', () => {
+    const now = new Date();
+    const recentDate = new Date(now.getTime() - 2 * 86400000).toISOString().split('T')[0];
+    const olderDate1 = new Date(now.getTime() - 10 * 86400000).toISOString().split('T')[0];
+    const olderDate2 = new Date(now.getTime() - 11 * 86400000).toISOString().split('T')[0];
+    const olderDate3 = new Date(now.getTime() - 12 * 86400000).toISOString().split('T')[0];
+
     const criticalData: EpiDataPoint[] = [
-      { id: '1', lat: 0, lng: 0, label: 'CityX', disease: 'Ebola', cases: 1, severity: 'critical', date: '2026-06-01', status: 'active' },
-      { id: '2', lat: 0, lng: 0, label: 'CityX', disease: 'Ebola', cases: 1, severity: 'critical', date: '2026-06-02', status: 'active' },
-      { id: '3', lat: 0, lng: 0, label: 'CityX', disease: 'Ebola', cases: 1, severity: 'critical', date: '2026-06-03', status: 'active' },
-      { id: '4', lat: 0, lng: 0, label: 'CityX', disease: 'Ebola', cases: 500, severity: 'critical', date: '2026-07-26', status: 'active' },
+      { id: '1', lat: 0, lng: 0, label: 'CityX', disease: 'Ebola', cases: 1, severity: 'critical', date: olderDate1, status: 'active' },
+      { id: '2', lat: 0, lng: 0, label: 'CityX', disease: 'Ebola', cases: 1, severity: 'critical', date: olderDate2, status: 'active' },
+      { id: '3', lat: 0, lng: 0, label: 'CityX', disease: 'Ebola', cases: 1, severity: 'critical', date: olderDate3, status: 'active' },
+      { id: '4', lat: 0, lng: 0, label: 'CityX', disease: 'Ebola', cases: 500, severity: 'critical', date: recentDate, status: 'active' },
     ];
     const alerts = detectOutbreaks(criticalData);
     expect(alerts.some((a) => a.severity === 'critical')).toBe(true);
