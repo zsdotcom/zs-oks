@@ -1,55 +1,26 @@
-# Auto-label PRs by changed file paths
+# PR Labeler Configuration — ZUSS Compliant
 # https://github.com/actions/labeler
 
-# Source code
-src/**:
-  - source
-  - app
-
-# Tests
-src/test/**:
-  - testing
-  - app
-e2e/**:
-  - testing
-  - e2e
-
-# Documentation
-docs/**:
-  - documentation
-README.md:
-  - documentation
-AGENTS.md:
-  - documentation
-
-# CI/CD
-.github/**:
-  - ci
-  - infrastructure
-
-# Configuration
-"*.jsonc":
-  - configuration
-"*.json":
-  - configuration
-vite.config.*:
-  - configuration
-tsconfig*.json:
-  - configuration
-
-# Infrastructure
-Dockerfile:
-  - docker
-  - infrastructure
-nginx.conf:
-  - infrastructure
-.dockerignore:
-  - docker
-
-# Dev environment
-.devcontainer/**:
-  - development
-  - devcontainer
-.vscode/**:
-  - development
-  - vscode
+app:
+  - app/**/*
+docs:
+  - docs/**/*
+infra:
+  - infrastructure/**/*
+  - .github/workflows/**/*
+tests:
+  - tests/**/*
+config:
+  - .config/**/*
+  - package.json
+  - tsconfig.json
+  - vite.config.ts
+  - opencode.jsonc
+meta:
+  - README.md
+  - AGENTS.md
+  - LICENSE
+  - SECURITY.md
+  - PLAN.md
+scripts:
+  - scripts/**/*
